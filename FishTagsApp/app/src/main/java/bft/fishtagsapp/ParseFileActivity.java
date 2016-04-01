@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -36,9 +37,7 @@ public class ParseFileActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         Intent intent = getIntent();
-        TextView test = (TextView)findViewById(R.id.testText);
-        //test.setText("HELLO WORLD");
-        test.setText(getEntries().toString());
+        fillInInfoFromFile();
     }
 
     /**
@@ -76,16 +75,30 @@ public class ParseFileActivity extends AppCompatActivity {
                 String[] l = line.split(":");
                 entries.put(l[0], l[1]);
 
-                TextView test = (TextView)findViewById(R.id.testText);
-                //test.setText("Yay");
             }
         }
         catch(IOException e){
             // Do some error handling
-            TextView test = (TextView)findViewById(R.id.testText);
-            test.setText("Error occurred");
+            //TextView test = (TextView)findViewById(R.id.testText);
+            //test.setText("Error occurred");
         }
 
         return entries;
+    }
+
+    protected void fillInInfoFromFile(){
+        HashMap<String, String> entries = getEntries();
+        for(String key : entries.keySet()){
+            // If key exists in textview, fill in corresponding text
+            try {
+                int textID = getResources().getIdentifier(key,
+                        "id", getPackageName());
+                TextView text = (TextView)findViewById(textID);
+                text.setText(entries.get(key));
+            }
+            catch (Exception e){
+                // Do error handling if the id is not found
+            }
+        }
     }
 }
