@@ -1,4 +1,4 @@
-package bft.fishtagsapp;
+package bft.fishtagsapp.ParseFile;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
@@ -17,6 +17,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
+
+import bft.fishtagsapp.R;
 
 /**
  * Current RFID reader transfers:

@@ -20,7 +20,7 @@
         </activity>
 
         <activity
-            android:name=".ParseFileActivity"
+            android:name=".ParseFile.ParseFileActivity"
             android:label="@string/title_activity_parse_file"
             android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
