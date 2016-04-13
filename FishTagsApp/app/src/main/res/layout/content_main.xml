@@ -18,6 +18,12 @@
         android:text="Hello World!"
         android:id="@+id/textView" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hello World!"
+        android:id="@+id/textView2" />
+
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -42,5 +48,14 @@
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="39dp"
         android:layout_marginTop="69dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Edit Linkage"
+        android:id="@+id/editLinkageBtn"
+        android:layout_below="@+id/textView2"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="202dp" />
 
 </RelativeLayout>

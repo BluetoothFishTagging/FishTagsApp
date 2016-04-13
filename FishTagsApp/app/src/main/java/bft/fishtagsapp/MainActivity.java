@@ -17,6 +17,7 @@ import android.widget.Toast;
 import bft.fishtagsapp.GPS.GPS;
 import bft.fishtagsapp.ParseFile.ParseFileActivity;
 import bft.fishtagsapp.bft.fishtagsapp.Client.Uploader;
+import bft.fishtagsapp.Linkage.LinkageActivity;
 
 public class MainActivity extends AppCompatActivity {
     private GPS gps;
@@ -71,6 +72,17 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         /* Client Code End */
+
+		/* Linkage Code Start */
+        Button editLinkageBtn = (Button)findViewById(R.id.editLinkageBtn);
+        editLinkageBtn.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                startEditLinkage();
+            }
+        });
+		/* Linkage Code End */
+
     }
 
     @Override
@@ -143,4 +155,11 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
     }
     /* TEST CODE FOR CLIENT END */
+
+	/* TEST CODE FOR LINKAGE START */
+    public void startEditLinkage(){
+        Intent intent = new Intent(this,LinkageActivity.class);
+        startActivity(intent);
+    }
+	/* TEST CODE FOR LINKAGE END */
 }
