@@ -12,6 +12,14 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
+    <!-- Client -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+    <!-- Grant File-Access Permissions -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -28,9 +36,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-<<<<<<< HEAD
 
         <activity
+<<<<<<< HEAD
             android:name=".ParseFile.ParseFileActivity"
             android:label="@string/title_activity_parse_file"
             android:parentActivityName=".MainActivity"
@@ -39,7 +47,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="bft.fishtagsapp.MainActivity" />
         </activity>
-=======
+
         <receiver
             android:name=".Wifi.WifiDetector"
             android:enabled="true"
@@ -48,7 +56,15 @@
                 <action android:name="android.net.wifi.STATE_CHANGE" />
             </intent-filter>
         </receiver>
->>>>>>> Wifi
+
+=======
+            android:name=".Linkage.LinkageActivity"
+            android:label="LinkageActivity"
+            android:parentActivityName="bft.fishtagsapp.MainActivity"
+            >
+        </activity>
+
+>>>>>>> Linkage
     </application>
 
 </manifest>
