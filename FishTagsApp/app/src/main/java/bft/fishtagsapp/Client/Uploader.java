@@ -1,4 +1,4 @@
-package bft.fishtagsapp.bft.fishtagsapp.Client;
+package bft.fishtagsapp.Client;
 
 import android.content.Context;
 import android.content.Intent;

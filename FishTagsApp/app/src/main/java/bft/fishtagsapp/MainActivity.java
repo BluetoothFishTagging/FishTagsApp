@@ -16,12 +16,13 @@ import android.widget.Toast;
 
 import bft.fishtagsapp.GPS.GPS;
 import bft.fishtagsapp.ParseFile.ParseFileActivity;
-import bft.fishtagsapp.bft.fishtagsapp.Client.Uploader;
+import bft.fishtagsapp.Client.Uploader;
 import bft.fishtagsapp.Linkage.LinkageActivity;
+import bft.fishtagsapp.Storage.Storage;
+import bft.fishtagsapp.Storage.StorageActivty;
 
 public class MainActivity extends AppCompatActivity {
     private GPS gps;
-
     Uploader uploader;
 
     @Override
@@ -40,8 +41,6 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
-
-
 
         /* GPS Code Start */
         gps = new GPS(this);
@@ -83,6 +82,15 @@ public class MainActivity extends AppCompatActivity {
         });
 		/* Linkage Code End */
 
+        /* Storage Code Start */
+        Button storageBtn = (Button)findViewById(R.id.storageBtn);
+        storageBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startStorageTest();
+            }
+        });
+        /* Storage Code End */
     }
 
     @Override
@@ -162,4 +170,11 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 	/* TEST CODE FOR LINKAGE END */
+
+    /* TEST CODE FOR STORAGE START */
+    public void startStorageTest(){
+        Intent intent = new Intent(this, StorageActivty.class);
+        startActivity(intent);
+    }
+    /* TEST CODE FOR STORAGE END */
 }
