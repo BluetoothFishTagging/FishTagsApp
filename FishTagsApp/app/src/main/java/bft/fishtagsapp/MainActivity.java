@@ -57,8 +57,8 @@ public class MainActivity extends AppCompatActivity {
      * Called when user clicks Parse File button
      * @param view
      */
-    public void parseFile(View view){
-        Intent intent = new Intent(this, ParseFileActivity.class);
+    public void goToCamera(View view){
+        Intent intent = new Intent(this, Camera.class);
         startActivity(intent);
     }
 }
