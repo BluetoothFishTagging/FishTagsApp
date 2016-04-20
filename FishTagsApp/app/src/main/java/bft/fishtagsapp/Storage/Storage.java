@@ -38,11 +38,12 @@ public class Storage {
         this.context=context;
 
         if(isSDCardPresent()){
+            Log.i("sdcard","present");
             useSDCard = true;
-            fileStorage = new File(
-                    Environment.getExternalStorageDirectory() + "/"
-                            + name);
+            fileStorage = new File(Environment.getExternalStorageDirectory(),name);
         }else{
+
+            Log.i("sdcard","not present");
             useSDCard = false;
             prefStorage = context.getSharedPreferences(name, Context.MODE_PRIVATE);
             editor = prefStorage.edit();
@@ -91,13 +92,33 @@ public class Storage {
             return false;
         else {
 
+                String state = Environment.getExternalStorageState();
+                if (Environment.MEDIA_MOUNTED.equals(state)) {
+                    Log.d("Test", "sdcard mounted and writable");
+                }
+                else if (Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
+                    Log.d("Test", "sdcard mounted readonly");
+                }
+                else {
+                    Log.d("Test", "sdcard state: " + state);
+                }
+
             try {
+
+                if(Environment.getExternalStorageDirectory().canWrite()){
+                    Log.i("write","canwrite");
+                }else{
+                    Log.i("write","can't-write");
+                }
                 //Create Main Directory if not present
-                if (!fileStorage.exists())
-                    fileStorage.mkdir();
+                if (!fileStorage.exists()){
+                    Log.i("fileStorage","Nonexistent");
+                    Boolean res = fileStorage.mkdirs();
+                    Log.i("fileStorageMkdirs",res.toString());
+                }
 
                 //Make File Name under main Directory
-                File savedFile = new File(fileStorage.getAbsolutePath() + "/" + FileName);
+                File savedFile = new File(fileStorage, FileName);
 
                 //If Saved File exists then check if its size is greater than 0
                 if (savedFile.exists()) {
@@ -179,8 +200,18 @@ public class Storage {
     private void writeToFile(String FileName, String messageBody) {
         try {
             File savedFile = new File(fileStorage.getAbsolutePath() + "/" + FileName);
+            Log.i("dir",savedFile.getAbsolutePath());
+            FileWriter fWriter;
+
+            if(!savedFile.exists()){
+                Boolean res = savedFile.mkdirs();
+                Log.i("mkdirs",res.toString());
+                savedFile.createNewFile();
+            }
+
+            fWriter = new FileWriter(savedFile);
+
             //File writer is used for writing data
-            FileWriter fWriter = new FileWriter(savedFile);
             fWriter.write(messageBody);//write data
             fWriter.flush();//flush writer
             fWriter.close();//close writer
