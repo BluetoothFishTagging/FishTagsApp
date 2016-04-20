@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="bft.fishtagsapp">
-	<!-- ACCESSING STORAGE -->
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
 
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <!-- ACCESSING STORAGE -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <!-- Wifi -->
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
@@ -14,11 +13,10 @@
 
     <!-- Client -->
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <!-- Grant File-Access Permissions -->
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -36,7 +34,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".ParseFile.ParseFileActivity"
             android:label="@string/title_activity_parse_file"
@@ -59,10 +56,8 @@
         <activity
             android:name=".Linkage.LinkageActivity"
             android:label="LinkageActivity"
-            android:parentActivityName="bft.fishtagsapp.MainActivity"
-            >
-        </activity>
-
+            android:parentActivityName=".MainActivity"></activity>
+        <activity android:name=".Storage.StorageActivty"></activity>
     </application>
 
 </manifest>
