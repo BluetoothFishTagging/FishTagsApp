@@ -27,6 +27,12 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="Go To Camera"
+        android:onClick="goToCamera"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:text="Parse File"
         android:onClick="parseFile"
         android:layout_alignBaseline="@+id/testBtn"
@@ -68,5 +74,4 @@
         android:layout_below="@+id/editLinkageBtn"
         android:layout_alignStart="@+id/editLinkageBtn"
         android:layout_marginTop="71dp" />
-
 </RelativeLayout>

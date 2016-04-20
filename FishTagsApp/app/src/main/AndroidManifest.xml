@@ -2,6 +2,15 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="bft.fishtagsapp">
 
+
+    <!-- TODO: camera unrequired, disable camera features if no camera on device.
+        Currently, camera required on device to download app.
+    -->
+	<!-- Camera -->
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-feature android:name="android.hardware.camera" android:required="true"/>
+    <uses-feature android:name="android.hardware.camera.autofocus" />
+
     <!-- ACCESSING STORAGE -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -43,6 +52,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="bft.fishtagsapp.MainActivity" />
         </activity>
+        <activity
+            android:name=".Camera.Camera"
+            android:label="@string/title_activity_camera"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
 
         <receiver
             android:name=".Wifi.WifiDetector"

@@ -3,6 +3,7 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_parse_data">ParseDataActivity</string>
     <string name="title_activity_parse_file">ParseFileActivity</string>
+    <string name="title_activity_camera">Camera</string>
 
     <string name="mainTitle">Read &amp; Write Text File</string>
     <string name="enterMessage">Enter your message below</string>

@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.Toast;
 
+import bft.fishtagsapp.Camera.Camera;
 import bft.fishtagsapp.GPS.GPS;
 import bft.fishtagsapp.ParseFile.ParseFileActivity;
 import bft.fishtagsapp.Client.Uploader;
@@ -121,8 +122,8 @@ public class MainActivity extends AppCompatActivity {
      * Called when user clicks Parse File button
      * @param view
      */
-    public void parseFile(View view){
-        Intent intent = new Intent(this, ParseFileActivity.class);
+    public void goToCamera(View view){
+        Intent intent = new Intent(this, Camera.class);
         startActivity(intent);
     }
 	/* TEST CODE FORE PARSEFILE END */
