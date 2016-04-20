@@ -1,4 +1,4 @@
-package bft.fishtagsapp;
+package bft.fishtagsapp.Camera;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -18,6 +18,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import bft.fishtagsapp.R;
 
 public class Camera extends AppCompatActivity {
 

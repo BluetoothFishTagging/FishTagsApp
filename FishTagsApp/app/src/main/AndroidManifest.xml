@@ -38,7 +38,7 @@
                 android:value="bft.fishtagsapp.MainActivity" />
         </activity>
         <activity
-            android:name=".Camera"
+            android:name=".Camera.Camera"
             android:label="@string/title_activity_camera"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>

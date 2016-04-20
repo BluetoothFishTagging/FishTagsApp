@@ -10,7 +10,7 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import bft.fishtagsapp.ParseFile.ParseFileActivity;
+import bft.fishtagsapp.Camera.Camera;
 
 public class MainActivity extends AppCompatActivity {
 
