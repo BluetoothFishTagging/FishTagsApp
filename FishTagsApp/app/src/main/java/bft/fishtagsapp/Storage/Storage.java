@@ -12,7 +12,10 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 
 import bft.fishtagsapp.MainActivity;
 
@@ -306,5 +309,53 @@ public class Storage {
     private Boolean deletePref(String Key){
         editor.remove(Key);
         return editor.commit();
+    }
+
+    public Boolean saveReport(HashMap<String,String> data){
+        //data.get("Stuff") == filename
+        writeToFile(data.get("Stuff"),data.toString());
+        writeToFile("Recent", data.get("Stuff"));
+
+        return true;
+    }
+
+    private HashMap<String,String> parseReport(File f){
+        HashMap<String,String> map = new HashMap<>();
+
+        // TODO: parse report from file
+
+        return map;
+    }
+    private List<File> getListFiles(File parentDir) {
+        ArrayList<File> inFiles = new ArrayList<File>();
+        File[] files = parentDir.listFiles();
+        for (File file : files) {
+            if (file.isDirectory()) {
+                inFiles.addAll(getListFiles(file));
+            } else {
+                if(file.getName().endsWith(".csv")){
+                    inFiles.add(file);
+                }
+            }
+        }
+        return inFiles;
+    }
+
+    public ArrayList<HashMap<String,String>> getReports(){
+        ArrayList<HashMap<String,String>> list = new ArrayList<>();
+
+        for(File file : getListFiles(fileStorage)){
+            list.add(parseReport(file));
+        }
+
+        return list;
+    }
+    public void removeReports(){
+        //remove all reports
+        String[] children = fileStorage.list();
+        for (int i = 0; i < children.length; i++)
+        {
+            new File(fileStorage, children[i]).delete();
+        }
     }
 }

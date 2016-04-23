@@ -38,6 +38,7 @@ public class StorageActivty extends AppCompatActivity {
                 storage.save(name,msg);
             }
         });
+
         readBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -46,6 +47,7 @@ public class StorageActivty extends AppCompatActivity {
                 msgEdit.setText(msg);
             }
         });
+
         deleteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
