@@ -1,4 +1,5 @@
 package bft.fishtagsapp.ParseFile;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
@@ -28,26 +29,13 @@ import bft.fishtagsapp.R;
  * Current mode: Animal Tag
  * Click 'More' to change the reading type
  */
-public class ParseFileActivity extends AppCompatActivity {
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_parse_file);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        Intent intent = getIntent();
-        fillInInfoFromFile();
-    }
-
+public class ParseFile {
     /**
      *
      * @return Path to storage where transmitted file can be found
      * External storage currently (sdcard)
      */
-    private File getStoragePath(){
+    private static File getStoragePath(){
         //return Environment.getExternalStorageDirectory();
         return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
     }
@@ -57,11 +45,17 @@ public class ParseFileActivity extends AppCompatActivity {
      * @return name of file where transmitted data is stored.
      * Currently hardcoded to message transmitted on 3/8/2016
      */
-    private String getFileName(){
+    /**
+     * TODO: Function that finds the latest file that has been uploaded.
+     * THIS FUNCTION SHOULD BE IN STORAGE.
+     * @return
+     */
+    private static String getFileName(){
         return "2016_03_08_22_08_1157890.txt";
     }
 
-    protected HashMap<String, String> getEntries(){
+    // TODO: get timestamp of the file and put it into the dictionary
+    public static HashMap<String, String> getEntries(){
         File file = new File(getStoragePath(), getFileName());
         HashMap<String, String> entries = new HashMap<>();
         String line;
@@ -86,21 +80,5 @@ public class ParseFileActivity extends AppCompatActivity {
         }
 
         return entries;
-    }
-
-    protected void fillInInfoFromFile(){
-        HashMap<String, String> entries = getEntries();
-        for(String key : entries.keySet()){
-            // If key exists in textview, fill in corresponding text
-            try {
-                int textID = getResources().getIdentifier(key,
-                        "id", getPackageName());
-                TextView text = (TextView)findViewById(textID);
-                text.setText(entries.get(key));
-            }
-            catch (Exception e){
-                // Do error handling if the id is not found
-            }
-        }
     }
 }

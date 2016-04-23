@@ -14,17 +14,15 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.Toast;
 
+import java.util.HashMap;
+
 import bft.fishtagsapp.Camera.Camera;
 import bft.fishtagsapp.GPS.GPS;
-import bft.fishtagsapp.ParseFile.ParseFileActivity;
 import bft.fishtagsapp.Client.Uploader;
 import bft.fishtagsapp.Linkage.LinkageActivity;
-import bft.fishtagsapp.Storage.Storage;
 import bft.fishtagsapp.Storage.StorageActivty;
 
 public class MainActivity extends AppCompatActivity {
-    private GPS gps;
-    Uploader uploader;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,65 +31,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
-        /* GPS Code Start */
-        gps = new GPS(this);
-        Button GPSBtn = (Button) findViewById(R.id.GPS_GPSBtn);
-        GPSBtn.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                Location location = gps.getGPS();
-                if(location != null){
-                    double latitude = location.getLatitude();
-                    double longitude = location.getLongitude();
-                    String s = String.format("LAT:%f,LONG:%f",latitude,longitude);
-                    Toast.makeText(getApplicationContext(),s,Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-        /* GPS End */
-
-        /* Client Code Start */
-        // change here as well if using placeholder
-        String url = "http://192.168.16.73:8000/";
-        uploader = new Uploader(this,url);
-        Button testBtn = (Button) findViewById(R.id.testBtn);
-        testBtn.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                testClient();
-            }
-        });
-        /* Client Code End */
-
-		/* Linkage Code Start */
-        Button editLinkageBtn = (Button)findViewById(R.id.editLinkageBtn);
-        editLinkageBtn.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                startEditLinkage();
-            }
-        });
-		/* Linkage Code End */
-
-        /* Storage Code Start */
-        Button storageBtn = (Button)findViewById(R.id.storageBtn);
-        storageBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startStorageTest();
-            }
-        });
-        /* Storage Code End */
     }
 
     @Override
@@ -117,65 +56,31 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-	/* TEST CODE FOR PARSEFILE START */
+    static final int SUBMIT_TAG = 1;
+
     /**
-     * Called when user clicks Parse File button
-     * @param view
+     *
+     * When formActivity is over, MainActivity routes the data received from it (dictionary of values and Uri s)
+     * to Storage, telling it to start tyring to upload the info to the database.
+     *
+     * @param requestCode
+     * @param resultCode
+     * @param data
      */
-    public void goToCamera(View view){
-        Intent intent = new Intent(this, Camera.class);
-        startActivity(intent);
-    }
-	/* TEST CODE FORE PARSEFILE END */
-
-    /* TEST CODE FOR CLIENT START */
-
-    private static final int GET_TEST_FILE_CODE = 100;
-
-    public void testClient() {
-        /* Testing Purposes*/
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("*/*");
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-        try {
-            startActivityForResult(
-                    Intent.createChooser(intent, "Select a File to Upload"), GET_TEST_FILE_CODE);
-        } catch (android.content.ActivityNotFoundException ex) {
-            // Potentially direct the user to the Market with a Dialog
-            Toast.makeText(this, "Please install a File Manager.",
-                    Toast.LENGTH_SHORT).show();
-        }
-    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode) {
-            case GET_TEST_FILE_CODE:
-                if (resultCode == RESULT_OK) {
-                    try {
-                        Uri uri = data.getData();
-                        uploader.send(uri, "PARAM1", "PARAM2");
-                    }catch(Exception e){
-                        e.printStackTrace();
-                    }
-                }
-                break;
-
+        if(requestCode == SUBMIT_TAG){
+            if (resultCode == RESULT_OK){
+                //TODO: Route to Storage
+                HashMap<String, String> map = (HashMap<String, String>)data.getSerializableExtra("map");
+                Toast.makeText(getApplicationContext(), "Thank you for submitting a tag!", Toast.LENGTH_SHORT).show();
+            }
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
-    /* TEST CODE FOR CLIENT END */
 
-	/* TEST CODE FOR LINKAGE START */
-    public void startEditLinkage(){
-        Intent intent = new Intent(this,LinkageActivity.class);
-        startActivity(intent);
+    public void goToForm(View view){
+        Intent intent = new Intent(this, FormActivity.class);
+        startActivityForResult(intent, SUBMIT_TAG);
     }
-	/* TEST CODE FOR LINKAGE END */
-
-    /* TEST CODE FOR STORAGE START */
-    public void startStorageTest(){
-        Intent intent = new Intent(this, StorageActivty.class);
-        startActivity(intent);
-    }
-    /* TEST CODE FOR STORAGE END */
 }
