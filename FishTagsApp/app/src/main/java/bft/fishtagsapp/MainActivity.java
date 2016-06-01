@@ -1,26 +1,15 @@
 package bft.fishtagsapp;
 
 import android.content.Intent;
-import android.location.Location;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Button;
+import android.view.View;
 import android.widget.Toast;
 
 import java.util.HashMap;
-
-import bft.fishtagsapp.Camera.Camera;
-import bft.fishtagsapp.GPS.GPS;
-import bft.fishtagsapp.Client.Uploader;
-import bft.fishtagsapp.Linkage.LinkageActivity;
-import bft.fishtagsapp.Storage.StorageActivty;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -72,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
         if(requestCode == SUBMIT_TAG){
             if (resultCode == RESULT_OK){
                 //TODO: Route to Storage
-                HashMap<String, String> map = (HashMap<String, String>)data.getSerializableExtra("map");
+                //HashMap<String, String> map = (HashMap<String, String>)data.getSerializableExtra("map");
                 Toast.makeText(getApplicationContext(), "Thank you for submitting a tag!", Toast.LENGTH_SHORT).show();
             }
         }
