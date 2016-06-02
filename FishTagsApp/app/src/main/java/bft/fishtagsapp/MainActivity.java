@@ -49,8 +49,8 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      *
-     * When formActivity is over, MainActivity routes the data received from it (dictionary of values and Uri s)
-     * to Storage, telling it to start tyring to upload the info to the database.
+     * When FormActivity is over, MainActivity routes the data received from it (dictionary of values and Uri s)
+     * to Storage, telling it to start trying to upload the info to the database.
      *
      * @param requestCode
      * @param resultCode

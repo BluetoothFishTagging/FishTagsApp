@@ -77,6 +77,7 @@ public class FormActivity extends AppCompatActivity {
         }
     }
 
+    //TODO: Create function that collects all of the information from the boxes into a Hashmap to be able to pass it on
     protected HashMap<String, String> getFormMap(){
         GridView my_gridView = (GridView)findViewById(R.id.my_grid_view);
         for (int i = 0; i < my_gridView.getChildCount(); i++){
@@ -86,6 +87,7 @@ public class FormActivity extends AppCompatActivity {
         return null;
     }
 
+    //TODO: pass along hashmap of Values
     public void submitForm(View view){
         Intent intent_result = new Intent();
         //intent_result.putExtra("map", getFormMap());
@@ -174,7 +176,6 @@ public class FormActivity extends AppCompatActivity {
         else return k;
     }
 
-
     String mCurrentPhotoPath;
 
     private File createImageFile() throws IOException {
@@ -190,5 +191,4 @@ public class FormActivity extends AppCompatActivity {
         mCurrentPhotoPath = "file:" + image.getAbsolutePath();
         return image;
     }
-
 }
