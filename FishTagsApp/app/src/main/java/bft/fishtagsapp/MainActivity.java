@@ -2,17 +2,27 @@ package bft.fishtagsapp;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.FileObserver;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 
-public class MainActivity extends AppCompatActivity {
+import bft.fishtagsapp.ParseFile.ParseFile;
+import bft.fishtagsapp.Storage.Storage;
 
+public class MainActivity extends AppCompatActivity {
+    Storage storage;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -20,6 +30,41 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        storage = new Storage(getApplicationContext(),"FishTagsData");
+
+        /* BLUETOOTH WATCHER */
+        String DownloadDir_raw = "/sdcard/Download"; //WORKS
+        final String DownloadDir = android.os.Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath(); //WORKS
+        //String BluetoothDir = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS).getPath() + "/bluetooth"; DOESN'T WORK
+
+        final Handler handler = new Handler();
+        FileObserver observer = new FileObserver(DownloadDir) { //MAY NOT BE SO DEPENDABLE
+            @Override
+            public void onEvent(int event, final String fileName) {
+                Log.i("EVENT", String.valueOf(event));
+                if(event == CLOSE_WRITE){
+                    Log.i("fileName", fileName); // --> filename
+                    Log.i("EVENT", String.valueOf(event));
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getApplicationContext(), fileName, Toast.LENGTH_SHORT).show();
+                            File file = new File(DownloadDir,fileName);
+                            HashMap<String, String> h =  ParseFile.getEntries(file);
+
+                            if (!h.isEmpty()){ // --> has content
+                                String timeStamp = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss").format(new Date().getTime());
+                                h.put("name", timeStamp + ".txt");//text file extension
+                                Log.i("Parsed", h.toString());
+                                storage.saveReport(h);
+                            }
+
+                        }
+                    });
+                }
+            }
+        };
+        observer.startWatching();
     }
 
     @Override
@@ -70,6 +115,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void goToForm(View view){
         Intent intent = new Intent(this, FormActivity.class);
+        intent.putExtra("fileName","fileName");
         startActivityForResult(intent, SUBMIT_TAG);
     }
 }

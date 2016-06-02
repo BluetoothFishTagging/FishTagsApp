@@ -36,16 +36,18 @@ public class FormActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        String fileName = getIntent().getStringExtra("fileName");
         // Auto-fill in data from the latest tag file
-        fillInInfoFromFile();
+        fillInInfoFromFile(fileName);
 
 
     }
-    protected void fillInInfoFromFile(){
+
+    protected void fillInInfoFromFile(String fileName){
         /* Call Parse File to return all of the entries in the file.
             ParseFile handles all of the storage stuff so that FormActivity only fills in the UI
          */
-        HashMap<String, String> entries = ParseFile.getEntries();
+        HashMap<String, String> entries = ParseFile.getEntries(fileName);
         for(String key : entries.keySet()){
             // If key exists in textview, fill in corresponding text
             try {

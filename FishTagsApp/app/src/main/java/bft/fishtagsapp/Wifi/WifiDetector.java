@@ -12,9 +12,9 @@ import android.net.wifi.WifiManager;
 import android.widget.Toast;
 
 public class WifiDetector extends BroadcastReceiver {
+    private static Boolean connected = false;
 
     public WifiDetector() {
-
     }
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -23,9 +23,17 @@ public class WifiDetector extends BroadcastReceiver {
         if(action.equals(WifiManager.NETWORK_STATE_CHANGED_ACTION)){
             NetworkInfo info = intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO);
             if(info.isConnected()){
+                connected = true;
                 Toast.makeText(context, "WIFI_ESTABLISHED", Toast.LENGTH_LONG).show();
                 //Indicate main activity that wifi has been connected
+            }else{
+                connected = false;
+                Toast.makeText(context, "WIFI_DISCONNECTED", Toast.LENGTH_LONG).show();
             }
         }
+    }
+
+    public static Boolean isConnected(){
+        return connected;
     }
 }

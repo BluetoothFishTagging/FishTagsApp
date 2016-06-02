@@ -45,18 +45,13 @@ public class ParseFile {
      * @return name of file where transmitted data is stored.
      * Currently hardcoded to message transmitted on 3/8/2016
      */
-    /**
-     * TODO: Function that finds the latest file that has been uploaded.
-     * THIS FUNCTION SHOULD BE IN STORAGE.
-     * @return
-     */
-    private static String getFileName(){
-        return "2016_03_08_22_08_1157890.txt";
-    }
 
     // TODO: get timestamp of the file and put it into the dictionary
-    public static HashMap<String, String> getEntries(){
-        File file = new File(getStoragePath(), getFileName());
+    public static HashMap<String, String> getEntries(String fileName){
+        File file = new File(fileName);
+        return getEntries(file);
+    }
+    public static HashMap<String, String> getEntries(File file){
         HashMap<String, String> entries = new HashMap<>();
         String line;
         int numLine = 0;

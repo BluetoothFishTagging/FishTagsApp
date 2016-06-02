@@ -31,6 +31,8 @@ public class Storage {
     //FileStorage
     private File fileStorage = null;//Main Directory File
 
+    private String latest; //latest entry
+
     //Preferences to Store Data when SDCard is not present
     private SharedPreferences prefStorage;
     private SharedPreferences.Editor editor;
@@ -44,6 +46,17 @@ public class Storage {
             Log.i("sdcard","present");
             useSDCard = true;
             fileStorage = new File(Environment.getExternalStorageDirectory(),name);
+            if(!fileStorage.exists()){
+                fileStorage.mkdirs();
+            }
+
+            File reportStorage = new File(fileStorage,"reports");
+            if(!reportStorage.exists()){
+                reportStorage.mkdirs();
+            }
+
+
+            //TODO : create subdirectory "report"
         }else{
 
             Log.i("sdcard","not present");
@@ -207,7 +220,7 @@ public class Storage {
             FileWriter fWriter;
 
             if(!savedFile.exists()){
-                Boolean res = savedFile.mkdirs();
+                Boolean res = savedFile.getParentFile().mkdirs(); //makes parent directories
                 Log.i("mkdirs",res.toString());
                 savedFile.createNewFile();
             }
@@ -313,9 +326,8 @@ public class Storage {
 
     public Boolean saveReport(HashMap<String,String> data){
         //data.get("Stuff") == filename
-        writeToFile(data.get("Stuff"),data.toString());
-        writeToFile("Recent", data.get("Stuff"));
-
+        writeToFile("reports" + '/' + data.get("name"), data.toString());
+        //writeToFile("Recent", data.get("Stuff"));
         return true;
     }
 
