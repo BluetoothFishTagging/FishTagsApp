@@ -111,7 +111,7 @@ public class FormActivity extends AppCompatActivity {
             // Create the File where the photo should go
             File photoFile = null;
             try {
-                photoFile = createFile("JPEG", ".jpg");
+                photoFile = createFile(Environment.getExternalStorageDirectory(), "JPEG", ".jpg");
                 photoUri = Uri.fromFile(photoFile);
 //                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
 //                        Uri.fromFile(photoFile));
@@ -174,11 +174,10 @@ public class FormActivity extends AppCompatActivity {
         else return k;
     }
 
-    private File createFile(String extension, String dotExtension) throws IOException {
-        // Create an image file name
+    private File createFile(File storageDir, String extension, String dotExtension) throws IOException {
+        // Create a unique file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String fileName = extension + "_" + timeStamp + "_";
-        File storageDir = Environment.getExternalStorageDirectory();
 
         File file = new File(storageDir + "/" + fileName + dotExtension);
         file.createNewFile();
