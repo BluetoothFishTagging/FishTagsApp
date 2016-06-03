@@ -8,6 +8,8 @@ import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.widget.Toast;
 
+import org.json.JSONObject;
+
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -326,7 +328,8 @@ public class Storage {
     }
 
     public Boolean saveReport(HashMap<String,String> data){
-        writeToFile("reports" + '/' + data.get("name"), data.toString());
+        JSONObject jsonData = new JSONObject(data);
+        writeToFile("reports" + '/' + data.get("name"), jsonData.toString());
         return true;
     }
 

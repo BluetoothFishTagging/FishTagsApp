@@ -12,14 +12,13 @@
     tools:context="bft.fishtagsapp.MainActivity"
     tools:showIn="@layout/activity_main">
 
-    <!-- Temporarily disabled
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Submit Tag Recovery"
         android:onClick="goToForm"
         android:id="@+id/button" />
-        -->
+
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

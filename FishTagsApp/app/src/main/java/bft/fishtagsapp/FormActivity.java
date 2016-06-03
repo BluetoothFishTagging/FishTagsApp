@@ -12,6 +12,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.GridLayout;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -43,8 +45,10 @@ public class FormActivity extends AppCompatActivity {
     }
 
     protected void fillInInfoFromFile(String fileName){
-        Log.i("FILENAME",fileName);
-        fillInInfoFromFile(new File(fileName));
+        if(fileName != null){
+            Log.i("FILENAME",fileName);
+            fillInInfoFromFile(new File(fileName));
+        }
     }
 
     protected void fillInInfoFromFile(File file){
@@ -89,18 +93,35 @@ public class FormActivity extends AppCompatActivity {
 
     //TODO: Create function that collects all of the information from the boxes into a Hashmap to be able to pass it on
     protected HashMap<String, String> getFormMap(){
-        GridView my_gridView = (GridView)findViewById(R.id.my_grid_view);
-        for (int i = 0; i < my_gridView.getChildCount(); i++){
-            View v = my_gridView.getChildAt(i);
+        HashMap<String,String> map = new HashMap<>();
+
+        GridLayout my_grid = (GridLayout)findViewById(R.id.my_grid_view);
+        for (int i = 0; i < my_grid.getChildCount(); i++){
+            View v = my_grid.getChildAt(i);
+            if (v instanceof EditText){
+                int id = v.getId();
+
+                if(id != 0 && id!=0xffffffff){
+                    String key = v.getResources().getResourceEntryName(id);
+                    String value = ((EditText)v).getText().toString();
+
+                    map.put(key,value);
+                }
+
+            }else if (v instanceof ImageView){
+                Uri imageUri = (Uri)((ImageView)v).getTag();
+                map.put("photo",imageUri.toString());
+            }
             // DO SOMETHING
         }
-        return null;
+        return map;
     }
 
     //TODO: pass along hashmap of Values
     public void submitForm(View view){
+        Log.i("FORM","SUBMITTING");
         Intent intent_result = new Intent();
-        //intent_result.putExtra("map", getFormMap());
+        intent_result.putExtra("map", getFormMap());
         setResult(RESULT_OK, intent_result);
         finish();
     }
@@ -145,6 +166,7 @@ public class FormActivity extends AppCompatActivity {
                 Bitmap bitmap = getThumbnail(imageUri);
                 ImageView myImageView = (ImageView)findViewById(R.id.FishPhoto);
                 myImageView.setImageBitmap(bitmap);
+                myImageView.setTag(imageUri);
             } catch(Exception e){
                 e.printStackTrace();
             }

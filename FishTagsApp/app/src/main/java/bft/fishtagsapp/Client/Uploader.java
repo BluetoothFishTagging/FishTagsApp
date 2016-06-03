@@ -18,13 +18,13 @@ import java.io.InputStream;
  */
 public class Uploader {
 
-    AppCompatActivity context;
+    Context context;
 
     //placeholder url for server domain
     //hardcoded, and must be replaced with real domain name
     String url = "http://192.168.16.73:8000/";
 
-    public Uploader(AppCompatActivity context, String url) {
+    public Uploader(Context context, String url) {
         this.context = context;
         this.url = url;
     }
@@ -68,7 +68,7 @@ public class Uploader {
             Uri uri = Uri.parse(params[1]);
             String param1 = params[2];
             String param2 = params[3];
-
+            Log.i("??",uri.toString());
             // FOR STORAGE FILES, construct byte array as follows:
             byte[] byteArray = convertUriToByteArray(uri); // = bytearray
 

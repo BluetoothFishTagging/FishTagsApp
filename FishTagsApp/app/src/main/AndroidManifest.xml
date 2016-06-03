@@ -69,6 +69,7 @@
             android:name=".TestingActivity"
             android:label="@string/title_activity_testing"
             android:theme="@style/AppTheme.NoActionBar"></activity>
+
     </application>
 
 </manifest>
