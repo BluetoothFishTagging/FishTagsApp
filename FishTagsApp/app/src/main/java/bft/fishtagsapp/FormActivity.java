@@ -13,6 +13,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.io.File;
@@ -50,6 +51,9 @@ public class FormActivity extends AppCompatActivity {
             ParseFile handles all of the storage stuff so that FormActivity only fills in the UI
          */
         HashMap<String, String> entries = ParseFile.getEntries(file);
+        if(entries == null){
+            return;
+        }
         for(String key : entries.keySet()){
             // If key exists in textview, fill in corresponding text.
             // It is assumed that all of IDs of the TextViews correspond
@@ -67,7 +71,7 @@ public class FormActivity extends AppCompatActivity {
 
         //Get Time
         String time = new SimpleDateFormat("yyyyMMdd HH:mm:ss").format(new Date());
-        TextView timeText = (TextView) findViewById(R.id.time);
+        TextView timeText = (TextView) findViewById(R.id.Time);
         timeText.setText(time);
 
         //Get Location
@@ -78,14 +82,14 @@ public class FormActivity extends AppCompatActivity {
             double longitude = location.getLongitude();
             String s = String.format("LAT:%f,LONG:%f", latitude, longitude);
 
-            TextView locationText = (TextView) findViewById(R.id.location);
+            TextView locationText = (TextView) findViewById(R.id.Location);
             locationText.setText(s);
         }
     }
 
     //TODO: Create function that collects all of the information from the boxes into a Hashmap to be able to pass it on
     protected HashMap<String, String> getFormMap(){
-        GridView my_gridView = (GridView)findViewById(R.id.my_grid_view);
+        RelativeLayout my_gridView = (RelativeLayout)findViewById(R.id.my_grid_view);
         for (int i = 0; i < my_gridView.getChildCount(); i++){
             View v = my_gridView.getChildAt(i);
             // DO SOMETHING
