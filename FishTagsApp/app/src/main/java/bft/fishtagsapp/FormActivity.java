@@ -42,14 +42,14 @@ public class FormActivity extends AppCompatActivity {
     }
 
     protected void fillInInfoFromFile(String fileName){
-        fillInInfoFromFile();
+        fillInInfoFromFile(new File(fileName));
     }
 
-    protected void fillInInfoFromFile(){
+    protected void fillInInfoFromFile(File file){
         /* Call Parse File to return all of the entries in the file.
             ParseFile handles all of the storage stuff so that FormActivity only fills in the UI
          */
-        HashMap<String, String> entries = ParseFile.getEntries(fileName);
+        HashMap<String, String> entries = ParseFile.getEntries(file);
         for(String key : entries.keySet()){
             // If key exists in textview, fill in corresponding text
             try {

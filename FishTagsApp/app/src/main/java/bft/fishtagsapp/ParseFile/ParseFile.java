@@ -50,6 +50,7 @@ public class ParseFile {
         File file = new File(fileName);
         return getEntries(file);
     }
+
     public static HashMap<String, String> getEntries(File file){
         HashMap<String, String> entries = new HashMap<>();
         String line;
