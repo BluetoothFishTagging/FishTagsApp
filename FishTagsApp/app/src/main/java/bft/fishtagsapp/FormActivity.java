@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.GridLayout;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.io.File;
@@ -56,6 +57,9 @@ public class FormActivity extends AppCompatActivity {
             ParseFile handles all of the storage stuff so that FormActivity only fills in the UI
          */
         HashMap<String, String> entries = ParseFile.getEntries(file);
+        if(entries == null){
+            return;
+        }
         Log.i("ENTRIES",entries.toString());
 
         for(String key : entries.keySet()){
@@ -75,7 +79,7 @@ public class FormActivity extends AppCompatActivity {
 
         //Get Time
         String time = new SimpleDateFormat("yyyyMMdd HH:mm:ss").format(new Date());
-        TextView timeText = (TextView) findViewById(R.id.time);
+        TextView timeText = (TextView) findViewById(R.id.Time);
         timeText.setText(time);
 
         //Get Location
@@ -86,7 +90,7 @@ public class FormActivity extends AppCompatActivity {
             double longitude = location.getLongitude();
             String s = String.format("LAT:%f,LONG:%f", latitude, longitude);
 
-            TextView locationText = (TextView) findViewById(R.id.location);
+            TextView locationText = (TextView) findViewById(R.id.Location);
             locationText.setText(s);
         }
     }
@@ -112,8 +116,13 @@ public class FormActivity extends AppCompatActivity {
                 Uri imageUri = (Uri)((ImageView)v).getTag();
                 map.put("photo",imageUri.toString());
             }
+		}
+
+        /*RelativeLayout my_relView = (RelativeLayout)findViewById(R.id.my_rel_view);
+        for (int i = 0; i < my_relView.getChildCount(); i++){
+            View v = my_relView.getChildAt(i);
             // DO SOMETHING
-        }
+        }*/
         return map;
     }
 
