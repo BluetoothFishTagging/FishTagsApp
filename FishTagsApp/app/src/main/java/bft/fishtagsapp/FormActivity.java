@@ -23,7 +23,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 
-import bft.fishtagsapp.Camera.Camera;
 import bft.fishtagsapp.GPS.GPS;
 import bft.fishtagsapp.ParseFile.ParseFile;
 
@@ -38,9 +37,8 @@ public class FormActivity extends AppCompatActivity {
 
         // Auto-fill in data from the latest tag file
         fillInInfoFromFile();
-
-
     }
+
     protected void fillInInfoFromFile(){
         /* Call Parse File to return all of the entries in the file.
             ParseFile handles all of the storage stuff so that FormActivity only fills in the UI
@@ -113,7 +111,7 @@ public class FormActivity extends AppCompatActivity {
             // Create the File where the photo should go
             File photoFile = null;
             try {
-                photoFile = createImageFile();
+                photoFile = createFile("JPEG");
                 photoUri = Uri.fromFile(photoFile);
 //                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
 //                        Uri.fromFile(photoFile));
@@ -176,19 +174,15 @@ public class FormActivity extends AppCompatActivity {
         else return k;
     }
 
-    String mCurrentPhotoPath;
-
-    private File createImageFile() throws IOException {
+    private File createFile(String extension) throws IOException {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
+        String fileName = extension + "_" + timeStamp + "_";
         File storageDir = Environment.getExternalStorageDirectory();
 
-        File image = new File(storageDir + "/" + imageFileName + ".jpg");
-        image.createNewFile();
+        File file = new File(storageDir + "/" + fileName + ".jpg");
+        file.createNewFile();
 
-        // Save a file: path for use with ACTION_VIEW intents
-        mCurrentPhotoPath = "file:" + image.getAbsolutePath();
-        return image;
+        return file;
     }
 }

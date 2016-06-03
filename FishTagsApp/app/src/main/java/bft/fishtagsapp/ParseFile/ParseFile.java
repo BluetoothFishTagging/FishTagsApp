@@ -41,7 +41,6 @@ public class ParseFile {
     }
 
     /**
-     *
      * @return name of file where transmitted data is stored.
      * Currently hardcoded to message transmitted on 3/8/2016
      */
