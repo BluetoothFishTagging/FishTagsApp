@@ -122,7 +122,7 @@ public class Storage {
             try {
 
                 if(Environment.getExternalStorageDirectory().canWrite()){
-                    Log.i("write","canwrite");
+                    Log.i("write","can write");
                 }else{
                     Log.i("write","can't-write");
                 }

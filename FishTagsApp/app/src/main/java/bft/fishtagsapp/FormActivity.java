@@ -23,7 +23,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 
-import bft.fishtagsapp.Camera.Camera;
 import bft.fishtagsapp.GPS.GPS;
 import bft.fishtagsapp.ParseFile.ParseFile;
 
@@ -40,10 +39,13 @@ public class FormActivity extends AppCompatActivity {
         // Auto-fill in data from the latest tag file
         fillInInfoFromFile(fileName);
 
-
     }
 
     protected void fillInInfoFromFile(String fileName){
+        fillInInfoFromFile();
+    }
+
+    protected void fillInInfoFromFile(){
         /* Call Parse File to return all of the entries in the file.
             ParseFile handles all of the storage stuff so that FormActivity only fills in the UI
          */
@@ -79,6 +81,7 @@ public class FormActivity extends AppCompatActivity {
         }
     }
 
+    //TODO: Create function that collects all of the information from the boxes into a Hashmap to be able to pass it on
     protected HashMap<String, String> getFormMap(){
         GridView my_gridView = (GridView)findViewById(R.id.my_grid_view);
         for (int i = 0; i < my_gridView.getChildCount(); i++){
@@ -88,6 +91,7 @@ public class FormActivity extends AppCompatActivity {
         return null;
     }
 
+    //TODO: pass along hashmap of Values
     public void submitForm(View view){
         Intent intent_result = new Intent();
         //intent_result.putExtra("map", getFormMap());
@@ -113,7 +117,7 @@ public class FormActivity extends AppCompatActivity {
             // Create the File where the photo should go
             File photoFile = null;
             try {
-                photoFile = createImageFile();
+                photoFile = createFile("JPEG", ".jpg");
                 photoUri = Uri.fromFile(photoFile);
 //                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
 //                        Uri.fromFile(photoFile));
@@ -176,21 +180,15 @@ public class FormActivity extends AppCompatActivity {
         else return k;
     }
 
-
-    String mCurrentPhotoPath;
-
-    private File createImageFile() throws IOException {
+    private File createFile(String extension, String dotExtension) throws IOException {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
+        String fileName = extension + "_" + timeStamp + "_";
         File storageDir = Environment.getExternalStorageDirectory();
 
-        File image = new File(storageDir + "/" + imageFileName + ".jpg");
-        image.createNewFile();
+        File file = new File(storageDir + "/" + fileName + dotExtension);
+        file.createNewFile();
 
-        // Save a file: path for use with ACTION_VIEW intents
-        mCurrentPhotoPath = "file:" + image.getAbsolutePath();
-        return image;
+        return file;
     }
-
 }
