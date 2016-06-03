@@ -55,7 +55,6 @@ public class Storage {
                 reportStorage.mkdirs();
             }
 
-
             //TODO : create subdirectory "report"
         }else{
 
@@ -222,7 +221,8 @@ public class Storage {
             if(!savedFile.exists()){
                 Boolean res = savedFile.getParentFile().mkdirs(); //makes parent directories
                 Log.i("mkdirs",res.toString());
-                savedFile.createNewFile();
+                res = savedFile.createNewFile();
+                Log.i("createFile",res.toString());
             }
 
             fWriter = new FileWriter(savedFile);
@@ -319,15 +319,14 @@ public class Storage {
 
         }
     }
+
     private Boolean deletePref(String Key){
         editor.remove(Key);
         return editor.commit();
     }
 
     public Boolean saveReport(HashMap<String,String> data){
-        //data.get("Stuff") == filename
         writeToFile("reports" + '/' + data.get("name"), data.toString());
-        //writeToFile("Recent", data.get("Stuff"));
         return true;
     }
 
@@ -338,6 +337,7 @@ public class Storage {
 
         return map;
     }
+
     private List<File> getListFiles(File parentDir) {
         ArrayList<File> inFiles = new ArrayList<File>();
         File[] files = parentDir.listFiles();
