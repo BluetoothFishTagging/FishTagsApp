@@ -55,7 +55,9 @@ public class FormActivity extends AppCompatActivity {
         Log.i("ENTRIES",entries.toString());
 
         for(String key : entries.keySet()){
-            // If key exists in textview, fill in corresponding text
+            // If key exists in textview, fill in corresponding text.
+            // It is assumed that all of IDs of the TextViews correspond
+            // to the keys of the entries.
             try {
                 int textID = getResources().getIdentifier(key,
                         "id", getPackageName());
@@ -126,7 +128,6 @@ public class FormActivity extends AppCompatActivity {
 //                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
 //                        Uri.fromFile(photoFile));
                 startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
-
             } catch (IOException ex) {
 
             }
