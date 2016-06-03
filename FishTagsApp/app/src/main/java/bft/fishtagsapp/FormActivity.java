@@ -93,9 +93,9 @@ public class FormActivity extends AppCompatActivity {
 
     //TODO: Create function that collects all of the information from the boxes into a Hashmap to be able to pass it on
     protected HashMap<String, String> getFormMap(){
-        RelativeLayout my_gridView = (RelativeLayout)findViewById(R.id.my_grid_view);
-        for (int i = 0; i < my_gridView.getChildCount(); i++){
-            View v = my_gridView.getChildAt(i);
+        RelativeLayout my_relView = (RelativeLayout)findViewById(R.id.my_rel_view);
+        for (int i = 0; i < my_relView.getChildCount(); i++){
+            View v = my_relView.getChildAt(i);
             // DO SOMETHING
         }
         return null;
