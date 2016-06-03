@@ -22,7 +22,8 @@ import bft.fishtagsapp.ParseFile.ParseFile;
 import bft.fishtagsapp.Storage.Storage;
 
 public class MainActivity extends AppCompatActivity {
-    Storage storage;
+    private Storage storage;
+    private FileObserver observer;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -38,25 +39,30 @@ public class MainActivity extends AppCompatActivity {
         //String BluetoothDir = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS).getPath() + "/bluetooth"; DOESN'T WORK
 
         final Handler handler = new Handler();
-        FileObserver observer = new FileObserver(DownloadDir) { //MAY NOT BE SO DEPENDABLE
+        observer = new FileObserver(DownloadDir) {
             @Override
+            //DETECTING BLUETOOTH TRANSFER
             public void onEvent(int event, final String fileName) {
                 Log.i("EVENT", String.valueOf(event));
                 if(event == CLOSE_WRITE){
-                    Log.i("fileName", fileName); // --> filename
+                    //when transfer (write operation) is complete...
+                    Log.i("fileName", fileName);
                     Log.i("EVENT", String.valueOf(event));
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(getApplicationContext(), fileName, Toast.LENGTH_SHORT).show();
-                            File file = new File(DownloadDir,fileName);
-                            HashMap<String, String> h =  ParseFile.getEntries(file);
+                            Toast.makeText(getApplicationContext(), fileName, Toast.LENGTH_SHORT).show(); //announce filename
+                            File file = new File(DownloadDir,fileName); //read from file
+                            HashMap<String, String> h =  ParseFile.getEntries(file); //parse file
 
-                            if (!h.isEmpty()){ // --> has content
+                            if (!h.isEmpty()){ //not an empty file, parsed content
                                 String timeStamp = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss").format(new Date().getTime());
-                                h.put("name", timeStamp + ".txt");//text file extension
+                                h.put("name", timeStamp + ".txt");//txt file extension
                                 Log.i("Parsed", h.toString());
-                                storage.saveReport(h);
+
+
+                                storage.saveReport(h);//save to report file
+                                // TODO: initiate saveReport under FormActivity
                             }
 
                         }
