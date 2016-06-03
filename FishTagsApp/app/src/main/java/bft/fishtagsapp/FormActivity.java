@@ -10,6 +10,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -43,6 +44,7 @@ public class FormActivity extends AppCompatActivity {
     }
 
     protected void fillInInfoFromFile(String fileName){
+        Log.i("FILENAME",fileName);
         fillInInfoFromFile(new File(fileName));
     }
 
@@ -54,6 +56,8 @@ public class FormActivity extends AppCompatActivity {
         if(entries == null){
             return;
         }
+        Log.i("ENTRIES",entries.toString());
+
         for(String key : entries.keySet()){
             // If key exists in textview, fill in corresponding text.
             // It is assumed that all of IDs of the TextViews correspond
