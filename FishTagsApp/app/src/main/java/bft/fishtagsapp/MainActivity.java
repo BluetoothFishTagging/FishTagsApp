@@ -52,7 +52,13 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void run() {
                             Toast.makeText(getApplicationContext(), fileName, Toast.LENGTH_SHORT).show(); //announce filename
+
+                            if(new File(fileName).length() > 0) // has content
+                                goToForm(DownloadDir + '/' + fileName);
+
+                            /*
                             File file = new File(DownloadDir,fileName); //read from file
+
                             HashMap<String, String> h =  ParseFile.getEntries(file); //parse file
 
                             if (!h.isEmpty()){ //not an empty file, parsed content
@@ -63,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
 
                                 storage.saveReport(h);//save to report file
                                 // TODO: initiate saveReport under FormActivity
-                            }
+                            }*/
 
                         }
                     });
@@ -119,9 +125,9 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    public void goToForm(View view){
+    public void goToForm(String fileName){
         Intent intent = new Intent(this, FormActivity.class);
-        intent.putExtra("fileName","fileName");
+        intent.putExtra("fileName",fileName);
         startActivityForResult(intent, SUBMIT_TAG);
     }
 }
