@@ -67,21 +67,6 @@ public class MainActivity extends AppCompatActivity {
                             //TODO : create fallback when there is no tag
                             //TODO : check is valid tag file
                             //goToForm(recent);
-                            /*
-                            File file = new File(DownloadDir,fileName); //read from file
-
-                            HashMap<String, String> h =  ParseFile.getEntries(file); //parse file
-
-                            if (!h.isEmpty()){ //not an empty file, parsed content
-                                String timeStamp = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss").format(new Date().getTime());
-                                h.put("name", timeStamp + ".txt");//txt file extension
-                                Log.i("Parsed", h.toString());
-
-
-                                storage.saveReport(h);//save to report file
-                                // TODO: initiate saveReport under FormActivity
-                            }*/
-
                         }
                     });
                 }

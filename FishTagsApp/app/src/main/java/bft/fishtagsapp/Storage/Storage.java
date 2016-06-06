@@ -24,6 +24,7 @@ import bft.fishtagsapp.MainActivity;
 /**
  * Created by jamiecho on 4/14/16.
  */
+
 public class Storage {
 
     private static final int READ_BLOCK_SIZE = 512;//Block Size for text File
@@ -41,31 +42,8 @@ public class Storage {
 
     private Context context;
 
-    public Storage(Context context, String name){
-        this.context=context;
+    public Storage(){
 
-        if(isSDCardPresent()){
-            Log.i("sdcard","present");
-            useSDCard = true;
-            fileStorage = new File(Environment.getExternalStorageDirectory(),name);
-            if(!fileStorage.exists()){
-                fileStorage.mkdirs();
-            }
-
-            File reportStorage = new File(fileStorage,"reports");
-            if(!reportStorage.exists()){
-                reportStorage.mkdirs();
-            }
-
-            //TODO : create subdirectory "report"
-        }else{
-
-            Log.i("sdcard","not present");
-            useSDCard = false;
-            prefStorage = context.getSharedPreferences(name, Context.MODE_PRIVATE);
-            editor = prefStorage.edit();
-            //alternatively, use SharedPreferences
-        }
     }
 
     public boolean isSDCardPresent() {
@@ -242,6 +220,7 @@ public class Storage {
             e.printStackTrace();
         }
     }
+
     private void writeToPref(String Key, String message){
         editor.putString(Key, message);
         editor.commit();
@@ -371,6 +350,33 @@ public class Storage {
         for (int i = 0; i < children.length; i++)
         {
             new File(fileStorage, children[i]).delete();
+        }
+    }
+
+    void register(Context context, String name){
+        this.context=context;
+
+        if(isSDCardPresent()){
+            Log.i("sdcard","present");
+            useSDCard = true;
+            fileStorage = new File(Environment.getExternalStorageDirectory(),name);
+            if(!fileStorage.exists()){
+                fileStorage.mkdirs();
+            }
+
+            File reportStorage = new File(fileStorage,"reports");
+            if(!reportStorage.exists()){
+                reportStorage.mkdirs();
+            }
+
+            //TODO : create subdirectory "report"
+        }else{
+
+            Log.i("sdcard","not present");
+            useSDCard = false;
+            prefStorage = context.getSharedPreferences(name, Context.MODE_PRIVATE);
+            editor = prefStorage.edit();
+            //alternatively, use SharedPreferences
         }
     }
 }

@@ -1,10 +1,12 @@
 package bft.fishtagsapp.Client;
 
+import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
@@ -16,7 +18,7 @@ import java.io.InputStream;
 /**
  * Created by jamiecho on 3/9/16.
  */
-public class Uploader {
+public class Uploader extends Service{
 
     Context context;
 
@@ -94,6 +96,41 @@ public class Uploader {
             //Log.i("RESPONSE", s);
             super.onPostExecute(s);
         }
+
+    }
+
+    @Override
+    public void onCreate() {
+
+    }
+
+    /** The service is starting, due to a call to startService() */
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        return mStartMode;
+    }
+
+    /** A client is binding to the service with bindService() */
+    @Override
+    public IBinder onBind(Intent intent) {
+        return mBinder;
+    }
+
+    /** Called when all clients have unbound with unbindService() */
+    @Override
+    public boolean onUnbind(Intent intent) {
+        return mAllowRebind;
+    }
+
+    /** Called when a client is binding to the service with bindService()*/
+    @Override
+    public void onRebind(Intent intent) {
+
+    }
+
+    /** Called when The service is no longer used and is being destroyed */
+    @Override
+    public void onDestroy() {
 
     }
 }
