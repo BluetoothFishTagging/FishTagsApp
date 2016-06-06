@@ -13,8 +13,6 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.GridLayout;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -99,9 +97,9 @@ public class FormActivity extends AppCompatActivity {
     protected HashMap<String, String> getFormMap(){
         HashMap<String,String> map = new HashMap<>();
 
-        GridLayout my_grid = (GridLayout)findViewById(R.id.my_grid_view);
-        for (int i = 0; i < my_grid.getChildCount(); i++){
-            View v = my_grid.getChildAt(i);
+        RelativeLayout my_relView = (RelativeLayout)findViewById(R.id.my_rel_view);
+        for (int i = 0; i < my_relView.getChildCount(); i++){
+            View v = my_relView.getChildAt(i);
             if (v instanceof EditText){
                 int id = v.getId();
 
