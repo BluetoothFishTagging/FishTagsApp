@@ -185,7 +185,7 @@ public class MainActivity extends AppCompatActivity {
         }catch(JSONException e) {
             e.printStackTrace();
         }
-        //TODO : pass other informations
+        //TODO : pass other information
     }
 
     public void goToForm(View v){

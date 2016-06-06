@@ -79,7 +79,7 @@ public class Storage {
 
     public Boolean save(String name, String data){
         if(useSDCard){
-            return saveToFile(name,data);
+            return saveToFile(name, data);
         }else{
             //return saveToPref(name,data);
         }
@@ -283,6 +283,7 @@ public class Storage {
         }
 
     }
+
     private String readFromPref(String name){
         return prefStorage.getString(name,null);
     }
