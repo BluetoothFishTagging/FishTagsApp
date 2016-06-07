@@ -129,8 +129,8 @@ public class MainActivity extends AppCompatActivity {
                     //submit directly
                 } else {
                     Log.i("WIFI", "NOT CONNECTED");
-                    storage.saveReport(map);
-                    storage.save("pending.txt", fileName);
+                    Storage.saveReport(map);
+                    Storage.save("pending.txt", fileName);
                 }
 
                 Toast.makeText(getApplicationContext(), "Thank you for submitting a tag!", Toast.LENGTH_SHORT).show();
