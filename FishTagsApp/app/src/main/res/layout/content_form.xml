@@ -21,188 +21,191 @@
         android:layout_height="match_parent">
 
         <TextView
+            android:id="@+id/formTitle"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:background="@color/seaColor"
             android:clickable="false"
             android:text="Fish Tag Submission Form"
             android:textAlignment="center"
-            android:id="@+id/formTitle"
-            android:background="@color/accent_material_light"
-            android:layout_alignParentEnd="true"
+            android:textColor="@color/whiteColor"
             android:textSize="30dp"
-            android:textColor="@color/abc_primary_text_material_dark"
-            android:textStyle="bold"/>
+            android:textStyle="bold" />
 
         <TextView
+            android:id="@+id/Name0"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/formTitle"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="15dp"
             android:text="Name"
             android:textSize="24dp"
-            android:textStyle="bold"
-            android:id="@+id/Name0"
-            android:layout_marginStart="10dp"
-            android:layout_below="@+id/formTitle"
-            android:layout_alignParentStart="true"
-            android:layout_marginTop="15dp"/>
+            android:textStyle="bold" />
 
         <EditText
             android:id="@+id/Name"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/Name0"
+            android:layout_below="@+id/formTitle"
+            android:layout_marginStart="60dp"
+            android:layout_toRightOf="@+id/Name0"
             android:cursorVisible="false"
             android:text="Han Solo"
-            android:textSize="20dp"
-            android:layout_below="@+id/formTitle"
-            android:layout_alignBaseline="@+id/Name0"
-            android:layout_toRightOf="@+id/Name0"
-            android:layout_marginStart="60dp"
-            android:textAlignment="center" />
+            android:textAlignment="center"
+            android:textSize="20dp" />
 
         <TextView
             android:id="@+id/CountryID0"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/Name0"
+            android:layout_below="@+id/Name0"
+            android:layout_marginTop="15dp"
             android:text="CountryID"
             android:textSize="24dp"
-            android:textStyle="bold"
-            android:layout_below="@+id/Name0"
-            android:layout_alignStart="@+id/Name0"
-            android:layout_marginTop="15dp"/>
+            android:textStyle="bold" />
 
         <EditText
             android:id="@+id/CountryID"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text=""
-            android:layout_below="@+id/Name"
+            android:layout_alignBaseline="@+id/CountryID0"
             android:layout_alignStart="@+id/Name"
-            android:layout_alignBaseline="@+id/CountryID0" />
+            android:layout_below="@+id/Name"
+            android:text="" />
 
         <TextView
             android:id="@+id/NationalID0"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/CountryID0"
+            android:layout_below="@+id/CountryID0"
+            android:layout_marginTop="15dp"
             android:text="Tag ID"
             android:textSize="24dp"
-            android:textStyle="bold"
-            android:layout_below="@+id/CountryID0"
-            android:layout_alignStart="@+id/CountryID0"
-            android:layout_marginTop="15dp"/>
+            android:textStyle="bold" />
 
         <EditText
             android:id="@+id/NationalID"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text=""
-            android:layout_below="@+id/CountryID"
+            android:layout_alignBaseline="@+id/NationalID0"
             android:layout_alignStart="@+id/CountryID"
-            android:layout_alignBaseline="@+id/NationalID0"/>
+            android:layout_below="@+id/CountryID"
+            android:text="" />
 
         <TextView
             android:id="@+id/Time0"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/NationalID0"
+            android:layout_below="@+id/NationalID0"
+            android:layout_marginTop="15dp"
             android:text="Time"
             android:textSize="24dp"
-            android:textStyle="bold"
-            android:layout_below="@+id/NationalID0"
-            android:layout_alignStart="@+id/NationalID0"
-            android:layout_marginTop="15dp" />
+            android:textStyle="bold" />
 
         <EditText
             android:id="@+id/Time"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/NationalID"
+            android:layout_alignBaseline="@+id/Time0"
             android:layout_alignStart="@+id/NationalID"
-            android:layout_alignBaseline="@+id/Time0"/>
+            android:layout_below="@+id/NationalID" />
 
         <TextView
             android:id="@+id/Location0"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/Time0"
+            android:layout_below="@+id/Time0"
+            android:layout_marginTop="15dp"
             android:text="Location"
             android:textSize="24dp"
-            android:textStyle="bold"
-            android:layout_below="@+id/Time0"
-            android:layout_alignStart="@+id/Time0"
-            android:layout_marginTop="15dp"/>
+            android:textStyle="bold" />
 
         <EditText
             android:id="@+id/Location"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="41.9981° N, 91.1415° W"
-            android:textSize="16dp"
-            android:layout_below="@+id/Time"
+            android:layout_alignBaseline="@+id/Location0"
             android:layout_alignStart="@+id/Time"
-            android:layout_alignBaseline="@+id/Location0" />
+            android:layout_below="@+id/Time"
+            android:text="41.9981° N, 91.1415° W"
+            android:textSize="16dp" />
 
 
         <TextView
             android:id="@+id/Notes0"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/Location0"
+            android:layout_below="@+id/Location0"
+            android:layout_marginTop="15dp"
             android:text="Notes"
             android:textSize="24dp"
-            android:textStyle="bold"
-            android:layout_below="@+id/Location0"
-            android:layout_alignStart="@+id/Location0"
-            android:layout_marginTop="15dp"/>
+            android:textStyle="bold" />
 
         <EditText
             android:id="@+id/Notes"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:hint="gear used, fish hooked removed (y/n), comments"
-            android:textSize="12dp"
-            android:layout_below="@+id/Location"
+            android:layout_alignBaseline="@+id/Notes0"
             android:layout_alignStart="@+id/Location"
-            android:layout_alignBaseline="@+id/Notes0"/>
+            android:layout_below="@+id/Location"
+            android:hint="gear used, fish hooked removed (y/n), comments"
+            android:textSize="12dp" />
 
         <TextView
             android:id="@+id/FishPhoto0"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/Notes0"
+            android:layout_below="@+id/Notes0"
+            android:layout_marginTop="15dp"
             android:text="Photo"
             android:textSize="24dp"
-            android:textStyle="bold"
-            android:layout_below="@+id/Notes0"
-            android:layout_alignStart="@+id/Notes0"
-            android:layout_marginTop="15dp"/>
+            android:textStyle="bold" />
 
         <ImageView
             android:id="@+id/FishPhoto"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:src="@drawable/placeholder"
+            android:layout_alignEnd="@+id/Notes"
             android:layout_alignTop="@+id/PhotoButton"
-            android:layout_alignEnd="@+id/Notes" />
+            android:src="@drawable/placeholder" />
 
         <Button
             android:id="@+id/PhotoButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/Notes"
+            android:layout_centerHorizontal="true"
+            android:layout_marginRight="15dp"
+            android:background="@color/seaColor"
             android:onClick="goToCamera"
             android:text="Take Photo"
-            android:layout_below="@+id/Notes0"
-            android:layout_toStartOf="@+id/FishPhoto"
-            android:layout_marginRight="15dp"
-            android:layout_marginTop="15dp"/>
+            android:textColor="@color/whiteColor"
+            android:textSize="20dp"
+            android:textStyle="bold" />
 
         <Button
             android:id="@+id/SubmitForm"
             android:layout_width="140dp"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/FishPhoto"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="15dp"
+            android:background="@color/seaColor"
             android:onClick="submitForm"
             android:text="Submit"
+            android:textColor="@color/whiteColor"
             android:textSize="30dp"
-            android:textStyle="bold"
-            android:layout_below="@+id/FishPhoto"
-            android:layout_marginTop="15dp"
-            android:layout_centerHorizontal="true"
-            android:textColor="@color/abc_primary_text_material_dark"
-            android:background="@color/accent_material_light" />
+            android:textStyle="bold" />
 
     </RelativeLayout>
 </ScrollView>

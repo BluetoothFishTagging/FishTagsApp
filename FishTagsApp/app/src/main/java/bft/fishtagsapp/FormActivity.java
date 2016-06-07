@@ -38,52 +38,51 @@ public class FormActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         String fileName = getIntent().getStringExtra("fileName");
-        // Auto-fill in data from the latest tag file
+        /* Auto-fill in data from the latest tag file */
         fillInInfoFromFile(fileName);
 
     }
 
-    protected void fillInInfoFromFile(String fileName){
-        if(fileName != null){
-            Log.i("FILENAME",fileName);
+    protected void fillInInfoFromFile(String fileName) {
+        if (fileName != null) {
+            Log.i("FILENAME", fileName);
             fillInInfoFromFile(new File(fileName));
         }
     }
 
-    protected void fillInInfoFromFile(File file){
+    protected void fillInInfoFromFile(File file) {
         /* Call Parse File to return all of the entries in the file.
             ParseFile handles all of the storage stuff so that FormActivity only fills in the UI
          */
         HashMap<String, String> entries = ParseFile.getEntries(file);
-        if(entries == null){
+        if (entries == null) {
             return;
         }
-        Log.i("ENTRIES",entries.toString());
+        Log.i("ENTRIES", entries.toString());
 
-        for(String key : entries.keySet()){
-            // If key exists in textview, fill in corresponding text.
-            // It is assumed that all of IDs of the TextViews correspond
-            // to the keys of the entries.
+        for (String key : entries.keySet()) {
+            /* If key exists in textview, fill in corresponding text.
+             It is assumed that all of IDs of the TextViews correspond
+             to the keys of the entries. */
             try {
                 int textID = getResources().getIdentifier(key,
                         "id", getPackageName());
-                TextView text = (TextView)findViewById(textID);
+                TextView text = (TextView) findViewById(textID);
                 text.setText(entries.get(key));
-            }
-            catch (Exception e){
+            } catch (Exception e) {
                 // Do error handling if the id is not found
             }
         }
 
-        //Get Time
+        /*Get Time*/
         String time = new SimpleDateFormat("yyyyMMdd HH:mm:ss").format(new Date());
         TextView timeText = (TextView) findViewById(R.id.Time);
         timeText.setText(time);
 
-        //Get Location
+        /*Get Location*/
         GPS gps = new GPS(this);
         Location location = gps.getGPS();
-        if(location != null) {
+        if (location != null) {
             double latitude = location.getLatitude();
             double longitude = location.getLongitude();
             String s = String.format("LAT:%f,LONG:%f", latitude, longitude);
@@ -94,39 +93,33 @@ public class FormActivity extends AppCompatActivity {
     }
 
     //TODO: Create function that collects all of the information from the boxes into a Hashmap to be able to pass it on
-    protected HashMap<String, String> getFormMap(){
-        HashMap<String,String> map = new HashMap<>();
+    protected HashMap<String, String> getFormMap() {
+        HashMap<String, String> map = new HashMap<>();
 
-        RelativeLayout my_relView = (RelativeLayout)findViewById(R.id.my_rel_view);
-        for (int i = 0; i < my_relView.getChildCount(); i++){
+        RelativeLayout my_relView = (RelativeLayout) findViewById(R.id.my_rel_view);
+        for (int i = 0; i < my_relView.getChildCount(); i++) {
             View v = my_relView.getChildAt(i);
-            if (v instanceof EditText){
-                int id = v.getId();
+            if (v instanceof EditText) {
+                /*
+                The String id of the EditText will be used as the key for the entry.
+                The TextView that corresponds to each EditText has the same String id + 0 at the end so if necessary it can be used to find the text id.
+                 */
+                String textId = v.getResources().getResourceEntryName(v.getId());
+                String value = ((EditText) v).getText().toString();
+                map.put(textId, value);
 
-                if(id != 0 && id!=0xffffffff){
-                    String key = v.getResources().getResourceEntryName(id);
-                    String value = ((EditText)v).getText().toString();
-
-                    map.put(key,value);
-                }
-
-            }else if (v instanceof ImageView){
-                Uri imageUri = (Uri)((ImageView)v).getTag();
-                map.put("photo",imageUri.toString());
+            } else if (v instanceof ImageView) {
+                Uri imageUri = (Uri) ((ImageView) v).getTag();
+                map.put("Photo", imageUri.toString());
             }
-		}
+        }
 
-        /*RelativeLayout my_relView = (RelativeLayout)findViewById(R.id.my_rel_view);
-        for (int i = 0; i < my_relView.getChildCount(); i++){
-            View v = my_relView.getChildAt(i);
-            // DO SOMETHING
-        }*/
         return map;
     }
 
     //TODO: pass along hashmap of Values
-    public void submitForm(View view){
-        Log.i("FORM","SUBMITTING");
+    public void submitForm(View view) {
+        Log.i("FORM", "SUBMITTING");
         Intent intent_result = new Intent();
         intent_result.putExtra("map", getFormMap());
         setResult(RESULT_OK, intent_result);
@@ -146,9 +139,9 @@ public class FormActivity extends AppCompatActivity {
 
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        // Ensure that there's a camera activity to handle the intent
+        /* Ensure that there's a camera activity to handle the intent */
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            // Create the File where the photo should go
+            /* Create the File where the photo should go */
             File photoFile = null;
             try {
                 photoFile = createFile(Environment.getExternalStorageDirectory(), "JPEG", ".jpg");
@@ -163,31 +156,30 @@ public class FormActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK)
-        {
+        if (resultCode == RESULT_OK) {
             Uri imageUri = data.getData();
-            try{
+            try {
                 Bitmap bitmap = getThumbnail(imageUri);
-                ImageView myImageView = (ImageView)findViewById(R.id.FishPhoto);
+                ImageView myImageView = (ImageView) findViewById(R.id.FishPhoto);
                 myImageView.setImageBitmap(bitmap);
                 myImageView.setTag(imageUri);
-            } catch(Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
     }
 
     final int THUMBNAIL_SIZE = 256;
-    public Bitmap getThumbnail(Uri uri) throws FileNotFoundException, IOException{
+
+    public Bitmap getThumbnail(Uri uri) throws FileNotFoundException, IOException {
         InputStream input = this.getContentResolver().openInputStream(uri);
 
         BitmapFactory.Options onlyBoundsOptions = new BitmapFactory.Options();
         onlyBoundsOptions.inJustDecodeBounds = true;
-        onlyBoundsOptions.inDither=true;//optional
-        onlyBoundsOptions.inPreferredConfig=Bitmap.Config.ARGB_8888;//optional
+        onlyBoundsOptions.inDither = true;//optional
+        onlyBoundsOptions.inPreferredConfig = Bitmap.Config.ARGB_8888;//optional
         BitmapFactory.decodeStream(input, null, onlyBoundsOptions);
         input.close();
 
@@ -200,22 +192,22 @@ public class FormActivity extends AppCompatActivity {
 
         BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
         bitmapOptions.inSampleSize = getPowerOfTwoForSampleRatio(ratio);
-        bitmapOptions.inDither=true;//optional
-        bitmapOptions.inPreferredConfig=Bitmap.Config.ARGB_8888;//optional
+        bitmapOptions.inDither = true;//optional
+        bitmapOptions.inPreferredConfig = Bitmap.Config.ARGB_8888;//optional
         input = this.getContentResolver().openInputStream(uri);
         Bitmap bitmap = BitmapFactory.decodeStream(input, null, bitmapOptions);
         input.close();
         return bitmap;
     }
 
-    private static int getPowerOfTwoForSampleRatio(double ratio){
-        int k = Integer.highestOneBit((int)Math.floor(ratio));
-        if(k==0) return 1;
+    private static int getPowerOfTwoForSampleRatio(double ratio) {
+        int k = Integer.highestOneBit((int) Math.floor(ratio));
+        if (k == 0) return 1;
         else return k;
     }
 
     private File createFile(File storageDir, String extension, String dotExtension) throws IOException {
-        // Create a unique file name
+        /* Create a unique file name */
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String fileName = extension + "_" + timeStamp + "_";
 

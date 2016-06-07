@@ -19,8 +19,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import bft.fishtagsapp.MainActivity;
-
 /**
  * Created by jamiecho on 4/14/16.
  */
@@ -38,7 +36,6 @@ public final class Storage {
     //Preferences to Store Data when SDCard is not present
     private static SharedPreferences prefStorage;
     private static SharedPreferences.Editor editor;
-
     private static Context context;
 
     private Storage(){
@@ -47,7 +44,7 @@ public final class Storage {
 
     public static boolean isSDCardPresent() {
         //can be simpler but leaving it this way to be explicit
-        if (Environment.getExternalStorageState().equals(
+            if (Environment.getExternalStorageState().equals(
                 Environment.MEDIA_MOUNTED)) {
             return true;
         }
@@ -57,7 +54,7 @@ public final class Storage {
     public static Boolean save(String name, String data){
         if(useSDCard){
             return saveToFile(name, data);
-        }else{
+        } else {
             //return saveToPref(name,data);
         }
         return false;
@@ -66,7 +63,7 @@ public final class Storage {
     public static String read(String name){
         if(useSDCard){
             return readFromFile(name);
-        }else{
+        } else {
             return readFromPref(name);
         }
     }
@@ -74,7 +71,7 @@ public final class Storage {
     public static Boolean delete(String name){
         if(useSDCard){
             return deleteFile(name);
-        }else{
+        } else {
             return deletePref(name);
         }
     }
@@ -86,45 +83,43 @@ public final class Storage {
             return false;
         else {
 
-                String state = Environment.getExternalStorageState();
-                if (Environment.MEDIA_MOUNTED.equals(state)) {
-                    Log.d("Test", "sdcard mounted and writable");
-                }
-                else if (Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
-                    Log.d("Test", "sdcard mounted readonly");
-                }
-                else {
-                    Log.d("Test", "sdcard state: " + state);
-                }
+            String state = Environment.getExternalStorageState();
+            if (Environment.MEDIA_MOUNTED.equals(state)) {
+                Log.d("Test", "sdcard mounted and writable");
+            } else if (Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
+                Log.d("Test", "sdcard mounted readonly");
+            } else {
+                Log.d("Test", "sdcard state: " + state);
+            }
 
             try {
 
-                if(Environment.getExternalStorageDirectory().canWrite()){
-                    Log.i("write","can write");
-                }else{
-                    Log.i("write","can't-write");
+                if (Environment.getExternalStorageDirectory().canWrite()) {
+                    Log.i("write", "can write");
+                } else {
+                    Log.i("write", "can't-write");
                 }
-                //Create Main Directory if not present
-                if (!fileStorage.exists()){
-                    Log.i("fileStorage","Nonexistent");
+                /*Create Main Directory if not present*/
+                if (!fileStorage.exists()) {
+                    Log.i("fileStorage", "Nonexistent");
                     Boolean res = fileStorage.mkdirs();
-                    Log.i("fileStorageMkdirs",res.toString());
+                    Log.i("fileStorageMkdirs", res.toString());
                 }
 
-                //Make File Name under main Directory
+                /*Make File Name under main Directory*/
                 File savedFile = new File(fileStorage, FileName);
 
-                //If Saved File exists then check if its size is greater than 0
+                /*If Saved File exists then check if its size is greater than 0*/
                 if (savedFile.exists()) {
                     if (savedFile.length() > 0)
-                        appendOrOverrideSavedFile(FileName, message);//if file present then show alert for appending and overriding
+                        appendOrOverrideSavedFile(FileName, message);/*if file present then show alert for appending and overriding*/
                     else {
-                        //else save data into file
+                        /*else save data into file*/
                         writeToFile(FileName, message);
                         return true;
                     }
                 } else {
-                    //If Saved file doesn't exists then create new file and save file
+                    /*If Saved file doesn't exists then create new file and save file*/
                     writeToFile(FileName, message);
                     return true;
                 }
@@ -143,12 +138,12 @@ public final class Storage {
     private static void appendOrOverrideSavedFile(final String FileName, final String message) {
         File savedFile = new File(fileStorage.getAbsolutePath() + "/" + FileName);
 
-        final String savedMessage = readFromFile(FileName);//Read saved message
+        final String savedMessage = readFromFile(FileName);/*Read saved message*/
 
-        //Check if saved message not null
+        /*Check if saved message not null*/
         if (savedMessage != null && savedMessage.length() > 0 && !savedMessage.equals("")) {
 
-            //If not null then show alert
+            /*If not null then show alert*/
 
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
@@ -157,7 +152,7 @@ public final class Storage {
             builder.setPositiveButton("OVERRIDE", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
-                    //If Override is selected then textfile data is overrided
+                    /*If Override is selected then textfile data is overrided*/
                     writeToFile(FileName, message);
                     Toast.makeText(context, "File Overrided Successfully!",
                             Toast.LENGTH_SHORT).show();
@@ -166,7 +161,7 @@ public final class Storage {
             builder.setNegativeButton("APPEND", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
-                    //If Append is selected then textfile data is appended with new data
+                    /*If Append is selected then textfile data is appended with new data*/
                     writeToFile(FileName, savedMessage + "\n\n" + message);
                     Toast.makeText(context, "File Appended Successfully!",
                             Toast.LENGTH_SHORT).show();
@@ -185,7 +180,7 @@ public final class Storage {
             ad.show();
 
         } else
-            //If there is nothing to read from saved fie then simply add data to file
+            /*If there is nothing to read from saved fie then simply add data to file*/
             writeToFile(FileName, message);
     }
 
@@ -194,24 +189,24 @@ public final class Storage {
     private static void writeToFile(String FileName, String messageBody) {
         try {
             File savedFile = new File(fileStorage.getAbsolutePath() + "/" + FileName);
-            Log.i("dir",savedFile.getAbsolutePath());
+            Log.i("dir", savedFile.getAbsolutePath());
             FileWriter fWriter;
 
-            if(!savedFile.exists()){
-                Boolean res = savedFile.getParentFile().mkdirs(); //makes parent directories
-                Log.i("mkdirs",res.toString());
+            if (!savedFile.exists()) {
+                Boolean res = savedFile.getParentFile().mkdirs(); /*makes parent directories*/
+                Log.i("mkdirs", res.toString());
                 res = savedFile.createNewFile();
-                Log.i("createFile",res.toString());
+                Log.i("createFile", res.toString());
             }
 
             fWriter = new FileWriter(savedFile);
 
-            //File writer is used for writing data
-            fWriter.write(messageBody);//write data
-            fWriter.flush();//flush writer
-            fWriter.close();//close writer
+            /*File writer is used for writing data*/
+            fWriter.write(messageBody);/*write data*/
+            fWriter.flush();/*flush writer*/
+            fWriter.close();/*close writer*/
 
-            //Get Current Date and put it in Shared Preferences
+            /*Get Current Date and put it in Shared Preferences*/
             SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss");
             String currentDateandTime = sdf.format(new Date());
 
@@ -228,29 +223,27 @@ public final class Storage {
 
     //Method that will return saved text file data after reading
     private static String readFromFile(String FileName) {
-
-        //First check if main directory is present or not
+        /*First check if main directory is present or not*/
         if (!fileStorage.exists()) {
             return null;
-        }
-        else {
-            //Then check if text file is present or not
+        } else {
+            /*Then check if text file is present or not*/
             File savedFile = new File(fileStorage.getAbsolutePath() + "/" + FileName);
             if (!savedFile.exists())
                 return null;
             else {
-                //Finally read data using FileReader
+                /*Finally read data using FileReader*/
                 try {
                     FileReader rdr = new FileReader(fileStorage.getAbsolutePath() + "/" + FileName);
 
-                    char[] inputBuffer = new char[READ_BLOCK_SIZE];//get Block size as buffer
+                    char[] inputBuffer = new char[READ_BLOCK_SIZE];/*get Block size as buffer*/
                     String savedData = "";
                     int charRead = rdr.read(inputBuffer);
-                    //Read all data one by one by using loop and add it to string created above
+                    /*Read all data one by one by using loop and add it to string created above*/
                     for (int k = 0; k < charRead; k++) {
                         savedData += inputBuffer[k];
                     }
-                    return savedData;//return saved data
+                    return savedData;/*return saved data*/
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -285,16 +278,16 @@ public final class Storage {
     //Delete text file method
     private static Boolean deleteFile(String FileName) {
 
-        //Check if main directory is present or not
+        /*Check if main directory is present or not*/
         if (!fileStorage.exists())
             return false;
         else {
-            //Now Check if text file is present or not
+            /*Now Check if text file is present or not*/
             File savedFile = new File(fileStorage.getAbsolutePath() + "/" + FileName);
             if (!savedFile.exists())
                 return false;
             else {
-                savedFile.delete();//If text file is present then delete file
+                savedFile.delete();/*If text file is present then delete file*/
                 return true;
             }
 
@@ -314,9 +307,7 @@ public final class Storage {
 
     public static HashMap<String,String> parseReport(File f){
         HashMap<String,String> map = new HashMap<>();
-
         // TODO: parse report from file
-
         return map;
     }
 
@@ -327,7 +318,7 @@ public final class Storage {
             if (file.isDirectory()) {
                 inFiles.addAll(getListFiles(file));
             } else {
-                if(file.getName().endsWith(".csv")){
+                if (file.getName().endsWith(".csv")) {
                     inFiles.add(file);
                 }
             }
@@ -338,7 +329,7 @@ public final class Storage {
     public static ArrayList<HashMap<String,String>> getReports(){
         ArrayList<HashMap<String,String>> list = new ArrayList<>();
 
-        for(File file : getListFiles(fileStorage)){
+        for (File file : getListFiles(fileStorage)) {
             list.add(parseReport(file));
         }
 
@@ -347,8 +338,7 @@ public final class Storage {
     public static void removeReports(){
         //remove all reports
         String[] children = fileStorage.list();
-        for (int i = 0; i < children.length; i++)
-        {
+        for (int i = 0; i < children.length; i++) {
             new File(fileStorage, children[i]).delete();
         }
     }

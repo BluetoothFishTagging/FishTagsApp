@@ -29,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
     private FileObserver observer;
     private Uploader uploader;
     private String recent; //recent file
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -44,11 +45,11 @@ public class MainActivity extends AppCompatActivity {
         final Handler handler = new Handler();
         observer = new FileObserver(DownloadDir) {
             @Override
-            //DETECTING BLUETOOTH TRANSFER
+            /*DETECTING BLUETOOTH TRANSFER*/
             public void onEvent(int event, final String fileName) {
                 Log.i("EVENT", String.valueOf(event));
-                if(event == CLOSE_WRITE){
-                    //when transfer (write operation) is complete...
+                if (event == CLOSE_WRITE) {
+                    /*when transfer (write operation) is complete...*/
                     Log.i("fileName", fileName);
                     Log.i("EVENT", String.valueOf(event));
                     handler.post(new Runnable() {
@@ -75,16 +76,16 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
+        /* Inflate the menu; this adds items to the action bar if it is present.*/
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+        /* Handle action bar item clicks here. The action bar will
+        automatically handle clicks on the Home/Up button, so long
+        as you specify a parent activity in AndroidManifest.xml. */
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
@@ -99,7 +100,6 @@ public class MainActivity extends AppCompatActivity {
     static final int SUBMIT_TAG = 1;
 
     /**
-     *
      * When FormActivity is over, MainActivity routes the data received from it (dictionary of values and Uri s)
      * to Storage, telling it to start trying to upload the info to the database.
      *
@@ -111,26 +111,26 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         super.onActivityResult(requestCode, resultCode, data);
-        Log.i("resultCode",String.valueOf(resultCode));
-        Log.i("requestCode",String.valueOf(requestCode));
+        Log.i("resultCode", String.valueOf(resultCode));
+        Log.i("requestCode", String.valueOf(requestCode));
 
-        if(requestCode == SUBMIT_TAG){
-            if (resultCode == RESULT_OK){
+        if (requestCode == SUBMIT_TAG) {
+            if (resultCode == RESULT_OK) {
                 //TODO: Route to Storage
-                HashMap<String, String> map = (HashMap<String, String>)data.getSerializableExtra("map");
+                HashMap<String, String> map = (HashMap<String, String>) data.getSerializableExtra("map");
 
                 String timeStamp = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss").format(new Date().getTime());
                 String fileName = timeStamp + ".txt";
                 map.put("name", fileName);//txt file extension
 
-                if(WifiDetector.isConnected()){
-                    Log.i("WIFI","CONNECTED");
+                if (WifiDetector.isConnected()) {
+                    Log.i("WIFI", "CONNECTED");
                     submitReport(new JSONObject(map));
                     //submit directly
-                }else{
-                    Log.i("WIFI","NOT CONNECTED");
-                    Storage.saveReport(map);
-                    Storage.save("pending.txt",fileName);
+                } else {
+                    Log.i("WIFI", "NOT CONNECTED");
+                    storage.saveReport(map);
+                    storage.save("pending.txt", fileName);
                 }
 
                 Toast.makeText(getApplicationContext(), "Thank you for submitting a tag!", Toast.LENGTH_SHORT).show();
@@ -138,11 +138,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void submitReports(){
+    public void submitReports() {
         //check reports pending upload...
         //if(pending != null) ...
 
-        //Indicate main activity that wifi has been connected
+        /*Indicate main activity that wifi has been connected*/
 
         String fileName = Storage.read("pending.txt");
         //TODO : protect against multiple pending files
@@ -151,30 +151,32 @@ public class MainActivity extends AppCompatActivity {
             try{
                 JSONObject content = new JSONObject(fileContent);
                 submitReport(content);
-            }catch(JSONException e) {
+            } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
 
     }
-    public void submitReport(JSONObject content){
-        Log.i("SUBMITTING","REPORT");
-        try{
 
-            Uri imageuri = Uri.parse((String)content.get("photo"));
-            uploader.send(imageuri,content.toString(),"PARAM2");
-        }catch(JSONException e) {
+    public void submitReport(JSONObject content) {
+        Log.i("SUBMITTING", "REPORT");
+        try {
+
+            Uri imageuri = Uri.parse((String) content.get("photo"));
+            uploader.send(imageuri, content.toString(), "PARAM2");
+        } catch (JSONException e) {
             e.printStackTrace();
         }
         //TODO : pass other information
     }
 
-    public void goToForm(View v){
+    public void goToForm(View v) {
         goToForm(recent);
     }
-    public void goToForm(String fileName){
+
+    public void goToForm(String fileName) {
         Intent intent = new Intent(this, FormActivity.class);
-        intent.putExtra("fileName",fileName);
+        intent.putExtra("fileName", fileName);
         startActivityForResult(intent, SUBMIT_TAG);
     }
 }
