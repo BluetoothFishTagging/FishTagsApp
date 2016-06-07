@@ -25,48 +25,4 @@
         android:text="Scoreboard"
         android:layout_below="@+id/button"
         android:layout_alignParentStart="true" />
-    <!--<Button-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:text="Parse File"-->
-        <!--android:onClick="parseFile"-->
-        <!--android:layout_alignBaseline="@+id/testBtn"-->
-        <!--android:layout_alignBottom="@+id/testBtn"-->
-        <!--android:layout_alignParentStart="true" />-->
-
-    <!--<Button-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:text="GPS"-->
-        <!--android:id="@+id/GPS_GPSBtn"-->
-        <!--android:layout_marginTop="79dp"-->
-        <!--android:layout_below="@+id/textView"-->
-        <!--android:layout_alignStart="@+id/testBtn" />-->
-
-    <!--<Button-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:text="TEST"-->
-        <!--android:id="@+id/testBtn"-->
-        <!--android:layout_below="@+id/GPS_GPSBtn"-->
-        <!--android:layout_alignStart="@+id/editLinkageBtn"-->
-        <!--android:layout_marginStart="72dp" />-->
-
-    <!--<Button-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:text="Edit Linkage"-->
-        <!--android:id="@+id/editLinkageBtn"-->
-        <!--android:layout_below="@+id/testBtn"-->
-        <!--android:layout_centerHorizontal="true"-->
-        <!--android:layout_marginTop="28dp" />-->
-
-    <!--<Button-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:text="Storage"-->
-        <!--android:id="@+id/storageBtn"-->
-        <!--android:layout_below="@+id/editLinkageBtn"-->
-        <!--android:layout_alignStart="@+id/editLinkageBtn"-->
-        <!--android:layout_marginTop="71dp" />-->
 </RelativeLayout>
