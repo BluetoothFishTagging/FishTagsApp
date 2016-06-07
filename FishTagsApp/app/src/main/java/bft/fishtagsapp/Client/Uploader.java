@@ -6,6 +6,7 @@ import android.content.Intent;
 
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Binder;
 import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -20,6 +21,14 @@ import java.io.InputStream;
  */
 public class Uploader extends Service{
 
+    public class UploadBinder extends Binder {
+        Uploader getService() {
+            return Uploader.this;
+        }
+    }
+
+    private final IBinder mBinder = new UploadBinder();
+    private Boolean mAllowRebind = false;
     Context context;
 
     //placeholder url for server domain
@@ -104,10 +113,13 @@ public class Uploader extends Service{
 
     }
 
+
+    //SERVICE-RELATED IMPLEMENTATION
+
     /** The service is starting, due to a call to startService() */
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        return mStartMode;
+        return START_REDELIVER_INTENT;
     }
 
     /** A client is binding to the service with bindService() */

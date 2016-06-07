@@ -17,18 +17,15 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 
 import bft.fishtagsapp.Client.Uploader;
-import bft.fishtagsapp.ParseFile.ParseFile;
 import bft.fishtagsapp.Storage.Storage;
 import bft.fishtagsapp.Wifi.WifiDetector;
 
 public class MainActivity extends AppCompatActivity {
-    private Storage storage;
     private FileObserver observer;
     private Uploader uploader;
     private String recent; //recent file
@@ -39,8 +36,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        storage = new Storage(getApplicationContext(),"FishTagsData");
-
         /* BLUETOOTH WATCHER */
         String DownloadDir_raw = "/sdcard/Download"; //WORKS
         final String DownloadDir = android.os.Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath(); //WORK
@@ -74,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
         };
         observer.startWatching();
         WifiDetector.register(this);
+        Storage.register(this,"FishTagsData");
         uploader = new Uploader(this,"http://192.168.16.73:8000/");
     }
 
@@ -133,8 +129,8 @@ public class MainActivity extends AppCompatActivity {
                     //submit directly
                 }else{
                     Log.i("WIFI","NOT CONNECTED");
-                    storage.saveReport(map);
-                    storage.save("pending.txt",fileName);
+                    Storage.saveReport(map);
+                    Storage.save("pending.txt",fileName);
                 }
 
                 Toast.makeText(getApplicationContext(), "Thank you for submitting a tag!", Toast.LENGTH_SHORT).show();
@@ -148,9 +144,9 @@ public class MainActivity extends AppCompatActivity {
 
         //Indicate main activity that wifi has been connected
 
-        String fileName = storage.read("pending.txt");
+        String fileName = Storage.read("pending.txt");
         //TODO : protect against multiple pending files
-        String fileContent = storage.read(fileName); //JSON String
+        String fileContent = Storage.read(fileName); //JSON String
         if(fileContent != null){
             try{
                 JSONObject content = new JSONObject(fileContent);

@@ -25,28 +25,27 @@ import bft.fishtagsapp.MainActivity;
  * Created by jamiecho on 4/14/16.
  */
 
-public class Storage {
+public final class Storage {
 
     private static final int READ_BLOCK_SIZE = 512;//Block Size for text File
-
-    private Boolean useSDCard;
+    private static Boolean useSDCard;
 
     //FileStorage
-    private File fileStorage = null;//Main Directory File
+    private static File fileStorage = null;//Main Directory File
 
-    private String latest; //latest entry
+    private static String latest; //latest entry
 
     //Preferences to Store Data when SDCard is not present
-    private SharedPreferences prefStorage;
-    private SharedPreferences.Editor editor;
+    private static SharedPreferences prefStorage;
+    private static SharedPreferences.Editor editor;
 
-    private Context context;
+    private static Context context;
 
-    public Storage(){
+    private Storage(){
 
     }
 
-    public boolean isSDCardPresent() {
+    public static boolean isSDCardPresent() {
         //can be simpler but leaving it this way to be explicit
         if (Environment.getExternalStorageState().equals(
                 Environment.MEDIA_MOUNTED)) {
@@ -55,7 +54,7 @@ public class Storage {
         return false;
     }
 
-    public Boolean save(String name, String data){
+    public static Boolean save(String name, String data){
         if(useSDCard){
             return saveToFile(name, data);
         }else{
@@ -64,7 +63,7 @@ public class Storage {
         return false;
     }
 
-    public String read(String name){
+    public static String read(String name){
         if(useSDCard){
             return readFromFile(name);
         }else{
@@ -72,7 +71,7 @@ public class Storage {
         }
     }
 
-    public Boolean delete(String name){
+    public static Boolean delete(String name){
         if(useSDCard){
             return deleteFile(name);
         }else{
@@ -80,7 +79,7 @@ public class Storage {
         }
     }
 
-    private Boolean saveToFile(String FileName, String message) {
+    private static Boolean saveToFile(String FileName, String message) {
         //Check if it is null or not
 
         if (message.length() == 0 && message.equals(""))
@@ -141,7 +140,7 @@ public class Storage {
 
 
     //Method to show alert if file already present
-    private void appendOrOverrideSavedFile(final String FileName, final String message) {
+    private static void appendOrOverrideSavedFile(final String FileName, final String message) {
         File savedFile = new File(fileStorage.getAbsolutePath() + "/" + FileName);
 
         final String savedMessage = readFromFile(FileName);//Read saved message
@@ -192,7 +191,7 @@ public class Storage {
 
 
     //Method for writing data to text file
-    private void writeToFile(String FileName, String messageBody) {
+    private static void writeToFile(String FileName, String messageBody) {
         try {
             File savedFile = new File(fileStorage.getAbsolutePath() + "/" + FileName);
             Log.i("dir",savedFile.getAbsolutePath());
@@ -221,14 +220,14 @@ public class Storage {
         }
     }
 
-    private void writeToPref(String Key, String message){
+    private static void writeToPref(String Key, String message){
         editor.putString(Key, message);
         editor.commit();
 
     }
 
     //Method that will return saved text file data after reading
-    private String readFromFile(String FileName) {
+    private static String readFromFile(String FileName) {
 
         //First check if main directory is present or not
         if (!fileStorage.exists()) {
@@ -263,7 +262,7 @@ public class Storage {
 
     }
 
-    private String readFromPref(String name){
+    private static String readFromPref(String name){
         return prefStorage.getString(name,null);
     }
     //Show Saved data
@@ -284,7 +283,7 @@ public class Storage {
     */
 
     //Delete text file method
-    private Boolean deleteFile(String FileName) {
+    private static Boolean deleteFile(String FileName) {
 
         //Check if main directory is present or not
         if (!fileStorage.exists())
@@ -302,18 +301,18 @@ public class Storage {
         }
     }
 
-    private Boolean deletePref(String Key){
+    private static Boolean deletePref(String Key){
         editor.remove(Key);
         return editor.commit();
     }
 
-    public Boolean saveReport(HashMap<String,String> data){
+    public static Boolean saveReport(HashMap<String,String> data){
         JSONObject jsonData = new JSONObject(data);
         writeToFile("reports" + '/' + data.get("name"), jsonData.toString());
         return true;
     }
 
-    private HashMap<String,String> parseReport(File f){
+    public static HashMap<String,String> parseReport(File f){
         HashMap<String,String> map = new HashMap<>();
 
         // TODO: parse report from file
@@ -321,7 +320,7 @@ public class Storage {
         return map;
     }
 
-    private List<File> getListFiles(File parentDir) {
+    private static List<File> getListFiles(File parentDir) {
         ArrayList<File> inFiles = new ArrayList<File>();
         File[] files = parentDir.listFiles();
         for (File file : files) {
@@ -336,7 +335,7 @@ public class Storage {
         return inFiles;
     }
 
-    public ArrayList<HashMap<String,String>> getReports(){
+    public static ArrayList<HashMap<String,String>> getReports(){
         ArrayList<HashMap<String,String>> list = new ArrayList<>();
 
         for(File file : getListFiles(fileStorage)){
@@ -345,7 +344,7 @@ public class Storage {
 
         return list;
     }
-    public void removeReports(){
+    public static void removeReports(){
         //remove all reports
         String[] children = fileStorage.list();
         for (int i = 0; i < children.length; i++)
@@ -354,8 +353,8 @@ public class Storage {
         }
     }
 
-    void register(Context context, String name){
-        this.context=context;
+    public static void register(Context context, String name){
+        Storage.context = context;
 
         if(isSDCardPresent()){
             Log.i("sdcard","present");
@@ -379,5 +378,13 @@ public class Storage {
             editor = prefStorage.edit();
             //alternatively, use SharedPreferences
         }
+    }
+
+    public static String latest(){ //getter
+        return latest;
+    }
+
+    public static void latest(String l){ //setter
+        latest = l;
     }
 }
