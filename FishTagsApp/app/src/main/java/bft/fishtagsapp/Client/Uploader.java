@@ -19,7 +19,7 @@ import java.io.InputStream;
 /**
  * Created by jamiecho on 3/9/16.
  */
-public class Uploader extends Service{
+public class Uploader extends Service {
 
     public class UploadBinder extends Binder {
         Uploader getService() {
@@ -40,33 +40,27 @@ public class Uploader extends Service{
         this.url = url;
     }
 
-    public void send(Uri uri, String param1, String param2){
+    public void send(Uri uri, String param1, String param2) {
         /* Prior to Transmit, set Files, params, etc. */
         SendHttpRequestTask t = new SendHttpRequestTask();
         String[] params = new String[]{url, uri.toString(), param1, param2};
         t.execute(params);
     }
 
-
-    public byte[] convertUriToByteArray(Uri uri)
-    {
+    public byte[] convertUriToByteArray(Uri uri) {
         byte[] byteArray = null;
-        try
-        {
+        try {
             InputStream inputStream = context.getContentResolver().openInputStream(uri);
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            byte[] b = new byte[1024*8];
-            int bytesRead =0;
+            byte[] b = new byte[1024 * 8];
+            int bytesRead = 0;
 
-            while ((bytesRead = inputStream.read(b)) != -1)
-            {
+            while ((bytesRead = inputStream.read(b)) != -1) {
                 bos.write(b, 0, bytesRead);
             }
 
             byteArray = bos.toByteArray();
-        }
-        catch (IOException e)
-        {
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return byteArray;
@@ -79,7 +73,7 @@ public class Uploader extends Service{
             Uri uri = Uri.parse(params[1]);
             String param1 = params[2];
             String param2 = params[3];
-            Log.i("??",uri.toString());
+            Log.i("??", uri.toString());
             // FOR STORAGE FILES, construct byte array as follows:
             byte[] byteArray = convertUriToByteArray(uri); // = bytearray
 
@@ -89,11 +83,10 @@ public class Uploader extends Service{
                 client.addFormPart("param1", param1);
                 client.addFormPart("param2", param2); //form (plain text, JSON, etc) data.
 
-                client.addFilePart("photo","camera",byteArray);
+                client.addFilePart("photo", "camera", byteArray);
                 client.finishMultipart();
                 String data = client.getResponse();
-            }
-            catch(Throwable t) {
+            } catch (Throwable t) {
                 t.printStackTrace();
             }
 
@@ -116,31 +109,41 @@ public class Uploader extends Service{
 
     //SERVICE-RELATED IMPLEMENTATION
 
-    /** The service is starting, due to a call to startService() */
+    /**
+     * The service is starting, due to a call to startService()
+     */
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         return START_REDELIVER_INTENT;
     }
 
-    /** A client is binding to the service with bindService() */
+    /**
+     * A client is binding to the service with bindService()
+     */
     @Override
     public IBinder onBind(Intent intent) {
         return mBinder;
     }
 
-    /** Called when all clients have unbound with unbindService() */
+    /**
+     * Called when all clients have unbound with unbindService()
+     */
     @Override
     public boolean onUnbind(Intent intent) {
         return mAllowRebind;
     }
 
-    /** Called when a client is binding to the service with bindService()*/
+    /**
+     * Called when a client is binding to the service with bindService()
+     */
     @Override
     public void onRebind(Intent intent) {
 
     }
 
-    /** Called when The service is no longer used and is being destroyed */
+    /**
+     * Called when The service is no longer used and is being destroyed
+     */
     @Override
     public void onDestroy() {
 
