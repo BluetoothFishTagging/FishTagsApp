@@ -16,13 +16,10 @@ public class StorageActivty extends AppCompatActivity {
     Button readBtn;
     Button deleteBtn;
 
-    Storage storage;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_storage);
-
-        storage = new Storage(getApplicationContext(),"FishTagsData");
 
         msgEdit = (EditText) findViewById(R.id.msgEdit);
         nameEdit = (EditText) findViewById(R.id.nameEdit);
@@ -35,7 +32,7 @@ public class StorageActivty extends AppCompatActivity {
             public void onClick(View v) {
                 String name = nameEdit.getText().toString();
                 String msg = msgEdit.getText().toString();
-                storage.save(name,msg);
+                Storage.save(name,msg);
             }
         });
 
@@ -43,7 +40,7 @@ public class StorageActivty extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String name = nameEdit.getText().toString();
-                String msg = storage.read(name);
+                String msg = Storage.read(name);
                 msgEdit.setText(msg);
             }
         });
@@ -52,7 +49,7 @@ public class StorageActivty extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String name = nameEdit.getText().toString();
-                storage.delete(name);
+                Storage.delete(name);
             }
         });
     }

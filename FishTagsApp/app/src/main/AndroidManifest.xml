@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="bft.fishtagsapp">
 
+
     <!--
          TODO: camera unrequired, disable camera features if no camera on device.
         Currently, camera required on device to download app.
@@ -32,7 +33,6 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">

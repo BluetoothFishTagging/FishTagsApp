@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="bft.fishtagsapp.editlinkage.LinkageActivity">
+    tools:context="bft.fishtagsapp.Linkage.LinkageActivity">
 
     <include layout="@layout/content_linkage" />
 
