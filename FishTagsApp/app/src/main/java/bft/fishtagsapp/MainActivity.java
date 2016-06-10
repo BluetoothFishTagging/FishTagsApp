@@ -1,11 +1,14 @@
 package bft.fishtagsapp;
 
+import android.content.ComponentName;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.FileObserver;
 import android.os.Handler;
+import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -21,6 +24,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 
+import bft.fishtagsapp.Client.TagUploader;
 import bft.fishtagsapp.Client.UploadService;
 import bft.fishtagsapp.Signup.SignupActivity;
 import bft.fishtagsapp.Storage.Storage;
@@ -28,8 +32,24 @@ import bft.fishtagsapp.Wifi.WifiDetector;
 
 public class MainActivity extends AppCompatActivity {
     private FileObserver observer;
-    private UploadService uploadService;
     private String recent; //recent file
+    private UploadService uploadService;
+    private UploadService.UploadBinder uploadBinder;
+    private Boolean uploadServiceBound;
+
+    private ServiceConnection uploadConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            uploadBinder = (UploadService.UploadBinder) service;
+            uploadService = uploadBinder.getService();
+            uploadServiceBound = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            uploadServiceBound = false;
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,11 +91,19 @@ public class MainActivity extends AppCompatActivity {
         };
 
         observer.startWatching();
-        uploadService = new UploadService();
 
-        WifiDetector.register(this);
-        Storage.register(this,"FishTagsData");
+        Intent uploadIntent = new Intent(this,UploadService.class);
 
+        startService(uploadIntent);
+        bindService(uploadIntent,uploadConnection,BIND_AUTO_CREATE); //TODO : check flags
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(uploadServiceBound){
+            unbindService(uploadConnection);
+        }
     }
 
     @Override
@@ -100,9 +128,6 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-
-    static final int SUBMIT_TAG = 1;
-    
     /**
      * When FormActivity is over, MainActivity routes the data received from it (dictionary of values and Uri s)
      * to Storage, telling it to start trying to upload the info to the database.
@@ -118,60 +143,67 @@ public class MainActivity extends AppCompatActivity {
         Log.i("resultCode", String.valueOf(resultCode));
         Log.i("requestCode", String.valueOf(requestCode));
 
-        if (requestCode == SUBMIT_TAG) {
+        if (requestCode == Constants.SUBMIT_TAG) {
             if (resultCode == RESULT_OK) {
                 //TODO: Route to Storage
                 HashMap<String, String> map = (HashMap<String, String>) data.getSerializableExtra("map");
+                JSONObject jsonMap = new JSONObject(map);
 
                 String timeStamp = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss").format(new Date().getTime());
                 String fileName = timeStamp + ".txt";
+
                 map.put("name", fileName);//txt file extension
 
-                if (WifiDetector.isConnected()) {
-                    Log.i("WIFI", "CONNECTED");
-                    submitReport(new JSONObject(map));
-                    //submit directly
-                } else {
-                    Log.i("WIFI", "NOT CONNECTED");
-                    Storage.saveReport(map);
-                    Storage.save("pending.txt", fileName);
-                }
+                //server url placeholder
+                String url = "http://192.168.16.73:8000/";
+                String uri = map.get("photo");
+                String tagInfo = map.toString(); //JSON string
+                String personInfo = Storage.read(Constants.PERSONAL_INFO);
 
+                uploadBinder.enqueue(url,uri,tagInfo,personInfo);
                 Toast.makeText(getApplicationContext(), "Thank you for submitting a tag!", Toast.LENGTH_SHORT).show();
             }
         }
     }
 
-    public void submitReports() {
-        //check reports pending upload...
-        //if(pending != null) ...
-
-        /*Indicate main activity that wifi has been connected*/
-
-        String fileName = Storage.read("pending.txt");
-        //TODO : protect against multiple pending files
-        String fileContent = Storage.read(fileName); //JSON String
-        if(fileContent != null){
-            try{
-                JSONObject content = new JSONObject(fileContent);
-                submitReport(content);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-
-    }
-
-    public void submitReport(JSONObject content) {
-        Log.i("SUBMITTING", "REPORT");
-        try {
-            Uri imageuri = Uri.parse((String) content.get("photo"));
-            uploadService.send(imageuri, content.toString(), "PARAM2");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        //TODO : pass other information
-    }
+    //Deprecated by UploadService
+//    public void submitReports() {
+//        //check reports pending upload...
+//        //if(pending != null) ...
+//
+//        /*Indicate main activity that wifi has been connected*/
+//
+//        String fileName = Storage.read("pending.txt");
+//        //TODO : protect against multiple pending files
+//        String fileContent = Storage.read(fileName); //JSON String
+//        if(fileContent != null){
+//            try{
+//                JSONObject content = new JSONObject(fileContent);
+//                submitReport(content);
+//            } catch (JSONException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//
+//    }
+//
+//    public void submitReport(JSONObject tagInfo) {
+//        Log.i("SUBMITTING", "REPORT");
+//        try {
+//            String personInfo = Storage.read(Constants.PERSONAL_INFO);
+//            Uri imageuri = Uri.parse((String) tagInfo.get("photo"));
+//
+//            Log.i("PERSONINFO",personInfo);
+//            Log.i("TAGINFO",tagInfo.toString());
+//            Log.i("IMAGEURI",imageuri.toString());
+//
+//            TagUploader.startActionUpload(this,imageuri.toString(),personInfo, tagInfo.toString());
+//            //uploadService.send(imageuri, tagInfo.toString(), "PARAM2");
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+//        //TODO : pass other information
+//    }
 
     public void goToForm(View v) {
         goToForm(recent);
@@ -180,7 +212,7 @@ public class MainActivity extends AppCompatActivity {
     public void goToForm(String fileName) {
         Intent intent = new Intent(this, FormActivity.class);
         intent.putExtra("fileName", fileName);
-        startActivityForResult(intent, SUBMIT_TAG);
+        startActivityForResult(intent, Constants.SUBMIT_TAG);
     }
 
     public void signUp(View v){

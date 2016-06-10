@@ -6,7 +6,6 @@ import android.os.Bundle;
 
 import bft.fishtagsapp.Signup.SignupActivity;
 import bft.fishtagsapp.Storage.Storage;
-import bft.fishtagsapp.Wifi.WifiDetector;
 
 public class LauncherActivity extends AppCompatActivity {
 
@@ -14,22 +13,18 @@ public class LauncherActivity extends AppCompatActivity {
     before launching the main application.
     If the information is already registered, it will go straight to MainActivity.
     */
-
-    private static final int REQUEST_SIGNUP = 1;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_launcher);
         Intent intent;
-        Storage.register(this, "FishTagsData");
-        if (Storage.read("info.txt") != null) {
+        if (Storage.read(Constants.PERSONAL_INFO) != null) {
             intent = new Intent(this, MainActivity.class);
             startActivity(intent);
             finish();
         } else {
             intent = new Intent(this, SignupActivity.class);
-            startActivityForResult(intent, REQUEST_SIGNUP);
+            startActivityForResult(intent, Constants.REQUEST_SIGNUP);
         }
 
     }
@@ -38,7 +33,7 @@ public class LauncherActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == REQUEST_SIGNUP) {
+        if (requestCode == Constants.REQUEST_SIGNUP) {
             if (resultCode == RESULT_OK) {
                 Intent intent = new Intent(this, MainActivity.class);
                 startActivity(intent);

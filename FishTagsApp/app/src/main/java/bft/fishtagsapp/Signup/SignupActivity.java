@@ -25,6 +25,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import bft.fishtagsapp.Constants;
 import bft.fishtagsapp.MainActivity;
 import bft.fishtagsapp.R;
 import bft.fishtagsapp.Storage.Storage;
@@ -60,7 +61,7 @@ public class SignupActivity extends AppCompatActivity {
         autofillBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                String info = Storage.read("info.txt");
+                String info = Storage.read(Constants.PERSONAL_INFO);
                 Log.i("INFO",info);
                 if(info != null && !info.isEmpty()){
                     autofill(info);
@@ -110,10 +111,10 @@ public class SignupActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(),data.toString(),Toast.LENGTH_LONG).show();
 
             //delete previous data (failsafe)
-            Storage.delete("info.txt");
+            Storage.delete(Constants.PERSONAL_INFO);
 
             //save new data
-            Storage.save("info.txt", data.toString());
+            Storage.save(Constants.PERSONAL_INFO, data.toString());
 
             Intent intent_result = new Intent();
             setResult(RESULT_OK, intent_result);

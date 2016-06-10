@@ -40,7 +40,8 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        android:name=".FishTagsApplication">
 
         <activity
             android:name=".MainActivity"
@@ -75,6 +76,8 @@
             android:theme="@style/AppTheme.NoActionBar" />
 
         <service android:name=".Client.UploadService" />
+
+        <service android:name=".Client.TagUploader" />
 
         <activity
             android:name=".Signup.SignupActivity"
