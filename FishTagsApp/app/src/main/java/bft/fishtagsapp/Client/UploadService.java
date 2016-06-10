@@ -44,7 +44,6 @@ public class UploadService extends Service {
         t.execute(params);
     }
 
-
     public byte[] convertUriToByteArray(Uri uri) {
         byte[] byteArray = null;
         try {

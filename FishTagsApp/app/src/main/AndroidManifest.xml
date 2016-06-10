@@ -62,11 +62,13 @@
             android:name=".Linkage.LinkageActivity"
             android:label="LinkageActivity"
             android:parentActivityName=".MainActivity" />
+
         <activity android:name=".Storage.StorageActivty" />
+
         <activity
             android:name=".FormActivity"
-            android:label="@string/title_activity_form"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:label="Tag Submission Form"/>
+
         <activity
             android:name=".TestingActivity"
             android:label="@string/title_activity_testing"

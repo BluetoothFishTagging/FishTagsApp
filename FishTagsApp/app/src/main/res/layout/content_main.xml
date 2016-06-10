@@ -18,21 +18,20 @@
         android:text="Submit Tag Recovery"
         android:onClick="goToForm"
         android:id="@+id/formBtn" />
-
     <Button
         android:id="@+id/scoreBtn"
+        android:text="Scoreboard"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Scoreboard"
         android:layout_below="@+id/formBtn"
         android:layout_alignParentStart="true" />
 
     <Button
         android:id="@+id/signUpBtn"
-        android:layout_below="@+id/scoreBtn"
+        android:text="Sign Up"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Sign Up"
+        android:layout_below="@+id/scoreBtn"
         android:onClick="signUp"
         />
 </RelativeLayout>

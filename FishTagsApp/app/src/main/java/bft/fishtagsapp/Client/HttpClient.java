@@ -16,17 +16,20 @@ public class HttpClient {
     private final String boundary = "|";
     private final String delimiter = "--";
 
-    public HttpClient(){
+    public HttpClient() {
         setUrl("http://192.168.16.67:8000/");
     }
-    public HttpClient(String s){
+
+    public HttpClient(String s) {
         setUrl(s);
     }
-    public void setUrl(String s){
+
+    public void setUrl(String s) {
         url = s;
     }
-    public void connect(){
-        try{
+
+    public void connect() {
+        try {
             con = (HttpURLConnection) new URL(url).openConnection();
             con.setRequestMethod("POST");
             con.setDoInput(true);
@@ -34,13 +37,14 @@ public class HttpClient {
             con.connect();
             //is = con.getInputStream();
             os = con.getOutputStream();
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
-    public void connectMultipart(){
-        try{
-            con = (HttpURLConnection) ( new URL(url)).openConnection();
+
+    public void connectMultipart() {
+        try {
+            con = (HttpURLConnection) (new URL(url)).openConnection();
             con.setRequestMethod("POST");
             con.setDoInput(true);
             con.setDoOutput(true);
@@ -49,20 +53,21 @@ public class HttpClient {
             con.connect();
             //is = con.getInputStream();
             os = con.getOutputStream();
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
     }
+
     public void addFormPart(String paramName, String value) throws Exception {
         writeParamData(paramName, value);
     }
 
     public void addFilePart(String paramName, String fileName, byte[] data) throws Exception {
-        os.write( (delimiter + boundary + "\r\n").getBytes());
-        os.write( ("Content-Disposition: form-data; name=\"" + paramName +  "\"; filename=\"" + fileName + "\"\r\n"  ).getBytes());
-        os.write( ("Content-Type: application/octet-stream\r\n"  ).getBytes());
-        os.write( ("Content-Transfer-Encoding: binary\r\n"  ).getBytes());
+        os.write((delimiter + boundary + "\r\n").getBytes());
+        os.write(("Content-Disposition: form-data; name=\"" + paramName + "\"; filename=\"" + fileName + "\"\r\n").getBytes());
+        os.write(("Content-Type: application/octet-stream\r\n").getBytes());
+        os.write(("Content-Transfer-Encoding: binary\r\n").getBytes());
         os.write("\r\n".getBytes());
 
         os.write(data);
@@ -71,7 +76,7 @@ public class HttpClient {
     }
 
     public void finishMultipart() throws Exception {
-        os.write( (delimiter + boundary + delimiter + "\r\n").getBytes());
+        os.write((delimiter + boundary + delimiter + "\r\n").getBytes());
     }
 
 
@@ -80,7 +85,7 @@ public class HttpClient {
         byte[] b1 = new byte[1024];
         StringBuffer buffer = new StringBuffer();
 
-        while ( is.read(b1) != -1)
+        while (is.read(b1) != -1)
             buffer.append(new String(b1));
 
         con.disconnect();
@@ -89,9 +94,10 @@ public class HttpClient {
     }
 
     private void writeParamData(String paramName, String value) throws Exception {
-        os.write( (delimiter + boundary + "\r\n").getBytes());
-        os.write( "Content-Type: text/plain\r\n".getBytes());
-        os.write( ("Content-Disposition: form-data; name=\"" + paramName + "\"\r\n").getBytes());;
-        os.write( ("\r\n" + value + "\r\n").getBytes());
+        os.write((delimiter + boundary + "\r\n").getBytes());
+        os.write("Content-Type: text/plain\r\n".getBytes());
+        os.write(("Content-Disposition: form-data; name=\"" + paramName + "\"\r\n").getBytes());
+        ;
+        os.write(("\r\n" + value + "\r\n").getBytes());
     }
 }
