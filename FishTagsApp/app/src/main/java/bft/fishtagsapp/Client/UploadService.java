@@ -8,9 +8,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Binder;
 import android.os.IBinder;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -19,11 +17,11 @@ import java.io.InputStream;
 /**
  * Created by jamiecho on 3/9/16.
  */
-public class Uploader extends Service{
+public class UploadService extends Service {
 
     public class UploadBinder extends Binder {
-        Uploader getService() {
-            return Uploader.this;
+        UploadService getService() {
+            return UploadService.this;
         }
     }
 
@@ -35,12 +33,11 @@ public class Uploader extends Service{
     //hardcoded, and must be replaced with real domain name
     String url = "http://192.168.16.73:8000/";
 
-    public Uploader(Context context, String url) {
-        this.context = context;
-        this.url = url;
+    public UploadService() {
+
     }
 
-    public void send(Uri uri, String param1, String param2){
+    public void send(Uri uri, String param1, String param2) {
         /* Prior to Transmit, set Files, params, etc. */
         SendHttpRequestTask t = new SendHttpRequestTask();
         String[] params = new String[]{url, uri.toString(), param1, param2};
@@ -48,25 +45,20 @@ public class Uploader extends Service{
     }
 
 
-    public byte[] convertUriToByteArray(Uri uri)
-    {
+    public byte[] convertUriToByteArray(Uri uri) {
         byte[] byteArray = null;
-        try
-        {
+        try {
             InputStream inputStream = context.getContentResolver().openInputStream(uri);
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            byte[] b = new byte[1024*8];
-            int bytesRead =0;
+            byte[] b = new byte[1024 * 8];
+            int bytesRead = 0;
 
-            while ((bytesRead = inputStream.read(b)) != -1)
-            {
+            while ((bytesRead = inputStream.read(b)) != -1) {
                 bos.write(b, 0, bytesRead);
             }
 
             byteArray = bos.toByteArray();
-        }
-        catch (IOException e)
-        {
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return byteArray;
@@ -79,7 +71,7 @@ public class Uploader extends Service{
             Uri uri = Uri.parse(params[1]);
             String param1 = params[2];
             String param2 = params[3];
-            Log.i("??",uri.toString());
+            Log.i("??", uri.toString());
             // FOR STORAGE FILES, construct byte array as follows:
             byte[] byteArray = convertUriToByteArray(uri); // = bytearray
 
@@ -89,11 +81,10 @@ public class Uploader extends Service{
                 client.addFormPart("param1", param1);
                 client.addFormPart("param2", param2); //form (plain text, JSON, etc) data.
 
-                client.addFilePart("photo","camera",byteArray);
+                client.addFilePart("photo", "camera", byteArray);
                 client.finishMultipart();
                 String data = client.getResponse();
-            }
-            catch(Throwable t) {
+            } catch (Throwable t) {
                 t.printStackTrace();
             }
 
@@ -112,35 +103,45 @@ public class Uploader extends Service{
     public void onCreate() {
 
     }
-
-
     //SERVICE-RELATED IMPLEMENTATION
 
-    /** The service is starting, due to a call to startService() */
+    /**
+     * The service is starting, due to a call to startService()
+     */
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        context = getApplicationContext();
+        url = intent.getStringExtra("url");
         return START_REDELIVER_INTENT;
     }
 
-    /** A client is binding to the service with bindService() */
+    /**
+     * A client is binding to the service with bindService()
+     */
     @Override
     public IBinder onBind(Intent intent) {
         return mBinder;
     }
 
-    /** Called when all clients have unbound with unbindService() */
+    /**
+     * Called when all clients have unbound with unbindService()
+     */
     @Override
     public boolean onUnbind(Intent intent) {
         return mAllowRebind;
     }
 
-    /** Called when a client is binding to the service with bindService()*/
+    /**
+     * Called when a client is binding to the service with bindService()
+     */
     @Override
     public void onRebind(Intent intent) {
 
     }
 
-    /** Called when The service is no longer used and is being destroyed */
+    /**
+     * Called when The service is no longer used and is being destroyed
+     */
     @Override
     public void onDestroy() {
 

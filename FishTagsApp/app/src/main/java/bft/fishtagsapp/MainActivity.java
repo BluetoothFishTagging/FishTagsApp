@@ -21,13 +21,14 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 
-import bft.fishtagsapp.Client.Uploader;
+import bft.fishtagsapp.Client.UploadService;
+import bft.fishtagsapp.Signup.SignupActivity;
 import bft.fishtagsapp.Storage.Storage;
 import bft.fishtagsapp.Wifi.WifiDetector;
 
 public class MainActivity extends AppCompatActivity {
     private FileObserver observer;
-    private Uploader uploader;
+    private UploadService uploadService;
     private String recent; //recent file
 
     @Override
@@ -68,10 +69,13 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         };
+
         observer.startWatching();
+        uploadService = new UploadService();
+
         WifiDetector.register(this);
         Storage.register(this,"FishTagsData");
-        uploader = new Uploader(this,"http://192.168.16.73:8000/");
+
     }
 
     @Override
@@ -98,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     static final int SUBMIT_TAG = 1;
-
+    
     /**
      * When FormActivity is over, MainActivity routes the data received from it (dictionary of values and Uri s)
      * to Storage, telling it to start trying to upload the info to the database.
@@ -129,8 +133,8 @@ public class MainActivity extends AppCompatActivity {
                     //submit directly
                 } else {
                     Log.i("WIFI", "NOT CONNECTED");
-                    storage.saveReport(map);
-                    storage.save("pending.txt", fileName);
+                    Storage.saveReport(map);
+                    Storage.save("pending.txt", fileName);
                 }
 
                 Toast.makeText(getApplicationContext(), "Thank you for submitting a tag!", Toast.LENGTH_SHORT).show();
@@ -161,9 +165,8 @@ public class MainActivity extends AppCompatActivity {
     public void submitReport(JSONObject content) {
         Log.i("SUBMITTING", "REPORT");
         try {
-
             Uri imageuri = Uri.parse((String) content.get("photo"));
-            uploader.send(imageuri, content.toString(), "PARAM2");
+            uploadService.send(imageuri, content.toString(), "PARAM2");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -178,5 +181,10 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, FormActivity.class);
         intent.putExtra("fileName", fileName);
         startActivityForResult(intent, SUBMIT_TAG);
+    }
+
+    public void signUp(View v){
+        Intent intent = new Intent(this, SignupActivity.class);
+        startActivity(intent);
     }
 }
