@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -40,7 +41,6 @@ public class FormActivity extends AppCompatActivity {
         String fileName = getIntent().getStringExtra("fileName");
         /* Auto-fill in data from the latest tag file */
         fillInInfoFromFile(fileName);
-
     }
 
     protected void fillInInfoFromFile(String fileName) {
@@ -95,7 +95,6 @@ public class FormActivity extends AppCompatActivity {
     //TODO: Create function that collects all of the information from the boxes into a Hashmap to be able to pass it on
     protected HashMap<String, String> getFormMap() {
         HashMap<String, String> map = new HashMap<>();
-
         RelativeLayout my_relView = (RelativeLayout) findViewById(R.id.my_rel_view);
         for (int i = 0; i < my_relView.getChildCount(); i++) {
             View v = my_relView.getChildAt(i);
@@ -109,11 +108,17 @@ public class FormActivity extends AppCompatActivity {
                 map.put(textId, value);
 
             } else if (v instanceof ImageView) {
-                Uri imageUri = (Uri) ((ImageView) v).getTag();
-                map.put("Photo", imageUri.toString());
+                /*If the user for some reason did not take a photo, add null as the URI for the photo.
+                * Although they should be taking photos, there can be problems with their camera for example.
+                * TODO: We could potentially think about having a little pop-up screen that asks, are they sure they want to continue without photo (and have a never ask me again option*/
+                if (((ImageView) v).getTag() == null) {
+                    map.put("Photo", null);
+                } else {
+                    Uri imageUri = (Uri) ((ImageView) v).getTag();
+                    map.put("Photo", imageUri.toString());
+                }
             }
         }
-
         return map;
     }
 
