@@ -6,4 +6,20 @@
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
+
+    <style name="CustomTheme" parent="@style/AppTheme">
+        <item name="android:actionBarStyle">@style/MyActionBar</item>
+        <item name="android:colorPrimary">@color/holo_light_primary</item>
+        <item name="android:colorPrimaryDark">@color/holo_light_primary_dark</item>
+        <item name="android:textColorPrimary">@color/abc_primary_text_disable_only_material_dark
+        </item>
+    </style>
+
+    <style name="AppTheme" parent="@android:style/Theme.Holo.Light">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:colorPrimary">@color/holo_light_primary</item>
+        <item name="android:colorPrimaryDark">@color/holo_light_primary_dark</item>
+    </style>
 </resources>

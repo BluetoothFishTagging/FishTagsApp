@@ -43,9 +43,12 @@ public class FormActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_form);
+<<<<<<< HEAD
 /*
         RelativeLayout my_relView = (RelativeLayout) findViewById(R.id.my_rel_view);
-
+*/        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+/*
         editTexts = new ArrayList<EditText>();
         findFields(my_relView,editTexts);
         fishPhotoView = (ImageView) findViewById(R.id.FishPhoto);
