@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
 //        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 //        setSupportActionBar(toolbar);
         /* BLUETOOTH WATCHER */
-        String DownloadDir_raw = "/sdcard/Download"; //WORKS
+        String DownloadDir_raw = Environment.getExternalStorageDirectory().getPath() ; //WORKS
         final String DownloadDir = android.os.Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath(); //WORK
         //String BluetoothDir = getExternalFilesDir(Environment.DIRECTORY_).getPath() + "/bluetooth"; DOESN'T WORK
 
