@@ -153,56 +153,22 @@ public class MainActivity extends AppCompatActivity {
                     String timeStamp = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss").format(new Date().getTime());
                     String fileName = timeStamp + ".txt";
                     dataObj.put("name", fileName);//txt file extension
+                    //server url placeholder
+                    String url = "http://192.168.16.73:8000/";
+                    String uri = (String) dataObj.get("photo");
+                    String tagInfo = dataObj.toString(); //JSON string
+                    String personInfo = Storage.read(Constants.PERSONAL_INFO);
+
+                    uploadBinder.enqueue(url,uri,tagInfo,personInfo);
 
                     Toast.makeText(getApplicationContext(), "Thank you for submitting a tag!", Toast.LENGTH_SHORT).show();
-                    submitReport(dataObj);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
-                //server url placeholder
-                String url = "http://192.168.16.73:8000/";
-                String uri = map.get("photo");
-                String tagInfo = map.toString(); //JSON string
-                String personInfo = Storage.read(Constants.PERSONAL_INFO);
-
-                uploadBinder.enqueue(url,uri,tagInfo,personInfo);
-                Toast.makeText(getApplicationContext(), "Thank you for submitting a tag!", Toast.LENGTH_SHORT).show();
             }
         }
     }
 
-    public void submitReports() {
-        //check reports pending upload...
-        //if(pending != null) ...
-
-        /*Indicate main activity that wifi has been connected*/
-
-        String fileName = Storage.read("pending.txt");
-        //TODO : protect against multiple pending files
-        String fileContent = Storage.read(fileName); //JSON String
-        if (fileContent != null) {
-            try {
-                JSONObject content = new JSONObject(fileContent);
-                submitReport(content);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-
-    }
-
-    public void submitReport(JSONObject content) {
-        Log.i("SUBMITTING", "REPORT");
-        try {
-
-            Uri imageuri = Uri.parse((String) content.get("photo"));
-            uploader.send(imageuri, content.toString(), "PARAM2");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        //TODO : pass other information
-    }
     //Deprecated by UploadService
 //    public void submitReports() {
 //        //check reports pending upload...
