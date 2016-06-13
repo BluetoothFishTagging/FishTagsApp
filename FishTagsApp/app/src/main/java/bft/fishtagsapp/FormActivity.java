@@ -9,12 +9,12 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,7 +33,6 @@ import java.util.HashMap;
 
 import bft.fishtagsapp.GPS.GPS;
 import bft.fishtagsapp.ParseFile.ParseFile;
-import bft.fishtagsapp.Storage.Storage;
 
 public class FormActivity extends AppCompatActivity {
 
@@ -127,7 +126,7 @@ public class FormActivity extends AppCompatActivity {
     //TODO: Create function that collects all of the information from the boxes into a Hashmap to be able to pass it on
     protected HashMap<String, String> getFormMapOld() {
         HashMap<String, String> map = new HashMap<>();
-        RelativeLayout my_relView = (RelativeLayout) findViewById(R.id.my_rel_view);
+        LinearLayout my_relView = (LinearLayout) findViewById(R.id.tag_submission_form);
         for (int i = 0; i < my_relView.getChildCount(); i++) {
             View v = my_relView.getChildAt(i);
             if (v instanceof EditText) {
@@ -170,9 +169,9 @@ public class FormActivity extends AppCompatActivity {
     protected JSONObject getFormMap(){
         try{
             JSONObject data = new JSONObject();
-            RelativeLayout my_relView = (RelativeLayout) findViewById(R.id.my_rel_view);
-            for (int i = 0; i < my_relView.getChildCount(); i++) {
-                View v = my_relView.getChildAt(i);
+            LinearLayout my_linView = (LinearLayout) findViewById(R.id.tag_submission_form);
+            for (int i = 0; i < my_linView.getChildCount(); i++) {
+                View v = my_linView.getChildAt(i);
                 if (v instanceof EditText) {
                 /*
                 The String id of the EditText will be used as the key for the entry.

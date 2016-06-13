@@ -3,14 +3,12 @@ package bft.fishtagsapp;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.FileObserver;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,13 +20,10 @@ import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
 
-import bft.fishtagsapp.Client.TagUploader;
 import bft.fishtagsapp.Client.UploadService;
 import bft.fishtagsapp.Signup.SignupActivity;
 import bft.fishtagsapp.Storage.Storage;
-import bft.fishtagsapp.Wifi.WifiDetector;
 
 public class MainActivity extends AppCompatActivity {
     private FileObserver observer;

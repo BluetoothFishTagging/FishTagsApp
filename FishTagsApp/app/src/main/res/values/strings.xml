@@ -24,6 +24,12 @@
     <string name="prompt_state">State</string>
     <string name="prompt_zip">Zipcode</string>
     <string name="prompt_phone">Phone Number</string>
+    <string name="prompt_tagId">Tag ID</string>
+    <string name="prompt_time">Time</string>
+    <string name="prompt_location">Location</string>
+    <string name="prompt_gearUsed">Gear Used</string>
+    <string name="prompt_comments">Comments</string>
+
     <string name="action_autofill">Autofill</string>
     <string name="action_sign_up">Save</string>
     <string name="action_sign_up_short">Save</string>
