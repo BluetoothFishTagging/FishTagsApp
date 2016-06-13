@@ -70,8 +70,8 @@ public class MainActivity extends AppCompatActivity {
         };
         observer.startWatching();
         WifiDetector.register(this);
-        Storage.register(this,"FishTagsData");
-        uploader = new Uploader(this,"http://192.168.16.73:8000/");
+        Storage.register(this, "FishTagsData");
+        uploader = new Uploader(this, "http://192.168.16.73:8000/");
     }
 
     @Override
@@ -117,23 +117,20 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == SUBMIT_TAG) {
             if (resultCode == RESULT_OK) {
                 //TODO: Route to Storage
-                HashMap<String, String> map = (HashMap<String, String>) data.getSerializableExtra("map");
+                JSONObject dataObj = null;
 
-                String timeStamp = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss").format(new Date().getTime());
-                String fileName = timeStamp + ".txt";
-                map.put("name", fileName);//txt file extension
+                try {
+                    dataObj = new JSONObject(data.getStringExtra("map"));
+                    String timeStamp = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss").format(new Date().getTime());
+                    String fileName = timeStamp + ".txt";
+                    dataObj.put("name", fileName);//txt file extension
 
-                if (WifiDetector.isConnected()) {
-                    Log.i("WIFI", "CONNECTED");
-                    submitReport(new JSONObject(map));
-                    //submit directly
-                } else {
-                    Log.i("WIFI", "NOT CONNECTED");
-                    Storage.saveReport(map);
-                    Storage.save("pending.txt", fileName);
+                    Toast.makeText(getApplicationContext(), "Thank you for submitting a tag!", Toast.LENGTH_SHORT).show();
+                    submitReport(dataObj);
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
 
-                Toast.makeText(getApplicationContext(), "Thank you for submitting a tag!", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -147,8 +144,8 @@ public class MainActivity extends AppCompatActivity {
         String fileName = Storage.read("pending.txt");
         //TODO : protect against multiple pending files
         String fileContent = Storage.read(fileName); //JSON String
-        if(fileContent != null){
-            try{
+        if (fileContent != null) {
+            try {
                 JSONObject content = new JSONObject(fileContent);
                 submitReport(content);
             } catch (JSONException e) {

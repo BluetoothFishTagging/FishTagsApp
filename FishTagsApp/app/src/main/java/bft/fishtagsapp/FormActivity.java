@@ -18,6 +18,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -28,6 +31,7 @@ import java.util.HashMap;
 
 import bft.fishtagsapp.GPS.GPS;
 import bft.fishtagsapp.ParseFile.ParseFile;
+import bft.fishtagsapp.Storage.Storage;
 
 public class FormActivity extends AppCompatActivity {
 
@@ -93,7 +97,7 @@ public class FormActivity extends AppCompatActivity {
     }
 
     //TODO: Create function that collects all of the information from the boxes into a Hashmap to be able to pass it on
-    protected HashMap<String, String> getFormMap() {
+    protected HashMap<String, String> getFormMapOld() {
         HashMap<String, String> map = new HashMap<>();
         RelativeLayout my_relView = (RelativeLayout) findViewById(R.id.my_rel_view);
         for (int i = 0; i < my_relView.getChildCount(); i++) {
@@ -122,11 +126,48 @@ public class FormActivity extends AppCompatActivity {
         return map;
     }
 
+    protected JSONObject getFormMap(){
+        try{
+            JSONObject data = new JSONObject();
+            RelativeLayout my_relView = (RelativeLayout) findViewById(R.id.my_rel_view);
+            for (int i = 0; i < my_relView.getChildCount(); i++) {
+                View v = my_relView.getChildAt(i);
+                if (v instanceof EditText) {
+                /*
+                The String id of the EditText will be used as the key for the entry.
+                The TextView that corresponds to each EditText has the same String id + 0 at the end so if necessary it can be used to find the text id.
+                 */
+                    String textId = v.getResources().getResourceEntryName(v.getId());
+                    String value = ((EditText) v).getText().toString();
+                    data.put(textId, value);
+
+                } else if (v instanceof ImageView) {
+                /*If the user for some reason did not take a photo, add null as the URI for the photo.
+                * Although they should be taking photos, there can be problems with their camera for example.
+                * TODO: We could potentially think about having a little pop-up screen that asks, are they sure they want to continue without photo (and have a never ask me again option*/
+                    if (((ImageView) v).getTag() == null) {
+                        data.put("Photo", null);
+                    } else {
+                        Uri imageUri = (Uri) ((ImageView) v).getTag();
+                        data.put("Photo", imageUri.toString());
+                    }
+                }
+            }
+
+            //for debugging
+            Toast.makeText(getApplicationContext(),data.toString(),Toast.LENGTH_LONG).show();
+            return data;
+        }catch(JSONException e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     //TODO: pass along hashmap of Values
     public void submitForm(View view) {
         Log.i("FORM", "SUBMITTING");
         Intent intent_result = new Intent();
-        intent_result.putExtra("map", getFormMap());
+        intent_result.putExtra("map", getFormMap().toString());
         setResult(RESULT_OK, intent_result);
         finish();
     }
