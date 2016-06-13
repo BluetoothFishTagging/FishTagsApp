@@ -16,14 +16,14 @@ import android.widget.Toast;
 import bft.fishtagsapp.MainActivity;
 
 public class WifiDetector extends BroadcastReceiver {
-    private static Boolean connected = false;
-    private static MainActivity m = null;
+    protected static Boolean connected = false;
 
     public WifiDetector() {
 
     }
-    private static boolean checkWifiOnAndConnected(MainActivity m) {
-        WifiManager wifiMgr = (WifiManager) m.getSystemService(Context.WIFI_SERVICE);
+
+    private static boolean checkWifiOnAndConnected(Context context) {
+        WifiManager wifiMgr = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
         if (wifiMgr.isWifiEnabled()) { // WiFi adapter is ON
             WifiInfo wifiInfo = wifiMgr.getConnectionInfo();
             if( wifiInfo.getNetworkId() == -1 ){
@@ -34,27 +34,23 @@ public class WifiDetector extends BroadcastReceiver {
             return false; // WiFi adapter is OFF
         }
     }
+
     @Override
     public void onReceive(Context context, Intent intent) {
-
         final String action = intent.getAction();
         if(action.equals(WifiManager.NETWORK_STATE_CHANGED_ACTION)){
             NetworkInfo info = intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO);
             if(info.isConnected()){
                 connected = true;
-                Toast.makeText(context, "WIFI_ESTABLISHED", Toast.LENGTH_LONG).show();
-                m.submitReports();
             }else{
                 connected = false;
-                Toast.makeText(context, "WIFI_DISCONNECTED", Toast.LENGTH_LONG).show();
             }
         }
     }
     public static Boolean isConnected(){
         return connected;
     }
-    public static void register(MainActivity mainActivity){
-        m = mainActivity;
-        connected = checkWifiOnAndConnected(m);
+    public static void register(Context context){
+        connected = checkWifiOnAndConnected(context);
     }
 }

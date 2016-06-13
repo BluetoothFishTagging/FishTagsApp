@@ -21,6 +21,7 @@ public class StorageActivty extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_storage);
 
+        Storage.register(this,"testData");
         msgEdit = (EditText) findViewById(R.id.msgEdit);
         nameEdit = (EditText) findViewById(R.id.nameEdit);
         saveBtn = (Button) findViewById(R.id.saveBtn);

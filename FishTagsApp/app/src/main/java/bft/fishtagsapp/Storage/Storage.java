@@ -38,21 +38,21 @@ public final class Storage {
     private static SharedPreferences.Editor editor;
     private static Context context;
 
-    private Storage(){
+    private Storage() {
 
     }
 
     public static boolean isSDCardPresent() {
         //can be simpler but leaving it this way to be explicit
-            if (Environment.getExternalStorageState().equals(
+        if (Environment.getExternalStorageState().equals(
                 Environment.MEDIA_MOUNTED)) {
             return true;
         }
         return false;
     }
 
-    public static Boolean save(String name, String data){
-        if(useSDCard){
+    public static Boolean save(String name, String data) {
+        if (useSDCard) {
             return saveToFile(name, data);
         } else {
             //return saveToPref(name,data);
@@ -60,16 +60,16 @@ public final class Storage {
         return false;
     }
 
-    public static String read(String name){
-        if(useSDCard){
+    public static String read(String name) {
+        if (useSDCard) {
             return readFromFile(name);
         } else {
             return readFromPref(name);
         }
     }
 
-    public static Boolean delete(String name){
-        if(useSDCard){
+    public static Boolean delete(String name) {
+        if (useSDCard) {
             return deleteFile(name);
         } else {
             return deletePref(name);
@@ -215,7 +215,7 @@ public final class Storage {
         }
     }
 
-    private static void writeToPref(String Key, String message){
+    private static void writeToPref(String Key, String message) {
         editor.putString(Key, message);
         editor.commit();
 
@@ -255,8 +255,8 @@ public final class Storage {
 
     }
 
-    private static String readFromPref(String name){
-        return prefStorage.getString(name,null);
+    private static String readFromPref(String name) {
+        return prefStorage.getString(name, null);
     }
     //Show Saved data
     /* Temporarily Disabled
@@ -294,19 +294,19 @@ public final class Storage {
         }
     }
 
-    private static Boolean deletePref(String Key){
+    private static Boolean deletePref(String Key) {
         editor.remove(Key);
         return editor.commit();
     }
 
-    public static Boolean saveReport(HashMap<String,String> data){
+    public static Boolean saveReport(HashMap<String, String> data) {
         JSONObject jsonData = new JSONObject(data);
         writeToFile("reports" + '/' + data.get("name"), jsonData.toString());
         return true;
     }
 
-    public static HashMap<String,String> parseReport(File f){
-        HashMap<String,String> map = new HashMap<>();
+    public static HashMap<String, String> parseReport(File f) {
+        HashMap<String, String> map = new HashMap<>();
         // TODO: parse report from file
         return map;
     }
@@ -326,8 +326,8 @@ public final class Storage {
         return inFiles;
     }
 
-    public static ArrayList<HashMap<String,String>> getReports(){
-        ArrayList<HashMap<String,String>> list = new ArrayList<>();
+    public static ArrayList<HashMap<String, String>> getReports() {
+        ArrayList<HashMap<String, String>> list = new ArrayList<>();
 
         for (File file : getListFiles(fileStorage)) {
             list.add(parseReport(file));
@@ -335,7 +335,8 @@ public final class Storage {
 
         return list;
     }
-    public static void removeReports(){
+
+    public static void removeReports() {
         //remove all reports
         String[] children = fileStorage.list();
         for (int i = 0; i < children.length; i++) {
@@ -343,26 +344,26 @@ public final class Storage {
         }
     }
 
-    public static void register(Context context, String name){
+    public static void register(Context context, String name) {
         Storage.context = context;
 
-        if(isSDCardPresent()){
-            Log.i("sdcard","present");
+        if (isSDCardPresent()) {
+            Log.i("sdcard", "present");
             useSDCard = true;
-            fileStorage = new File(Environment.getExternalStorageDirectory(),name);
-            if(!fileStorage.exists()){
+            fileStorage = new File(Environment.getExternalStorageDirectory(), name);
+            if (!fileStorage.exists()) {
                 fileStorage.mkdirs();
             }
 
-            File reportStorage = new File(fileStorage,"reports");
-            if(!reportStorage.exists()){
+            File reportStorage = new File(fileStorage, "reports");
+            if (!reportStorage.exists()) {
                 reportStorage.mkdirs();
             }
 
             //TODO : create subdirectory "report"
-        }else{
+        } else {
 
-            Log.i("sdcard","not present");
+            Log.i("sdcard", "not present");
             useSDCard = false;
             prefStorage = context.getSharedPreferences(name, Context.MODE_PRIVATE);
             editor = prefStorage.edit();
@@ -370,11 +371,11 @@ public final class Storage {
         }
     }
 
-    public static String latest(){ //getter
+    public static String latest() { //getter
         return latest;
     }
 
-    public static void latest(String l){ //setter
+    public static void latest(String l) { //setter
         latest = l;
     }
 }

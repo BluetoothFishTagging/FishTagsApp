@@ -16,13 +16,13 @@ import android.widget.Toast;
 
 import bft.fishtagsapp.Camera.Camera;
 import bft.fishtagsapp.GPS.GPS;
-import bft.fishtagsapp.Client.Uploader;
+import bft.fishtagsapp.Client.UploadService;
 import bft.fishtagsapp.Linkage.LinkageActivity;
 import bft.fishtagsapp.Storage.StorageActivty;
 
 public class TestingActivity extends AppCompatActivity {
     private GPS gps;
-    Uploader uploader;
+    UploadService uploadService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +61,7 @@ public class TestingActivity extends AppCompatActivity {
         /* Client Code Start */
         // change here as well if using placeholder
         String url = "http://192.168.16.73:8000/";
-        uploader = new Uploader(this,url);
+        uploadService = new UploadService();
         Button testBtn = (Button) findViewById(R.id.testBtn);
         testBtn.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -152,7 +152,7 @@ public class TestingActivity extends AppCompatActivity {
                 if (resultCode == RESULT_OK) {
                     try {
                         Uri uri = data.getData();
-                        uploader.send(uri, "PARAM1", "PARAM2");
+                        uploadService.send(uri, "PARAM1", "PARAM2");
                     }catch(Exception e){
                         e.printStackTrace();
                     }

@@ -12,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -26,6 +27,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -35,13 +37,23 @@ import bft.fishtagsapp.Storage.Storage;
 
 public class FormActivity extends AppCompatActivity {
 
+    private ArrayList<EditText> editTexts;
+    private ImageView fishPhotoView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_form);
-//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
+/*
+        RelativeLayout my_relView = (RelativeLayout) findViewById(R.id.my_rel_view);
 
+        editTexts = new ArrayList<EditText>();
+        findFields(my_relView,editTexts);
+        fishPhotoView = (ImageView) findViewById(R.id.FishPhoto);
+
+        //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        //setSupportActionBar(toolbar);
+*/
         String fileName = getIntent().getStringExtra("fileName");
         /* Auto-fill in data from the latest tag file */
         fillInInfoFromFile(fileName);
@@ -95,6 +107,19 @@ public class FormActivity extends AppCompatActivity {
             locationText.setText(s);
         }
     }
+    private void findFields(ViewGroup v, ArrayList<EditText> editTexts){
+        /* Find EditTexts */
+        int n = v.getChildCount();
+        for(int i=0; i<n; ++i){
+            View subView = v.getChildAt(i);
+            if(subView instanceof ViewGroup){
+                //recursively search for editTexts
+                findFields((ViewGroup)subView, editTexts);
+            }else if (subView instanceof EditText){
+                editTexts.add((EditText)subView);
+            }
+        }
+    }
 
     //TODO: Create function that collects all of the information from the boxes into a Hashmap to be able to pass it on
     protected HashMap<String, String> getFormMapOld() {
@@ -122,6 +147,19 @@ public class FormActivity extends AppCompatActivity {
                     map.put("Photo", imageUri.toString());
                 }
             }
+        /*for(EditText e : editTexts){
+            String textId = e.getResources().getResourceEntryName(e.getId());
+            String value = ((EditText) e).getText().toString();
+            map.put(textId, value);
+        }
+        Uri imageUri = (Uri) fishPhotoView.getTag();
+        if(imageUri != null){
+            map.put("photo", imageUri.toString());
+        }else{
+            //fallback photo - placeholder
+            Uri uri = Uri.parse("android.resource://bft.fishtagsapp/drawable/placeholder.png");
+            map.put("photo", uri.toString());
+>>>>>>> Signup*/
         }
         return map;
     }
@@ -178,9 +216,6 @@ public class FormActivity extends AppCompatActivity {
         dispatchTakePictureIntent();
     }
 
-    static final int REQUEST_IMAGE_CAPTURE = 1;
-    static final int REQUEST_TAKE_PHOTO = 1;
-
     Uri photoUri;
 
     private void dispatchTakePictureIntent() {
@@ -194,7 +229,7 @@ public class FormActivity extends AppCompatActivity {
                 photoUri = Uri.fromFile(photoFile);
 //                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
 //                        Uri.fromFile(photoFile));
-                startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
+                startActivityForResult(takePictureIntent, Constants.REQUEST_TAKE_PHOTO);
             } catch (IOException ex) {
 
             }
