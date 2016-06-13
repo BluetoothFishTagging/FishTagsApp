@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="bft.fishtagsapp">
 
+
     <!--
          TODO: camera unrequired, disable camera features if no camera on device.
         Currently, camera required on device to download app.
@@ -38,7 +39,7 @@
     <application
         android:allowBackup="true"
         android:label="@string/app_name"
-        /*android:supportsRtl="true"
+        android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:name=".FishTagsApplication">
 
@@ -46,13 +47,6 @@
             android:name=".MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
-        */
-	android:supportsRtl="true">
-        <activity
-            android:name=".MainActivity"
-            android:label="@string/app_name"
-            android:theme="@style/MyFishTheme">
-            <intent-filter>
 
         </activity>
 
@@ -69,12 +63,12 @@
             android:name=".Linkage.LinkageActivity"
             android:label="LinkageActivity"
             android:parentActivityName=".MainActivity" />
+
         <activity android:name=".Storage.StorageActivty" />
 
         <activity
             android:name=".FormActivity"
-            android:icon="@drawable/whale"
-            android:theme="@style/MyFishTheme"/>
+            android:label="Tag Submission Form"/>
 
         <activity
             android:name=".TestingActivity"
