@@ -40,8 +40,6 @@ public class SignupActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
 
-
-
         mLoginFormView = (ScrollView) findViewById(R.id.login_form);
 
         editTexts = new ArrayList<EditText>();

@@ -15,6 +15,7 @@
     tools:context="bft.fishtagsapp.FormActivity"
     tools:showIn="@layout/activity_form">
 
+
     <RelativeLayout
         android:id="@+id/my_rel_view"
         android:layout_width="match_parent"
@@ -27,7 +28,7 @@
             android:layout_alignParentEnd="true"
             android:background="@color/seaColor"
             android:clickable="false"
-            android:text="Fish Tag Submission Form"
+            android:text="Fish Tag Submission"
             android:textAlignment="center"
             android:textColor="@color/whiteColor"
             android:textSize="30dp"
@@ -135,7 +136,7 @@
             android:layout_alignBaseline="@+id/Location0"
             android:layout_alignStart="@+id/Time"
             android:layout_below="@+id/Time"
-            android:text="41.9981° N, 91.1415° W"
+
             android:textSize="16dp" />
 
 

@@ -64,6 +64,7 @@ public class FormActivity extends AppCompatActivity {
             Log.i("FILENAME", fileName);
             fillInInfoFromFile(new File(fileName));
         }
+        Toast.makeText(getApplicationContext(),fileName,Toast.LENGTH_LONG).show();
     }
 
     protected void fillInInfoFromFile(File file) {
@@ -98,6 +99,7 @@ public class FormActivity extends AppCompatActivity {
         /*Get Location*/
         GPS gps = new GPS(this);
         Location location = gps.getGPS();
+        Toast.makeText(getApplicationContext(), location.toString(), Toast.LENGTH_LONG).show();
         if (location != null) {
             double latitude = location.getLatitude();
             double longitude = location.getLongitude();
@@ -107,6 +109,7 @@ public class FormActivity extends AppCompatActivity {
             locationText.setText(s);
         }
     }
+
     private void findFields(ViewGroup v, ArrayList<EditText> editTexts){
         /* Find EditTexts */
         int n = v.getChildCount();
@@ -159,7 +162,7 @@ public class FormActivity extends AppCompatActivity {
             //fallback photo - placeholder
             Uri uri = Uri.parse("android.resource://bft.fishtagsapp/drawable/placeholder.png");
             map.put("photo", uri.toString());
->>>>>>> Signup*/
+*/
         }
         return map;
     }
