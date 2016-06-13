@@ -13,22 +13,20 @@
     tools:showIn="@layout/activity_main">
 
     <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/FormLabelStyle"
         android:text="Submit Tag Recovery"
         android:onClick="goToForm"
         android:id="@+id/button"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="50dp"
-        android:textStyle="bold"
-        android:typeface="serif" />
+        android:background="@color/buttonColor"/>
 
     <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/FormLabelStyle"
         android:text="Scoreboard"
+        android:layout_marginTop="49dp"
+        android:background="@color/buttonColor"
         android:layout_below="@+id/button"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="50dp" />
+        android:layout_centerHorizontal="true" />
 </RelativeLayout>

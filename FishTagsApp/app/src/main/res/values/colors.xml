@@ -3,6 +3,11 @@
     <color name="colorPrimary">#3f51b5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="backgroundColor">#d3d8f6</color>
+    <color name="buttonColor">#6877ca</color>
     <color name="seaColor">@color/accent_material_light</color>
     <color name="whiteColor">@color/abc_primary_text_material_dark</color>
+    <color name="holo_light_primary">#cd4805</color>
+    <color name="holo_light_primary_dark">#2e0404</color>
+
 </resources>
