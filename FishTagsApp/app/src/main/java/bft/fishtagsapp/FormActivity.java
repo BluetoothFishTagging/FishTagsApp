@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -44,16 +45,17 @@ public class FormActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_form);
-/*
-        RelativeLayout my_relView = (RelativeLayout) findViewById(R.id.my_rel_view);
+
+
+        LinearLayout my_relView = (LinearLayout) findViewById(R.id.tag_submission_form);
 
         editTexts = new ArrayList<EditText>();
-        findFields(my_relView,editTexts);
+        findFields(my_relView, editTexts);
         fishPhotoView = (ImageView) findViewById(R.id.FishPhoto);
 
         //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         //setSupportActionBar(toolbar);
-*/
+
         String fileName = getIntent().getStringExtra("fileName");
         /* Auto-fill in data from the latest tag file */
         fillInInfoFromFile(fileName);
@@ -124,80 +126,30 @@ public class FormActivity extends AppCompatActivity {
         }
     }
 
-    //TODO: Create function that collects all of the information from the boxes into a Hashmap to be able to pass it on
-    protected HashMap<String, String> getFormMapOld() {
-        HashMap<String, String> map = new HashMap<>();
-        LinearLayout my_relView = (LinearLayout) findViewById(R.id.tag_submission_form);
-        for (int i = 0; i < my_relView.getChildCount(); i++) {
-            View v = my_relView.getChildAt(i);
-            if (v instanceof EditText) {
-                /*
-                The String id of the EditText will be used as the key for the entry.
-                The TextView that corresponds to each EditText has the same String id + 0 at the end so if necessary it can be used to find the text id.
-                 */
-                String textId = v.getResources().getResourceEntryName(v.getId());
-                String value = ((EditText) v).getText().toString();
-                map.put(textId, value);
-
-            } else if (v instanceof ImageView) {
-                /*If the user for some reason did not take a photo, add null as the URI for the photo.
-                * Although they should be taking photos, there can be problems with their camera for example.
-                * TODO: We could potentially think about having a little pop-up screen that asks, are they sure they want to continue without photo (and have a never ask me again option*/
-                if (((ImageView) v).getTag() == null) {
-                    map.put("Photo", null);
-                } else {
-                    Uri imageUri = (Uri) ((ImageView) v).getTag();
-                    map.put("Photo", imageUri.toString());
-                }
-            }
-        /*for(EditText e : editTexts){
-            String textId = e.getResources().getResourceEntryName(e.getId());
-            String value = ((EditText) e).getText().toString();
-            map.put(textId, value);
-        }
-        Uri imageUri = (Uri) fishPhotoView.getTag();
-        if(imageUri != null){
-            map.put("photo", imageUri.toString());
-        }else{
-            //fallback photo - placeholder
-            Uri uri = Uri.parse("android.resource://bft.fishtagsapp/drawable/placeholder.png");
-            map.put("photo", uri.toString());
-*/
-        }
-        return map;
-    }
-
     protected JSONObject getFormMap() {
         try {
             JSONObject data = new JSONObject();
-            LinearLayout my_linView = (LinearLayout) findViewById(R.id.tag_submission_form);
-            for (int i = 0; i < my_linView.getChildCount(); i++) {
-                View v = my_linView.getChildAt(i);
-                if (v instanceof EditText) {
-                /*
-                The String id of the EditText will be used as the key for the entry.
-                The TextView that corresponds to each EditText has the same String id + 0 at the end so if necessary it can be used to find the text id.
-                 */
-                    String textId = v.getResources().getResourceEntryName(v.getId());
-                    String value = ((EditText) v).getText().toString();
-                    data.put(textId, value);
 
-                } else if (v instanceof ImageView) {
-                /*If the user for some reason did not take a photo, add null as the URI for the photo.
-                * Although they should be taking photos, there can be problems with their camera for example.
-                * TODO: We could potentially think about having a little pop-up screen that asks, are they sure they want to continue without photo (and have a never ask me again option*/
-                    if (((ImageView) v).getTag() == null) {
-                        data.put("Photo", null);
-                    } else {
-                        Uri imageUri = (Uri) ((ImageView) v).getTag();
-                        data.put("Photo", imageUri.toString());
-                    }
-                }
+            for (EditText e : editTexts) {
+                String textId = e.getResources().getResourceEntryName(e.getId());
+                String value = ((EditText) e).getText().toString();
+                Log.i(textId, value);
+                data.put(textId, value);
+
             }
 
+            ImageView p = (ImageView) findViewById(R.id.FishPhoto);
+            if (p.getTag() == null) {
+                Uri uri = Uri.parse("android.resource://bft.fishtagsapp/drawable/placeholder.png");
+                data.put("Photo", uri.toString());
+            } else {
+                Uri imageUri = (Uri) p.getTag();
+                data.put("Photo", imageUri.toString());
+            }
             //for debugging
             Toast.makeText(getApplicationContext(), data.toString(), Toast.LENGTH_LONG).show();
             return data;
+
         } catch (JSONException e) {
             e.printStackTrace();
             return null;
@@ -214,8 +166,6 @@ public class FormActivity extends AppCompatActivity {
     }
 
     public void goToCamera(View view) {
-//        Intent intent = new Intent(this, Camera.class);
-//        startActivity(intent);
         dispatchTakePictureIntent();
     }
 
