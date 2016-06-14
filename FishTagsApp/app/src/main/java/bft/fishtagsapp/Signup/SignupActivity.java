@@ -31,8 +31,7 @@ public class SignupActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
-
-        mLoginFormView = (ScrollView) findViewById(R.id.login_form);
+         mLoginFormView = (ScrollView) findViewById(R.id.login_form);
 
         editTexts = new ArrayList<EditText>();
         findFields(mLoginFormView, editTexts);
@@ -43,19 +42,6 @@ public class SignupActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 signup();
-            }
-        });
-
-        /* Autofill fields when requested*/
-        Button autofillBtn = (Button) findViewById(R.id.autoFillBtn);
-        autofillBtn.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String info = Storage.read(Constants.PERSONAL_INFO);
-                Log.i("INFO", info);
-                if (info != null && !info.isEmpty()) {
-                    autofill(info);
-                }
             }
         });
     }
