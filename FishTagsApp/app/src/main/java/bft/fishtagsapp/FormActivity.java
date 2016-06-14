@@ -33,6 +33,7 @@ import java.util.HashMap;
 
 import bft.fishtagsapp.GPS.GPS;
 import bft.fishtagsapp.ParseFile.ParseFile;
+import bft.fishtagsapp.Signup.SignupActivity;
 
 public class FormActivity extends AppCompatActivity {
 
@@ -63,7 +64,7 @@ public class FormActivity extends AppCompatActivity {
             Log.i("FILENAME", fileName);
             fillInInfoFromFile(new File(fileName));
         }
-        Toast.makeText(getApplicationContext(),fileName,Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(), fileName, Toast.LENGTH_LONG).show();
     }
 
     protected void fillInInfoFromFile(File file) {
@@ -109,16 +110,16 @@ public class FormActivity extends AppCompatActivity {
         }
     }
 
-    private void findFields(ViewGroup v, ArrayList<EditText> editTexts){
+    private void findFields(ViewGroup v, ArrayList<EditText> editTexts) {
         /* Find EditTexts */
         int n = v.getChildCount();
-        for(int i=0; i<n; ++i){
+        for (int i = 0; i < n; ++i) {
             View subView = v.getChildAt(i);
-            if(subView instanceof ViewGroup){
+            if (subView instanceof ViewGroup) {
                 //recursively search for editTexts
-                findFields((ViewGroup)subView, editTexts);
-            }else if (subView instanceof EditText){
-                editTexts.add((EditText)subView);
+                findFields((ViewGroup) subView, editTexts);
+            } else if (subView instanceof EditText) {
+                editTexts.add((EditText) subView);
             }
         }
     }
@@ -166,8 +167,8 @@ public class FormActivity extends AppCompatActivity {
         return map;
     }
 
-    protected JSONObject getFormMap(){
-        try{
+    protected JSONObject getFormMap() {
+        try {
             JSONObject data = new JSONObject();
             LinearLayout my_linView = (LinearLayout) findViewById(R.id.tag_submission_form);
             for (int i = 0; i < my_linView.getChildCount(); i++) {
@@ -195,9 +196,9 @@ public class FormActivity extends AppCompatActivity {
             }
 
             //for debugging
-            Toast.makeText(getApplicationContext(),data.toString(),Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), data.toString(), Toast.LENGTH_LONG).show();
             return data;
-        }catch(JSONException e){
+        } catch (JSONException e) {
             e.printStackTrace();
             return null;
         }
@@ -206,10 +207,10 @@ public class FormActivity extends AppCompatActivity {
     //TODO: pass along hashmap of Values
     public void submitForm(View view) {
         Log.i("FORM", "SUBMITTING");
-        Intent intent_result = new Intent();
-        intent_result.putExtra("map", getFormMap().toString());
-        setResult(RESULT_OK, intent_result);
-        finish();
+        /* First verify the personal info */
+        Intent intent_verify = new Intent(this, SignupActivity.class);
+        intent_verify.putExtra("request", Constants.REQUEST_VERIFY_SETTINGS);
+        startActivityForResult(intent_verify, Constants.REQUEST_VERIFY_SETTINGS);
     }
 
     public void goToCamera(View view) {
@@ -240,16 +241,26 @@ public class FormActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
-            Uri imageUri = data.getData();
-            try {
-                Bitmap bitmap = getThumbnail(imageUri);
-                ImageView myImageView = (ImageView) findViewById(R.id.FishPhoto);
-                myImageView.setImageBitmap(bitmap);
-                myImageView.setTag(imageUri);
-            } catch (Exception e) {
-                e.printStackTrace();
+        //super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == Constants.REQUEST_VERIFY_SETTINGS) {
+            if (resultCode == RESULT_OK) {
+                Intent intent_result = new Intent();
+                intent_result.putExtra("map", getFormMap().toString());
+                setResult(RESULT_OK, intent_result);
+                finish();
+            }
+        }
+        if (requestCode == Constants.REQUEST_TAKE_PHOTO) {
+            if (resultCode == RESULT_OK) {
+                Uri imageUri = data.getData();
+                try {
+                    Bitmap bitmap = getThumbnail(imageUri);
+                    ImageView myImageView = (ImageView) findViewById(R.id.FishPhoto);
+                    myImageView.setImageBitmap(bitmap);
+                    myImageView.setTag(imageUri);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
     }

@@ -203,7 +203,7 @@
             android:layout_marginTop="15dp"
             android:background="@color/seaColor"
             android:onClick="submitForm"
-            android:text="Submit"
+            android:text="Next"
             android:textColor="@color/whiteColor"
             android:textSize="30dp"
             android:textStyle="bold" />

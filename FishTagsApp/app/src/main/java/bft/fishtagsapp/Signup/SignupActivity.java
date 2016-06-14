@@ -31,19 +31,62 @@ public class SignupActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
-         mLoginFormView = (ScrollView) findViewById(R.id.login_form);
+        mLoginFormView = (ScrollView) findViewById(R.id.login_form);
 
         editTexts = new ArrayList<EditText>();
         findFields(mLoginFormView, editTexts);
 
-        /* Save Information */
-        Button signUpBtn = (Button) findViewById(R.id.signUpBtn);
-        signUpBtn.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                signup();
+        /* Decide which buttons to display depending on request*/
+
+
+        int request = getIntent().getIntExtra("request", 0);
+        Log.i("HEY", "" + request);
+        if (request == Constants.REQUEST_SIGNUP) {
+            View b = findViewById(R.id.newInfo);
+            b.setVisibility(View.VISIBLE);
+        } else {
+            /* Autofill if possible */
+            String info = Storage.read("info.txt");
+            Log.i("INFO", info);
+            if (info != null && !info.isEmpty()) {
+                autofill(info);
             }
-        });
+
+            if (request == Constants.REQUEST_EDIT_SETTINGS) {
+                View b = findViewById(R.id.modifyInfo);
+                b.setVisibility(View.VISIBLE);
+            } else {
+                View b = findViewById(R.id.verifyInfo);
+                b.setVisibility(View.VISIBLE);
+                Button b2 = (Button) findViewById(R.id.signUpBtn);
+                b2.setText("Submit");
+            }
+        }
+
+        /* Must send a result OK back to formActivity to allow it to submit*/
+        if (request == Constants.REQUEST_VERIFY_SETTINGS) {
+            Button signUpBtn = (Button) findViewById(R.id.signUpBtn);
+            signUpBtn.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    signup(); // save in case the info was editted
+                    /* We probably want to return the latest info.txt stuff*/
+                    Intent intent_result = new Intent();
+                    intent_result.putExtra("info", 0);
+                    setResult(RESULT_OK, intent_result);
+                    finish();
+                }
+            });
+        } else {
+        /* Save Information */
+            Button signUpBtn = (Button) findViewById(R.id.signUpBtn);
+            signUpBtn.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    signup();
+                }
+            });
+        }
     }
 
     private void findFields(ViewGroup v, ArrayList<EditText> editTexts) {
@@ -108,4 +151,3 @@ public class SignupActivity extends AppCompatActivity {
         }
     }
 }
-

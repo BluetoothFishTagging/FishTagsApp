@@ -3,6 +3,7 @@ package bft.fishtagsapp;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 
 import bft.fishtagsapp.Signup.SignupActivity;
 import bft.fishtagsapp.Storage.Storage;
@@ -24,9 +25,9 @@ public class LauncherActivity extends AppCompatActivity {
             finish();
         } else {
             intent = new Intent(this, SignupActivity.class);
+            intent.putExtra("request", Constants.REQUEST_SIGNUP);
             startActivityForResult(intent, Constants.REQUEST_SIGNUP);
         }
-
     }
 
     @Override
