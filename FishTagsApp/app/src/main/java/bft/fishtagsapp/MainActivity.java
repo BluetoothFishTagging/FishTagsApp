@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
         /* BLUETOOTH WATCHER */
         String DownloadDir_raw = Environment.getExternalStorageDirectory().getPath() ; //WORKS
         final String DownloadDir = android.os.Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath();//Works
-        //final String DEFAULT_STORE_SUBDIR = "/FishTagsData";//Check if this works
+        final String DEFAULT_STORE_SUBDIR = "/FishTagsData";//Check if this works
         //String BluetoothDir = getExternalFilesDir(Environment.DIRECTORY_).getPath() + "/bluetooth"; DOESN'T WORK
 
         final Handler handler = new Handler();
