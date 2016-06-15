@@ -55,12 +55,12 @@ public class MainActivity extends AppCompatActivity {
 //        setSupportActionBar(toolbar);
         /* BLUETOOTH WATCHER */
         String DownloadDir_raw = Environment.getExternalStorageDirectory().getPath() ; //WORKS
-        //final String DownloadDir = android.os.Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath();//Works
-        final String DownloadDir = "/FishTagsData";//Check if this works
+        final String DownloadDir = android.os.Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath();//Works
+        final String DEFAULT_STORE_SUBDIR = "/FishTagsData";//Check if this works
         //String BluetoothDir = getExternalFilesDir(Environment.DIRECTORY_).getPath() + "/bluetooth"; DOESN'T WORK
 
         final Handler handler = new Handler();
-        observer = new FileObserver(DownloadDir) {
+        observer = new FileObserver(DEFAULT_STORE_SUBDIR) {
             @Override
             /*DETECTING BLUETOOTH TRANSFER*/
             public void onEvent(int event, final String fileName) {
@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
 
                             //if(new File(fileName).length() > 0) // has content
                             //goToForm(DownloadDir + '/' + fileName);
-                            recent = DownloadDir + '/' + fileName;
+                            recent = DEFAULT_STORE_SUBDIR + '/' + fileName;
                             //TODO : create fallback when there is no tag
                             //TODO : check is valid tag file
                             //goToForm(recent);
@@ -85,7 +85,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         };
-
         observer.startWatching();
 
         Intent uploadIntent = new Intent(this,UploadService.class);
