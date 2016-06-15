@@ -23,7 +23,9 @@ import org.json.JSONObject;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.LinkedList;
 
 import bft.fishtagsapp.Storage.Storage;
@@ -111,7 +113,11 @@ public class UploadService extends Service {
                 client.connectMultipart();
                 client.addFormPart("tagInfo", tagInfo);
                 client.addFormPart("personInfo", personInfo); //form (plain text, JSON, etc) data.
-                client.addFilePart("photo", "camera", byteArray);
+
+                String timeStamp = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss").format(new Date().getTime());
+                String photoName = timeStamp + ".jpg";
+
+                client.addFilePart("photo", photoName, byteArray);
                 client.finishMultipart();
                 String response = client.getResponse();
 
