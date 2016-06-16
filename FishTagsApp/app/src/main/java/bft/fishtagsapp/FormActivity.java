@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -16,7 +15,6 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -101,15 +99,19 @@ public class FormActivity extends AppCompatActivity {
         /*Get Location*/
         GPS gps = new GPS(this);
         Location location = gps.getGPS();
-        Toast.makeText(getApplicationContext(), location.toString(), Toast.LENGTH_LONG).show();
-        if (location != null) {
+        String locString;
+        if(location==null){
+            locString = "N/A";
+        }else{
             double latitude = location.getLatitude();
             double longitude = location.getLongitude();
-            String s = String.format("LAT:%f,LONG:%f", latitude, longitude);
-
-            TextView locationText = (TextView) findViewById(R.id.Location);
-            locationText.setText(s);
+            locString = String.format("LAT:%f,LONG:%f", latitude, longitude);
         }
+
+        TextView locationText = (TextView) findViewById(R.id.Location);
+        locationText.setText(locString);
+        Toast.makeText(getApplicationContext(), locString, Toast.LENGTH_LONG).show();
+
     }
 
     private void findFields(ViewGroup v, ArrayList<EditText> editTexts) {
@@ -141,10 +143,10 @@ public class FormActivity extends AppCompatActivity {
             ImageView p = (ImageView) findViewById(R.id.FishPhoto);
             if (p.getTag() == null) {
                 Uri uri = Uri.parse("android.resource://bft.fishtagsapp/drawable/placeholder.png");
-                data.put("Photo", uri.toString());
+                data.put("photo", uri.toString());
             } else {
                 Uri imageUri = (Uri) p.getTag();
-                data.put("Photo", imageUri.toString());
+                data.put("photo", imageUri.toString());
             }
             //for debugging
             Toast.makeText(getApplicationContext(), data.toString(), Toast.LENGTH_LONG).show();

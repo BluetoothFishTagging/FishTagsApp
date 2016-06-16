@@ -60,7 +60,11 @@ public class MainActivity extends AppCompatActivity {
         //String BluetoothDir = getExternalFilesDir(Environment.DIRECTORY_).getPath() + "/bluetooth"; DOESN'T WORK
 
         final Handler handler = new Handler();
+<<<<<<< HEAD
         observer = new FileObserver(DownloadDir_raw) {
+=======
+        observer = new FileObserver(DownloadDir) {
+>>>>>>> 42abddfd28e50a21fd2f68fabdb440bd11dd9636
             @Override
             /*DETECTING BLUETOOTH TRANSFER*/
             public void onEvent(int event, final String fileName) {
@@ -76,7 +80,11 @@ public class MainActivity extends AppCompatActivity {
 
                             //if(new File(fileName).length() > 0) // has content
                             //goToForm(DownloadDir + '/' + fileName);
+<<<<<<< HEAD
                             recent = DownloadDir_raw + '/' + fileName;
+=======
+                            recent = DownloadDir + '/' + fileName;
+>>>>>>> 42abddfd28e50a21fd2f68fabdb440bd11dd9636
                             //TODO : create fallback when there is no tag
                             //TODO : check is valid tag file
                             //goToForm(recent);
@@ -149,7 +157,7 @@ public class MainActivity extends AppCompatActivity {
                     String fileName = timeStamp + ".txt";
                     dataObj.put("name", fileName);//txt file extension
                     //server url placeholder
-                    String url = "http://192.168.16.73:8000/";
+                    String url = Constants.DATABASE_URL;
                     String uri = (String) dataObj.get("photo");
                     String tagInfo = dataObj.toString(); //JSON string
                     String personInfo = Storage.read(Constants.PERSONAL_INFO);
