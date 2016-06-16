@@ -60,11 +60,8 @@ public class MainActivity extends AppCompatActivity {
         //String BluetoothDir = getExternalFilesDir(Environment.DIRECTORY_).getPath() + "/bluetooth"; DOESN'T WORK
 
         final Handler handler = new Handler();
-<<<<<<< HEAD
         observer = new FileObserver(DownloadDir_raw) {
-=======
-        observer = new FileObserver(DownloadDir) {
->>>>>>> 42abddfd28e50a21fd2f68fabdb440bd11dd9636
+        //observer = new FileObserver(DownloadDir) {
             @Override
             /*DETECTING BLUETOOTH TRANSFER*/
             public void onEvent(int event, final String fileName) {
@@ -80,11 +77,11 @@ public class MainActivity extends AppCompatActivity {
 
                             //if(new File(fileName).length() > 0) // has content
                             //goToForm(DownloadDir + '/' + fileName);
-<<<<<<< HEAD
+
                             recent = DownloadDir_raw + '/' + fileName;
-=======
-                            recent = DownloadDir + '/' + fileName;
->>>>>>> 42abddfd28e50a21fd2f68fabdb440bd11dd9636
+
+                            //recent = DownloadDir + '/' + fileName;
+
                             //TODO : create fallback when there is no tag
                             //TODO : check is valid tag file
                             //goToForm(recent);
