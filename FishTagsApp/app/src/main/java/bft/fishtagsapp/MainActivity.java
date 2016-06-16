@@ -85,7 +85,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         };
-
         observer.startWatching();
 
         Intent uploadIntent = new Intent(this,UploadService.class);
@@ -150,7 +149,7 @@ public class MainActivity extends AppCompatActivity {
                     String fileName = timeStamp + ".txt";
                     dataObj.put("name", fileName);//txt file extension
                     //server url placeholder
-                    String url = "http://192.168.16.73:8000/";
+                    String url = Constants.DATABASE_URL;
                     String uri = (String) dataObj.get("photo");
                     String tagInfo = dataObj.toString(); //JSON string
                     String personInfo = Storage.read(Constants.PERSONAL_INFO);

@@ -14,4 +14,5 @@ public final class Constants {
     public static final String PENDING = "pending.txt";
     public static final String PERSONAL_INFO = "info.txt";
     public static final String ACTION_UPLOAD = "Upload";
+    public static final String DATABASE_URL = "https://hitag-databse.herokuapp.com/";
 }
