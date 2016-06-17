@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -58,17 +57,40 @@ public class FormActivity extends AppCompatActivity {
     }
 
     protected void fillInInfoFromFile(String fileName) {
+        /* Parse the file only if the file exists. Even though one may not exist, however, still fill in time and date, etc. */
         if (fileName != null) {
             Log.i("FILENAME", fileName);
             fillInInfoFromFile(new File(fileName));
         }
-        Toast.makeText(getApplicationContext(), fileName, Toast.LENGTH_LONG).show();
+        /*Get Time*/
+        String time = new SimpleDateFormat("yyyyMMdd HH:mm:ss").format(new Date());
+        Log.i("Time", time);
+        TextView timeText = (TextView) findViewById(R.id.Time);
+        timeText.setText(time);
+
+//        /*Get Location*/
+//        GPS gps = new GPS(this);
+//        Location location = gps.getGPS();
+//        String locString;
+//        if(location==null){
+//            locString = "N/A";
+//        }else{
+//            double latitude = location.getLatitude();
+//            double longitude = location.getLongitude();
+//            locString = String.format("LAT:%f,LONG:%f", latitude, longitude);
+//        }
+//
+//        TextView locationText = (TextView) findViewById(R.id.Location);
+//        locationText.setText(locString);
+//        Toast.makeText(getApplicationContext(), locString, Toast.LENGTH_LONG).show();
+//        Toast.makeText(getApplicationContext(), fileName, Toast.LENGTH_LONG).show();
     }
 
     protected void fillInInfoFromFile(File file) {
         /* Call Parse File to return all of the entries in the file.
             ParseFile handles all of the storage stuff so that FormActivity only fills in the UI
          */
+
         HashMap<String, String> entries = ParseFile.getEntries(file);
         if (entries == null) {
             return;
@@ -88,28 +110,6 @@ public class FormActivity extends AppCompatActivity {
                 // Do error handling if the id is not found
             }
         }
-
-        /*Get Time*/
-        String time = new SimpleDateFormat("yyyyMMdd HH:mm:ss").format(new Date());
-        TextView timeText = (TextView) findViewById(R.id.Time);
-        timeText.setText(time);
-
-        /*Get Location*/
-        GPS gps = new GPS(this);
-        Location location = gps.getGPS();
-        String locString;
-        if(location==null){
-            locString = "N/A";
-        }else{
-            double latitude = location.getLatitude();
-            double longitude = location.getLongitude();
-            locString = String.format("LAT:%f,LONG:%f", latitude, longitude);
-        }
-
-        TextView locationText = (TextView) findViewById(R.id.Location);
-        locationText.setText(locString);
-        Toast.makeText(getApplicationContext(), locString, Toast.LENGTH_LONG).show();
-
     }
 
     private void findFields(ViewGroup v, ArrayList<EditText> editTexts) {
@@ -140,8 +140,8 @@ public class FormActivity extends AppCompatActivity {
 
             ImageView p = (ImageView) findViewById(R.id.FishPhoto);
             if (p.getTag() == null) {
-                Uri uri = Uri.parse("android.resource://bft.fishtagsapp/drawable/placeholder.png");
-                data.put("photo", uri.toString());
+//                Uri uri = Uri.parse("android.resource://bft.fishtagsapp/drawable/placeholder.png");
+                data.put("photo", null);
             } else {
                 Uri imageUri = (Uri) p.getTag();
                 data.put("photo", imageUri.toString());
@@ -165,6 +165,7 @@ public class FormActivity extends AppCompatActivity {
     }
 
     public void goToCamera(View view) {
+        Log.i("Camera", "Dispatching intent");
         dispatchTakePictureIntent();
     }
 

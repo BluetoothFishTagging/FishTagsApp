@@ -3,6 +3,7 @@ package bft.fishtagsapp;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.FileObserver;
@@ -10,11 +11,12 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONException;
@@ -62,16 +64,22 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        /* Create welcome message for returning user */
+        String name = getName();
+        if (name != "") {
+            TextView welcome = (TextView) findViewById(R.id.welcome);
+            welcome.setText(String.format("Welcome, %s!", name));
+        }
         /* BLUETOOTH WATCHER */
         final String DownloadDir_raw = Environment.getExternalStorageDirectory().getPath() + Constants.DEFAULT_STORE_SUBDIR; //WORKS
-        //final String DownloadDir = android.os.Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath();//Works
+        final String DownloadDir = android.os.Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath();//Works
         final String DEFAULT_STORE_SUBDIR = "/FishTagsData";//Check if this works
         //String BluetoothDir = getExternalFilesDir(Environment.DIRECTORY_).getPath() + "/bluetooth"; DOESN'T WORK
 
         final Handler handler = new Handler();
-        observer = new FileObserver(DownloadDir_raw) {
-        //observer = new FileObserver(DownloadDir) {
-        //observer = new FileObserver(DownloadDir) {
+        observer = new FileObserver(DownloadDir) {
+            //observer = new FileObserver(DownloadDir) {
+            //observer = new FileObserver(DownloadDir) {
             @Override
             /*DETECTING BLUETOOTH TRANSFER*/
             public void onEvent(int event, final String fileName) {
@@ -87,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
 
                             //if(new File(fileName).length() > 0) // has content
                             //goToForm(DownloadDir + '/' + fileName);
-							//
+                            //
                             recent = DownloadDir + '/' + fileName;
 
                             //TODO : check is valid tag file
@@ -99,15 +107,15 @@ public class MainActivity extends AppCompatActivity {
         };
         observer.startWatching();
 
-        Intent uploadIntent = new Intent(this,UploadService.class);
+        Intent uploadIntent = new Intent(this, UploadService.class);
 
-        bindService(uploadIntent,uploadConnection,BIND_AUTO_CREATE); // no flags
+        bindService(uploadIntent, uploadConnection, BIND_AUTO_CREATE); // no flags
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if(uploadServiceBound){
+        if (uploadServiceBound) {
             unbindService(uploadConnection);
         }
     }
@@ -164,7 +172,7 @@ public class MainActivity extends AppCompatActivity {
                     String tagInfo = dataObj.toString(); //JSON string
                     String personInfo = Storage.read(Constants.PERSONAL_INFO);
 
-                    uploadBinder.enqueue(url,uri,tagInfo,personInfo);
+                    uploadBinder.enqueue(url, uri, tagInfo, personInfo);
 
                     Toast.makeText(getApplicationContext(), "Thank you for submitting a tag!", Toast.LENGTH_SHORT).show();
                 } catch (JSONException e) {
@@ -223,8 +231,24 @@ public class MainActivity extends AppCompatActivity {
         startActivityForResult(intent, Constants.SUBMIT_TAG);
     }
 
-    public void signUp(View v){
+    public void signUp(View v) {
         Intent intent = new Intent(this, SignupActivity.class);
         startActivity(intent);
+    }
+
+    public String getName() {
+        Log.i("INFO", "YO");
+
+        String info = Storage.read("info.txt");
+        if (info != null && !info.isEmpty()) {
+            try {
+                JSONObject data = new JSONObject(info);
+                    String value = data.getString("name");
+                    return value;
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return "";
     }
 }
