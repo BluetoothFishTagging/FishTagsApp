@@ -6,11 +6,8 @@
          TODO: camera unrequired, disable camera features if no camera on device.
         Currently, camera required on device to download app.
     -->
-
-
     <!-- Camera -->
     <uses-permission android:name="android.permission.CAMERA" />
-
     <uses-feature
         android:name="android.hardware.camera"
         android:required="true" />
@@ -43,10 +40,10 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity
             android:name=".MainActivity"
-            android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:label="@string/app_name"></activity>
 
         <receiver
             android:name=".Wifi.WifiDetector"
@@ -61,16 +58,20 @@
             android:name=".Linkage.LinkageActivity"
             android:label="LinkageActivity"
             android:parentActivityName=".MainActivity" />
+
         <activity android:name=".Storage.StorageActivty" />
+
         <activity
             android:name=".FormActivity"
             android:label="Tag Submission Form" />
+
         <activity
             android:name=".TestingActivity"
             android:label="@string/title_activity_testing"
             android:theme="@style/AppTheme.NoActionBar" />
 
         <service android:name=".Client.UploadService" />
+
         <service android:name=".Client.TagUploader" />
 
         <activity
@@ -83,6 +84,7 @@
             android:label="@string/app_name">
 
         </activity>
+
         <activity
             android:name=".Splash"
             android:label="@string/title_activity_splash"
@@ -92,6 +94,7 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
     </application>
 

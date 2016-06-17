@@ -361,8 +361,8 @@ public final class Storage {
             }
 
             //TODO : create subdirectory "report"
-        } else {
 
+        } else {
             Log.i("sdcard", "not present");
             useSDCard = false;
             prefStorage = context.getSharedPreferences(name, Context.MODE_PRIVATE);

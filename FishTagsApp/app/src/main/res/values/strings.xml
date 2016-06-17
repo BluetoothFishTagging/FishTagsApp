@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">FishTagsApp</string>
+    <string name="app_name">HI TAG</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_parse_data">ParseDataActivity</string>
     <string name="title_activity_parse_file">ParseFileActivity</string>
