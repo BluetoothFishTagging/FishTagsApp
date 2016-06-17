@@ -55,13 +55,13 @@ public class MainActivity extends AppCompatActivity {
 //        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 //        setSupportActionBar(toolbar);
         /* BLUETOOTH WATCHER */
-        final String DownloadDir_raw = Environment.getExternalStorageDirectory().getPath() + Constants.DEFAULT_STORE_SUBDIR; //WORKS
-        //final String DownloadDir = android.os.Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath();//Works
+        //final String DownloadDir_raw = Environment.getExternalStorageDirectory().getPath() + Constants.DEFAULT_STORE_SUBDIR; //WORKS
+        final String DownloadDir = android.os.Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath();//Works
         final String DEFAULT_STORE_SUBDIR = "/FishTagsData";//Check if this works
         //String BluetoothDir = getExternalFilesDir(Environment.DIRECTORY_).getPath() + "/bluetooth"; DOESN'T WORK
 
         final Handler handler = new Handler();
-        observer = new FileObserver(DownloadDir_raw) {
+        observer = new FileObserver(DownloadDir) {
         //observer = new FileObserver(DownloadDir) {
             @Override
             /*DETECTING BLUETOOTH TRANSFER*/

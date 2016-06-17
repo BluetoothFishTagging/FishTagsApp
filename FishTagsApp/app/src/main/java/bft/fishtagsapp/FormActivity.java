@@ -1,6 +1,8 @@
 package bft.fishtagsapp;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
@@ -8,6 +10,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -25,6 +29,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -100,9 +105,9 @@ public class FormActivity extends AppCompatActivity {
         GPS gps = new GPS(this);
         Location location = gps.getGPS();
         String locString;
-        if(location==null){
+        if (location == null) {
             locString = "N/A";
-        }else{
+        } else {
             double latitude = location.getLatitude();
             double longitude = location.getLongitude();
             locString = String.format("LAT:%f,LONG:%f", latitude, longitude);
@@ -172,20 +177,55 @@ public class FormActivity extends AppCompatActivity {
 
     Uri photoUri;
 
+    private Boolean checkAndRequestRuntimePermissions(String[] permissions, int requestCode){
+        ArrayList<String> permissionsToRequest = new ArrayList<>();
+
+        for(String permission : permissions){
+            if(ContextCompat.checkSelfPermission(this,permission) != PackageManager.PERMISSION_GRANTED){
+                if (ActivityCompat.shouldShowRequestPermissionRationale(this,permission)){
+                    //do something here
+                }else{
+                    permissionsToRequest.add(permission);
+                }
+            }
+
+        }
+
+        if(permissionsToRequest.size() == 0){
+            return true; //no need to get new permissions
+        }else{
+            String[] permArr = new String[permissionsToRequest.size()];
+            permArr = permissionsToRequest.toArray(permArr);
+
+
+            ActivityCompat.requestPermissions(this, permArr, requestCode);
+            return false;
+        }
+    }
     private void dispatchTakePictureIntent() {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        Boolean permitted = checkAndRequestRuntimePermissions(
+                new String[]{
+                        Manifest.permission.CAMERA,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE
+                },
+                Constants.REQUEST_CAMERA
+        );
+
+        if(permitted){
+            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         /* Ensure that there's a camera activity to handle the intent */
-        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
             /* Create the File where the photo should go */
-            File photoFile = null;
-            try {
-                photoFile = createFile(Environment.getExternalStorageDirectory(), "JPEG", ".jpg");
-                photoUri = Uri.fromFile(photoFile);
+                File photoFile = null;
+                try {
+                    photoFile = createFile(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM), "JPEG", ".jpg");
+                    photoUri = Uri.fromFile(photoFile);
 //                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
 //                        Uri.fromFile(photoFile));
-                startActivityForResult(takePictureIntent, Constants.REQUEST_TAKE_PHOTO);
-            } catch (IOException ex) {
-
+                    startActivityForResult(takePictureIntent, Constants.REQUEST_TAKE_PHOTO);
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
             }
         }
     }
@@ -213,6 +253,27 @@ public class FormActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
             }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case Constants.REQUEST_CAMERA:
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    //try to take photo again
+
+                    dispatchTakePictureIntent();
+
+                } else {
+                    Log.i("PERMISSIONS","NOT GRANTED");
+                    //give up on photo
+                }
+                return;
         }
     }
 
