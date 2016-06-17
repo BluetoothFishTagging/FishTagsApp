@@ -8,7 +8,9 @@ import android.os.Environment;
 import android.os.FileObserver;
 import android.os.Handler;
 import android.os.IBinder;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -49,11 +51,17 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
+
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                goToForm(view);
+            }
+        });
+
         /* BLUETOOTH WATCHER */
         //final String DownloadDir_raw = Environment.getExternalStorageDirectory().getPath() + Constants.DEFAULT_STORE_SUBDIR; //WORKS
         final String DownloadDir = android.os.Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath();//Works
@@ -62,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
 
         final Handler handler = new Handler();
         observer = new FileObserver(DownloadDir) {
+        //observer = new FileObserver(DownloadDir) {
         //observer = new FileObserver(DownloadDir) {
             @Override
             /*DETECTING BLUETOOTH TRANSFER*/

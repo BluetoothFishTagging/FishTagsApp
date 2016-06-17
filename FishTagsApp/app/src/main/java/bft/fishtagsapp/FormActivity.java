@@ -13,6 +13,7 @@ import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,9 +56,6 @@ public class FormActivity extends AppCompatActivity {
         editTexts = new ArrayList<EditText>();
         findFields(my_relView, editTexts);
         fishPhotoView = (ImageView) findViewById(R.id.FishPhoto);
-
-        //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        //setSupportActionBar(toolbar);
 
         String fileName = getIntent().getStringExtra("fileName");
         /* Auto-fill in data from the latest tag file */

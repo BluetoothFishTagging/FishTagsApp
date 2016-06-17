@@ -1,6 +1,7 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/login_form"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center_horizontal"
@@ -11,22 +12,14 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".signup.SignupActivity">
 
-    <LinearLayout
+    <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme">
+        <include layout="@layout/custom_toolbar" />
+    </android.support.design.widget.AppBarLayout>
 
-        <include layout="@layout/personal_info_layout" />
+    <include layout="@layout/content_signup" />
 
-        <Button
-            android:id="@+id/signUpBtn"
-            style="?android:textAppearanceSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_weight="1"
-            android:text="@string/action_sign_up"
-            android:textStyle="bold" />
+</android.support.design.widget.CoordinatorLayout>
 
-    </LinearLayout>
-</ScrollView>
