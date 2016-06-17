@@ -161,6 +161,7 @@ public class MainActivity extends AppCompatActivity {
                     //server url placeholder
                     String url = Constants.DATABASE_URL;
                     String uri = (String) dataObj.get("photo");
+
                     String tagInfo = dataObj.toString(); //JSON string
                     String personInfo = Storage.read(Constants.PERSONAL_INFO);
 
