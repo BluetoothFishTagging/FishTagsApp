@@ -1,4 +1,4 @@
-package bft.fishtagsapp.Signup;
+package bft.fishtagsapp.signup;
 
 import android.content.Intent;
 import android.content.res.Resources;
@@ -20,7 +20,7 @@ import java.util.ArrayList;
 
 import bft.fishtagsapp.Constants;
 import bft.fishtagsapp.R;
-import bft.fishtagsapp.Storage.Storage;
+import bft.fishtagsapp.storage.Storage;
 
 public class SignupActivity extends AppCompatActivity {
     // UI references.

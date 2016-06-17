@@ -1,4 +1,4 @@
-package bft.fishtagsapp.Client;
+package bft.fishtagsapp.client;
 
 import java.io.InputStream;
 import java.io.OutputStream;

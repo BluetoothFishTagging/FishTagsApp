@@ -23,9 +23,9 @@ import org.json.JSONObject;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import bft.fishtagsapp.Client.UploadService;
-import bft.fishtagsapp.Signup.SignupActivity;
-import bft.fishtagsapp.Storage.Storage;
+import bft.fishtagsapp.client.UploadService;
+import bft.fishtagsapp.signup.SignupActivity;
+import bft.fishtagsapp.storage.Storage;
 
 public class MainActivity extends AppCompatActivity {
     private FileObserver observer;
@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
             uploadServiceBound = false;
         }
     };
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,12 +87,9 @@ public class MainActivity extends AppCompatActivity {
 
                             //if(new File(fileName).length() > 0) // has content
                             //goToForm(DownloadDir + '/' + fileName);
+							//
+                            recent = DownloadDir + '/' + fileName;
 
-                            recent = DownloadDir_raw + '/' + fileName;
-
-                            //recent = DownloadDir + '/' + fileName;
-
-                            //TODO : create fallback when there is no tag
                             //TODO : check is valid tag file
                             //goToForm(recent);
                         }
@@ -103,8 +101,7 @@ public class MainActivity extends AppCompatActivity {
 
         Intent uploadIntent = new Intent(this,UploadService.class);
 
-        startService(uploadIntent);
-        bindService(uploadIntent,uploadConnection,BIND_AUTO_CREATE); //TODO : check flags
+        bindService(uploadIntent,uploadConnection,BIND_AUTO_CREATE); // no flags
     }
 
     @Override
@@ -154,7 +151,6 @@ public class MainActivity extends AppCompatActivity {
 
         if (requestCode == Constants.SUBMIT_TAG) {
             if (resultCode == RESULT_OK) {
-                //TODO: Route to Storage
                 JSONObject dataObj = null;
 
                 try {

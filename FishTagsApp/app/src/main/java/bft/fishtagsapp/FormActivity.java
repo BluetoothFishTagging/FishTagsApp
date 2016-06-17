@@ -31,9 +31,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
-import bft.fishtagsapp.GPS.GPS;
-import bft.fishtagsapp.ParseFile.ParseFile;
-import bft.fishtagsapp.Signup.SignupActivity;
+import bft.fishtagsapp.gps.GPS;
+import bft.fishtagsapp.parsefile.ParseFile;
+import bft.fishtagsapp.signup.SignupActivity;
 
 public class FormActivity extends AppCompatActivity {
 
@@ -156,7 +156,6 @@ public class FormActivity extends AppCompatActivity {
         }
     }
 
-    //TODO: pass along hashmap of Values
     public void submitForm(View view) {
         Log.i("FORM", "SUBMITTING");
         /* First verify the personal info */

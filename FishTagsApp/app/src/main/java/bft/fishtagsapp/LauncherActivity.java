@@ -3,10 +3,9 @@ package bft.fishtagsapp;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 
-import bft.fishtagsapp.Signup.SignupActivity;
-import bft.fishtagsapp.Storage.Storage;
+import bft.fishtagsapp.signup.SignupActivity;
+import bft.fishtagsapp.storage.Storage;
 
 public class LauncherActivity extends AppCompatActivity {
 
