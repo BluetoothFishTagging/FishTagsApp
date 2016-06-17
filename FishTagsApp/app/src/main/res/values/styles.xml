@@ -10,7 +10,7 @@
     <style name="MyActionBar" parent="Widget.AppCompat.Light.ActionBar.Solid">
         <item name="android:background">@color/seaColor</item>
         <item name="android:textColor">@color/colorAccent</item>
-        <item name="logo">@drawable/whale</item>
+        <item name="logo">@mipmap/ic_launcher</item>
         <item name="displayOptions">useLogo|showHome</item>
     </style>
 
