@@ -1,21 +1,16 @@
-package bft.fishtagsapp.Client;
+package bft.fishtagsapp.client;
 
 import android.app.Service;
-import android.app.usage.NetworkStats;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.Uri;
-import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
-import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -24,12 +19,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 
-import bft.fishtagsapp.Storage.Storage;
-import bft.fishtagsapp.Wifi.WifiDetector;
+import bft.fishtagsapp.storage.Storage;
+import bft.fishtagsapp.wifi.WifiDetector;
 
 /**
  * Created by jamiecho on 3/9/16.
@@ -61,24 +55,25 @@ public class UploadService extends Service {
         }
     }
 
-    private final UploadBinder mBinder = new UploadBinder();
+    private final IBinder mBinder = new UploadBinder();
     private LinkedList<String[]> uploadQueue = new LinkedList<>();
     private Boolean bound;
 
-    //placeholder url for server domain
-    //hardcoded, and must be replaced with real domain name
-    String url = "http://192.168.16.73:8000/";
+    String url;
 
     public UploadService() {
 
     }
 
+    /* DEPRECATED */
     public void send(Uri uri, String param1, String param2) {
-        /* Prior to Transmit, set Files, params, etc. */
+
+        // Prior to Transmit, set Files, params, etc.
         SendHttpRequestTask t = new SendHttpRequestTask();
         String[] params = new String[]{url, uri.toString(), param1, param2};
         t.execute(params);
     }
+
 
     public byte[] convertUriToByteArray(Uri uri) {
         byte[] byteArray = null;
@@ -190,6 +185,7 @@ public class UploadService extends Service {
 
     @Override
     public void onDestroy(){
+        Log.i("UPLOADSERVICE","DESTROYED");
         try{
             //try to save queue to pending files
             JSONObject pending = new JSONObject();
@@ -245,7 +241,6 @@ public class UploadService extends Service {
             if(bound == false){
                 stopSelf();
             }
-            //otherwise, stay bound
         }else{
             //has pending upload
             new SendHttpRequestTask().execute(params);

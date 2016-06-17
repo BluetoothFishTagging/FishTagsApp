@@ -1,9 +1,10 @@
-package bft.fishtagsapp.Storage;
+package bft.fishtagsapp.storage;
 
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Environment;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.widget.Toast;
@@ -346,11 +347,10 @@ public final class Storage {
 
     public static void register(Context context, String name) {
         Storage.context = context;
-
         if (isSDCardPresent()) {
             Log.i("sdcard", "present");
             useSDCard = true;
-            fileStorage = new File(Environment.getExternalStorageDirectory(), name);
+            fileStorage = new File(context.getExternalFilesDir(null), name);
             if (!fileStorage.exists()) {
                 fileStorage.mkdirs();
             }
@@ -360,7 +360,6 @@ public final class Storage {
                 reportStorage.mkdirs();
             }
 
-            //TODO : create subdirectory "report"
         } else {
 
             Log.i("sdcard", "not present");

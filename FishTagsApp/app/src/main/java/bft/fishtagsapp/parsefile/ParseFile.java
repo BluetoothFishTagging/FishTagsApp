@@ -1,4 +1,4 @@
-package bft.fishtagsapp.ParseFile;
+package bft.fishtagsapp.parsefile;
 
 import android.os.Environment;
 import android.util.Log;
@@ -32,7 +32,6 @@ public class ParseFile {
      * Currently hardcoded to message transmitted on 3/8/2016
      */
 
-    // TODO: get timestamp of the file and put it into the dictionary
     public static HashMap<String, String> getEntries(String fileName) {
         File file = new File(fileName);
         return getEntries(file);

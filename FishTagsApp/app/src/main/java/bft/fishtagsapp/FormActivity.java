@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -16,7 +15,6 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,9 +30,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
-import bft.fishtagsapp.GPS.GPS;
-import bft.fishtagsapp.ParseFile.ParseFile;
-import bft.fishtagsapp.Signup.SignupActivity;
+import bft.fishtagsapp.gps.GPS;
+import bft.fishtagsapp.parsefile.ParseFile;
+import bft.fishtagsapp.signup.SignupActivity;
 
 public class FormActivity extends AppCompatActivity {
 
@@ -160,7 +158,6 @@ public class FormActivity extends AppCompatActivity {
         }
     }
 
-    //TODO: pass along hashmap of Values
     public void submitForm(View view) {
         Log.i("FORM", "SUBMITTING");
         /* First verify the personal info */

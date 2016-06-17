@@ -46,10 +46,10 @@
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar"/>
 
         <receiver
-            android:name=".Wifi.WifiDetector"
+            android:name=".wifi.WifiDetector"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
@@ -58,10 +58,10 @@
         </receiver>
 
         <activity
-            android:name=".Linkage.LinkageActivity"
+            android:name=".linkage.LinkageActivity"
             android:label="LinkageActivity"
             android:parentActivityName=".MainActivity" />
-        <activity android:name=".Storage.StorageActivty" />
+        <activity android:name=".storage.StorageActivty" />
         <activity
             android:name=".FormActivity"
             android:label="Tag Submission Form" />
@@ -70,11 +70,11 @@
             android:label="@string/title_activity_testing"
             android:theme="@style/AppTheme.NoActionBar" />
 
-        <service android:name=".Client.UploadService" />
-        <service android:name=".Client.TagUploader" />
+        <service android:name=".client.UploadService"
+            />
 
         <activity
-            android:name=".Signup.SignupActivity"
+            android:name=".signup.SignupActivity"
             android:label="@string/title_activity_signup" />
 
         <!-- Set the Launcher activity to be the start-up activity -->

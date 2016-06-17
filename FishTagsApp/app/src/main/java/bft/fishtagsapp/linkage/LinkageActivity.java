@@ -1,4 +1,4 @@
-package bft.fishtagsapp.Linkage;
+package bft.fishtagsapp.linkage;
 
 /**
  * Created by jamiecho on 3/30/16.

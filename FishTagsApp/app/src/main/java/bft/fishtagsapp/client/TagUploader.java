@@ -1,20 +1,15 @@
-package bft.fishtagsapp.Client;
+package bft.fishtagsapp.client;
 
 import android.app.IntentService;
 import android.content.Intent;
 import android.content.Context;
 import android.net.Uri;
-import android.os.AsyncTask;
-import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Queue;
 
 import bft.fishtagsapp.Constants;
-import bft.fishtagsapp.Wifi.WifiDetector;
 
 /**
  * TagUploader will receive data in the form of a hasmap from each tag report submission and attempt to upload it to the database.

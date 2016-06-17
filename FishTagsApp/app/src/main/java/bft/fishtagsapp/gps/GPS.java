@@ -1,4 +1,4 @@
-package bft.fishtagsapp.GPS;
+package bft.fishtagsapp.gps;
 
 import android.content.Context;
 import android.content.Intent;
