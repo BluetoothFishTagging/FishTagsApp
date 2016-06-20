@@ -98,8 +98,10 @@
             android:text="Take a photo..."
             android:id="@+id/textView4"
             android:textSize="20dp"
-            android:layout_centerVertical="true"
-            android:layout_alignParentStart="true" />
+            android:gravity="center_vertical"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="10dp" />
 
         <ImageButton
             android:src="@android:drawable/ic_menu_camera"
@@ -107,17 +109,21 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="goToCamera"
-            android:layout_alignParentTop="true"
+            android:gravity="center_vertical"
+            android:layout_alignTop="@+id/textView4"
             android:layout_toEndOf="@+id/textView4" />
 
-
+        <ImageView
+            android:id="@+id/FishPhoto"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/placeholder"
+            android:visibility="gone"
+            android:layout_marginEnd="14dp"
+            android:gravity="center_vertical"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true" />
     </RelativeLayout>
-    <ImageView
-        android:id="@+id/FishPhoto"
-        android:layout_width="66dp"
-        android:layout_height="66dp"
-        android:src="@drawable/placeholder"
-        android:layout_gravity="center_horizontal" />
 
     <Button
         style="@style/ButtonTheme"
@@ -129,4 +135,5 @@
         android:text="Next"
         android:textSize="30dp"
         android:layout_gravity="center_horizontal" />
+
 </LinearLayout>

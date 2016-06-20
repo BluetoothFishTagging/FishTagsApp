@@ -29,17 +29,18 @@ public class GPS implements LocationListener {
     public void enableGPS(){
         locationManager = (LocationManager) context.getSystemService(context.LOCATION_SERVICE);
         boolean enabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-// check if enabled and if not send user to the GSP settings
-// Better solution would be to display a dialog and suggesting to
-// go to the settings
+        // check if enabled and if not send user to the GSP settings
+        // Better solution would be to display a dialog and suggesting to
+        // go to the settings
         if (!enabled) {
-            Log.i("ENABLED", "FALSE");
+            Log.i("ENABLED GPS", "FALSE");
             Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
             context.startActivity(intent);
         }
-        Log.i("ENABLED","TRUE");
+        Log.i("ENABLED GPS","TRUE");
         //hopefully user will enable GPS here
     }
+
     public Location getGPS() {
         enableGPS(); //in case not enabled
         Criteria criteria = new Criteria();

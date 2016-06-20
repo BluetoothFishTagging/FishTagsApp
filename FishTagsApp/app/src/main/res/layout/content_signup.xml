@@ -20,13 +20,13 @@
 
         <Button
             android:id="@+id/signUpBtn"
-            style="?android:textAppearanceSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:layout_weight="1"
             android:text="@string/action_sign_up"
-            android:textStyle="bold" />
+            style="@style/ButtonTheme"
+            android:layout_gravity="center_horizontal" />
 
     </LinearLayout>
 </ScrollView>

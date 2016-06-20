@@ -30,8 +30,10 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Array;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -65,30 +67,31 @@ public class FormActivity extends AppCompatActivity {
         /* Parse the file only if the file exists. Even though one may not exist, however, still fill in time and date, etc. */
         if (fileName != null) {
             Log.i("FILENAME", fileName);
-            fillInInfoFromFile(new File(fileName));
-        }
+
+        fillInInfoFromFile(new File(fileName));
+    }
         /*Get Time*/
-        String time = new SimpleDateFormat("yyyyMMdd HH:mm:ss").format(new Date());
+        String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z").format(new Date());
         Log.i("Time", time);
         TextView timeText = (TextView) findViewById(R.id.Time);
         timeText.setText(time);
 
-//        /*Get Location*/
-//        GPS gps = new GPS(this);
-//        Location location = gps.getGPS();
-//        String locString;
-//        if(location==null){
-//            locString = "N/A";
-//        }else{
-//            double latitude = location.getLatitude();
-//            double longitude = location.getLongitude();
-//            locString = String.format("LAT:%f,LONG:%f", latitude, longitude);
-//        }
-//
-//        TextView locationText = (TextView) findViewById(R.id.Location);
-//        locationText.setText(locString);
-//        Toast.makeText(getApplicationContext(), locString, Toast.LENGTH_LONG).show();
-//        Toast.makeText(getApplicationContext(), fileName, Toast.LENGTH_LONG).show();
+        /*Get Location*/
+        GPS gps = new GPS(this);
+        Location location = gps.getGPS();
+        String locString;
+        if(location==null){
+            locString = "N/A";
+        }else{
+            double latitude = location.getLatitude();
+            double longitude = location.getLongitude();
+            locString = String.format("LAT:%f,LONG:%f", latitude, longitude);
+        }
+
+        TextView locationText = (TextView) findViewById(R.id.Location);
+        locationText.setText(locString);
+        Toast.makeText(getApplicationContext(), locString, Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(), fileName, Toast.LENGTH_LONG).show();
     }
 
     protected void fillInInfoFromFile(File file) {
@@ -115,11 +118,6 @@ public class FormActivity extends AppCompatActivity {
                 // Do error handling if the id is not found
             }
         }
-
-        /*Get Time*/
-        String time = new SimpleDateFormat("yyyyMMdd HH:mm:ss").format(new Date());
-        TextView timeText = (TextView) findViewById(R.id.Time);
-        timeText.setText(time);
 
         /*Get Location*/
         GPS gps = new GPS(this);
@@ -273,6 +271,7 @@ public class FormActivity extends AppCompatActivity {
                     ImageView myImageView = (ImageView) findViewById(R.id.FishPhoto);
                     myImageView.setImageBitmap(bitmap);
                     myImageView.setTag(imageUri);
+                    myImageView.setVisibility(View.VISIBLE);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
