@@ -1,4 +1,4 @@
-package bft.fishtagsapp.signup;
+ package bft.fishtagsapp.signup;
 
 import android.content.Intent;
 import android.content.res.Resources;
@@ -37,7 +37,6 @@ public class SignupActivity extends AppCompatActivity {
         findFields(mLoginFormView, editTexts);
 
         /* Decide which buttons to display depending on request*/
-
 
         int request = getIntent().getIntExtra("request", 0);
         Log.i("HEY", "" + request);

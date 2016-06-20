@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.content.Context;
 import android.net.Uri;
 
+import com.permissioneverywhere.PermissionEverywhere;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -37,6 +39,7 @@ public class TagUploader extends IntentService {
 
         intent.setAction(Constants.ACTION_UPLOAD);
         context.startService(intent);
+
     }
 
     @Override

@@ -45,22 +45,67 @@ public class FormActivity extends AppCompatActivity {
 
     private ArrayList<EditText> editTexts;
     private ImageView fishPhotoView;
+    private GPS gps;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_form);
 
-
         LinearLayout my_relView = (LinearLayout) findViewById(R.id.tag_submission_form);
+
+        Utils.checkAndRequestRuntimePermissions(this,
+                new String[]{
+                        Manifest.permission.ACCESS_COARSE_LOCATION,
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                },
+                Constants.REQUEST_LOCATION
+        );
 
         editTexts = new ArrayList<EditText>();
         findFields(my_relView, editTexts);
         fishPhotoView = (ImageView) findViewById(R.id.FishPhoto);
 
         String fileName = getIntent().getStringExtra("fileName");
+        gps = new GPS(this);
+
         /* Auto-fill in data from the latest tag file */
+        fillInInfo(fileName);
+    }
+
+    protected void fillInInfo(String fileName) {
+
+        fillInTime();
+
+        fillInGPS();
+
+        /* Entries from Tag File */
         fillInInfoFromFile(fileName);
+    }
+
+    protected void fillInTime() {
+        /*Get Time*/
+        String timestamp = Utils.timestamp();
+        TextView timeText = (TextView) findViewById(R.id.Time);
+        timeText.setText(timestamp);
+    }
+
+    protected void fillInGPS() {
+        /*Get Location*/
+        Location location = gps.getGPS();
+        String locString;
+        if (location == null) {
+            locString = "N/A";
+        } else {
+            double latitude = location.getLatitude();
+            double longitude = location.getLongitude();
+            locString = String.format("LAT:%f,LONG:%f", latitude, longitude);
+        }
+
+        TextView locationText = (TextView) findViewById(R.id.Location);
+        locationText.setText(locString);
+        Toast.makeText(getApplicationContext(), locString, Toast.LENGTH_LONG).show();
+
     }
 
     protected void fillInInfoFromFile(String fileName) {
@@ -92,6 +137,7 @@ public class FormActivity extends AppCompatActivity {
         locationText.setText(locString);
         Toast.makeText(getApplicationContext(), locString, Toast.LENGTH_LONG).show();
         Toast.makeText(getApplicationContext(), fileName, Toast.LENGTH_LONG).show();
+
     }
 
     protected void fillInInfoFromFile(File file) {
@@ -118,23 +164,6 @@ public class FormActivity extends AppCompatActivity {
                 // Do error handling if the id is not found
             }
         }
-
-        /*Get Location*/
-        GPS gps = new GPS(this);
-        Location location = gps.getGPS();
-        String locString;
-        if (location == null) {
-            locString = "N/A";
-        } else {
-            double latitude = location.getLatitude();
-            double longitude = location.getLongitude();
-            locString = String.format("LAT:%f,LONG:%f", latitude, longitude);
-        }
-
-        TextView locationText = (TextView) findViewById(R.id.Location);
-        locationText.setText(locString);
-        Toast.makeText(getApplicationContext(), locString, Toast.LENGTH_LONG).show();
-
     }
 
     private void findFields(ViewGroup v, ArrayList<EditText> editTexts) {
@@ -163,13 +192,12 @@ public class FormActivity extends AppCompatActivity {
 
             }
 
-            ImageView p = (ImageView) findViewById(R.id.FishPhoto);
-            if (p.getTag() == null) {
+            if (fishPhotoView.getTag() == null) {
                 Uri imageUri = Uri.parse("android.resource://bft.fishtagsapp/" + R.drawable.placeholder);
                 data.put("photo", imageUri.toString()); //empty string
 
             } else {
-                Uri imageUri = (Uri) p.getTag();
+                Uri imageUri = (Uri) fishPhotoView.getTag();
                 data.put("photo", imageUri.toString());
             }
             //for debugging
@@ -197,33 +225,9 @@ public class FormActivity extends AppCompatActivity {
 
     Uri photoUri;
 
-    private Boolean checkAndRequestRuntimePermissions(String[] permissions, int requestCode){
-        ArrayList<String> permissionsToRequest = new ArrayList<>();
-
-        for(String permission : permissions){
-            if(ContextCompat.checkSelfPermission(this,permission) != PackageManager.PERMISSION_GRANTED){
-                if (ActivityCompat.shouldShowRequestPermissionRationale(this,permission)){
-                    //do something here
-                }else{
-                    permissionsToRequest.add(permission);
-                }
-            }
-
-        }
-
-        if(permissionsToRequest.size() == 0){
-            return true; //no need to get new permissions
-        }else{
-            String[] permArr = new String[permissionsToRequest.size()];
-            permArr = permissionsToRequest.toArray(permArr);
-
-
-            ActivityCompat.requestPermissions(this, permArr, requestCode);
-            return false;
-        }
-    }
     private void dispatchTakePictureIntent() {
-        Boolean permitted = checkAndRequestRuntimePermissions(
+        Boolean permitted = Utils.checkAndRequestRuntimePermissions(
+                this,
                 new String[]{
                         Manifest.permission.CAMERA,
                         Manifest.permission.WRITE_EXTERNAL_STORAGE
@@ -231,7 +235,7 @@ public class FormActivity extends AppCompatActivity {
                 Constants.REQUEST_CAMERA
         );
 
-        if(permitted){
+        if (permitted) {
             Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         /* Ensure that there's a camera activity to handle the intent */
             if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
@@ -289,12 +293,20 @@ public class FormActivity extends AppCompatActivity {
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
                     //try to take photo again
-
                     dispatchTakePictureIntent();
 
                 } else {
-                    Log.i("PERMISSIONS","NOT GRANTED");
+                    Log.i("PERMISSIONS", "NOT GRANTED");
                     //give up on photo
+                }
+                return;
+            case Constants.REQUEST_LOCATION:
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    fillInGPS();
+                } else {
+                    Log.i("PERMISSIONS", "NOT GRANTED");
+                    //what to do here?
                 }
                 return;
         }
@@ -340,7 +352,7 @@ public class FormActivity extends AppCompatActivity {
 
     private File createFile(File storageDir, String extension, String dotExtension) throws IOException {
         /* Create a unique file name */
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String timeStamp = Utils.timestamp();
         String fileName = extension + "_" + timeStamp + "_";
 
         File file = new File(storageDir + "/" + fileName + dotExtension);

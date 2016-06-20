@@ -18,5 +18,6 @@ public class FishTagsApplication extends Application {
         Log.i("INIT","COMPLETE");
         WifiDetector.register(this);
         Storage.register(this, Constants.APP_DIRECTORY);
+
     }
 }
