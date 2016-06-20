@@ -167,8 +167,9 @@ public class FormActivity extends AppCompatActivity {
 
             ImageView p = (ImageView) findViewById(R.id.FishPhoto);
             if (p.getTag() == null) {
-//                Uri uri = Uri.parse("android.resource://bft.fishtagsapp/drawable/placeholder.png");
-                data.put("photo", null);
+                Uri imageUri = Uri.parse("android.resource://bft.fishtagsapp/" + R.drawable.placeholder);
+                data.put("photo", imageUri.toString()); //empty string
+
             } else {
                 Uri imageUri = (Uri) p.getTag();
                 data.put("photo", imageUri.toString());

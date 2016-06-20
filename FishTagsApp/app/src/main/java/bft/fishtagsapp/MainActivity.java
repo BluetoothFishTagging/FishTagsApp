@@ -72,12 +72,14 @@ public class MainActivity extends AppCompatActivity {
         }
         /* BLUETOOTH WATCHER */
         final String DownloadDir = android.os.Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath();//Works
-        final String DEFAULT_STORE_SUBDIR = "/FishTagsData";//Check if this works
+        final String DEFAULT_STORE_SUBDIR = "/bft.fishtagsapp";//Check if this works
         //String BluetoothDir = getExternalFilesDir(Environment.DIRECTORY_).getPath() + "/bluetooth"; DOESN'T WORK
 
         final Handler handler = new Handler();
-        observer = new FileObserver(DownloadDir) {
-        @Override
+        observer = new FileObserver(DEFAULT_STORE_SUBDIR) {
+        //observer = new FileObserver(DownloadDir) {
+        //observer = new FileObserver(DownloadDir) {
+            @Override
             /*DETECTING BLUETOOTH TRANSFER*/
             public void onEvent(int event, final String fileName) {
                 Log.i("EVENT", String.valueOf(event));
@@ -166,6 +168,7 @@ public class MainActivity extends AppCompatActivity {
                     //server url placeholder
                     String url = Constants.DATABASE_URL;
                     String uri = (String) dataObj.get("photo");
+
                     String tagInfo = dataObj.toString(); //JSON string
                     String personInfo = Storage.read(Constants.PERSONAL_INFO);
 
