@@ -52,18 +52,19 @@ public class FormActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_form);
 
-        LinearLayout my_relView = (LinearLayout) findViewById(R.id.tag_submission_form);
+        LinearLayout my_linView = (LinearLayout) findViewById(R.id.tag_submission_form);
 
         Utils.checkAndRequestRuntimePermissions(this,
                 new String[]{
                         Manifest.permission.ACCESS_COARSE_LOCATION,
                         Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.INTERNET
                 },
                 Constants.REQUEST_LOCATION
         );
 
         editTexts = new ArrayList<EditText>();
-        findFields(my_relView, editTexts);
+        findFields(my_linView, editTexts);
         fishPhotoView = (ImageView) findViewById(R.id.FishPhoto);
 
         String fileName = getIntent().getStringExtra("fileName");
@@ -74,9 +75,7 @@ public class FormActivity extends AppCompatActivity {
     }
 
     protected void fillInInfo(String fileName) {
-
         fillInTime();
-
         fillInGPS();
 
         /* Entries from Tag File */
@@ -105,39 +104,14 @@ public class FormActivity extends AppCompatActivity {
         TextView locationText = (TextView) findViewById(R.id.Location);
         locationText.setText(locString);
         Toast.makeText(getApplicationContext(), locString, Toast.LENGTH_LONG).show();
-
     }
 
     protected void fillInInfoFromFile(String fileName) {
         /* Parse the file only if the file exists. Even though one may not exist, however, still fill in time and date, etc. */
         if (fileName != null) {
             Log.i("FILENAME", fileName);
-
-        fillInInfoFromFile(new File(fileName));
-    }
-        /*Get Time*/
-        String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z").format(new Date());
-        Log.i("Time", time);
-        TextView timeText = (TextView) findViewById(R.id.Time);
-        timeText.setText(time);
-
-        /*Get Location*/
-        GPS gps = new GPS(this);
-        Location location = gps.getGPS();
-        String locString;
-        if(location==null){
-            locString = "N/A";
-        }else{
-            double latitude = location.getLatitude();
-            double longitude = location.getLongitude();
-            locString = String.format("LAT:%f,LONG:%f", latitude, longitude);
+            fillInInfoFromFile(new File(fileName));
         }
-
-        TextView locationText = (TextView) findViewById(R.id.Location);
-        locationText.setText(locString);
-        Toast.makeText(getApplicationContext(), locString, Toast.LENGTH_LONG).show();
-        Toast.makeText(getApplicationContext(), fileName, Toast.LENGTH_LONG).show();
-
     }
 
     protected void fillInInfoFromFile(File file) {

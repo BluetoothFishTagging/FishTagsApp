@@ -2,36 +2,27 @@ package bft.fishtagsapp;
 
 import android.Manifest;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.ComponentName;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
-<<<<<<< HEAD
-import android.content.res.Resources;
-=======
 import android.content.pm.PackageManager;
->>>>>>> 89bafc266fe93d3c7bef8478faa1fd0151e54d33
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.FileObserver;
 import android.os.Handler;
 import android.os.IBinder;
-import android.support.v7.app.ActionBarActivity;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import bft.fishtagsapp.client.UploadService;
 import bft.fishtagsapp.signup.SignupActivity;
@@ -80,18 +71,14 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-<<<<<<< HEAD
         /* Create welcome message for returning user */
         String name = getName();
         if (name != "") {
             TextView welcome = (TextView) findViewById(R.id.welcome);
             welcome.setText(String.format("Welcome, %s!", name));
         }
-        /* BLUETOOTH WATCHER */
-=======
         /* BLUETOOTH WATCHER FOR FILE DIRECTORY*/
         //final String DownloadDir_raw = Environment.getExternalStorageDirectory().getPath() + Constants.DEFAULT_STORE_SUBDIR; //WORKS
->>>>>>> 89bafc266fe93d3c7bef8478faa1fd0151e54d33
         final String DownloadDir = android.os.Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath();//Works
         final String DEFAULT_STORE_SUBDIR = "/bft.fishtagsapp";//Check if this works
         //String BluetoothDir = getExternalFilesDir(Environment.DIRECTORY_).getPath() + "/bluetooth"; DOESN'T WORK
@@ -129,6 +116,21 @@ public class MainActivity extends AppCompatActivity {
 
         Intent uploadIntent = new Intent(this, UploadService.class);
         bindService(uploadIntent, uploadConnection, BIND_AUTO_CREATE); // no flags
+    }
+
+
+    public void open(View view){
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        alertDialogBuilder.setMessage("Please ensure your rfid reader is turned on.");
+
+        alertDialogBuilder.setPositiveButton("Okay", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface arg0, int arg1) {
+                Toast.makeText(MainActivity.this, "You have rfid reader ready", Toast.LENGTH_LONG).show();
+            }
+        });
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
     }
 
     @Override
@@ -288,22 +290,4 @@ public class MainActivity extends AppCompatActivity {
         }
         return "";
     }
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-    }
-        public void open (View view){
-            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-            alertDialogBuilder.setMessage("Please ensure your rfid reader is turned on.");
-
-            alertDialogBuilder.setPositiveButton("Okay", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface arg0, int arg1) {
-                    Toast.makeText(MainActivity.this, "You have rfid reader ready", Toast.LENGTH_LONG).show();
-                }
-            });
-            AlertDialog alertDialog = alertDialogBuilder.create();
-            alertDialog.show();
-        }
 }
