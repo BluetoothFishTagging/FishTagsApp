@@ -233,17 +233,21 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public void open(View view) {
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-        alertDialogBuilder.setMessage("Please ensure your rfid reader is turned on.");
-
-        alertDialogBuilder.setPositiveButton("Okay", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface arg0, int arg1) {
-                Toast.makeText(MainActivity.this, "You have rfid reader ready", Toast.LENGTH_LONG).show();
-            }
-        });
-        AlertDialog alertDialog = alertDialogBuilder.create();
-        alertDialog.show();
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
     }
+        public void open (View view){
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+            alertDialogBuilder.setMessage("Please ensure your rfid reader is turned on.");
+
+            alertDialogBuilder.setPositiveButton("Okay", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface arg0, int arg1) {
+                    Toast.makeText(MainActivity.this, "You have rfid reader ready", Toast.LENGTH_LONG).show();
+                }
+            });
+            AlertDialog alertDialog = alertDialogBuilder.create();
+            alertDialog.show();
+        }
 }
