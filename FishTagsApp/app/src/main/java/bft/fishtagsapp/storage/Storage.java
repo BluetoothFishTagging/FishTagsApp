@@ -155,7 +155,7 @@ public final class Storage {
                 public void onClick(DialogInterface dialogInterface, int i) {
                     /*If Override is selected then textfile data is overrided*/
                     writeToFile(FileName, message);
-                    Toast.makeText(context, "File Overrided Successfully!",
+                    Toast.makeText(context, "File Override Successful!",
                             Toast.LENGTH_SHORT).show();
                 }
             });
