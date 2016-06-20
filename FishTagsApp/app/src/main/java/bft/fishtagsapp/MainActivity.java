@@ -1,5 +1,6 @@
 package bft.fishtagsapp;
 
+import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
@@ -224,8 +225,7 @@ public class MainActivity extends AppCompatActivity {
         startActivityForResult(intent, Constants.SUBMIT_TAG);
     }
 
-    public void signUp(View v){
+    public void signUp(View v) {
         Intent intent = new Intent(this, SignupActivity.class);
         startActivity(intent);
     }
-}
