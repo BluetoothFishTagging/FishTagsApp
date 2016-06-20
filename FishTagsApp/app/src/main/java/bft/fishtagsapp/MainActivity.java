@@ -71,16 +71,13 @@ public class MainActivity extends AppCompatActivity {
             welcome.setText(String.format("Welcome, %s!", name));
         }
         /* BLUETOOTH WATCHER */
-        final String DownloadDir_raw = Environment.getExternalStorageDirectory().getPath() + Constants.DEFAULT_STORE_SUBDIR; //WORKS
         final String DownloadDir = android.os.Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath();//Works
         final String DEFAULT_STORE_SUBDIR = "/FishTagsData";//Check if this works
         //String BluetoothDir = getExternalFilesDir(Environment.DIRECTORY_).getPath() + "/bluetooth"; DOESN'T WORK
 
         final Handler handler = new Handler();
         observer = new FileObserver(DownloadDir) {
-            //observer = new FileObserver(DownloadDir) {
-            //observer = new FileObserver(DownloadDir) {
-            @Override
+        @Override
             /*DETECTING BLUETOOTH TRANSFER*/
             public void onEvent(int event, final String fileName) {
                 Log.i("EVENT", String.valueOf(event));

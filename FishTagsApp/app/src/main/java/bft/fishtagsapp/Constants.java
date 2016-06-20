@@ -11,6 +11,9 @@ public final class Constants {
     public static final int REQUEST_TAKE_PHOTO = 4;
     public static final int REQUEST_EDIT_SETTINGS = 5;
     public static final int REQUEST_VERIFY_SETTINGS = 6;
+    public static final int REQUEST_CAMERA = 7;
+    public static final int REQUEST_STORAGE = 8;
+
     public static final String PENDING = "pending.txt";
     public static final String PERSONAL_INFO = "info.txt";
     public static final String ACTION_UPLOAD = "Upload";
