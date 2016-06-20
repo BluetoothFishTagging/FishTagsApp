@@ -1,5 +1,7 @@
 package bft.fishtagsapp.gps;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Criteria;
@@ -11,6 +13,9 @@ import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
 
+import bft.fishtagsapp.Constants;
+import bft.fishtagsapp.R;
+
 /**
  * Created by jamiecho on 3/9/16.
  */
@@ -20,13 +25,32 @@ public class GPS implements LocationListener {
     private Location location;
     private String provider;
     private Context context;
+    private Boolean permitted;
 
-
-    public GPS(Context context){
+    public GPS(Context context) {
+        permitted = false;
+        Log.i("GPS", "CREATING");
         this.context = context;
+
+        /*PermissionEverywhere.getPermission(context,
+                new String[]{
+                        Manifest.permission.ACCESS_COARSE_LOCATION,
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                },
+                Constants.REQUEST_LOCATION,
+                "Requesting Permission",
+                "Obtain GPS Data for Fish Capture",
+                R.mipmap.ic_launcher).enqueue(new PermissionResultCallback() {
+            @Override
+            public void onComplete(PermissionResponse permissionResponse) {
+                permitted = permissionResponse.isGranted();
+            }
+        });*/
+
+
     }
 
-    public void enableGPS(){
+    public void enableGPS() {
         locationManager = (LocationManager) context.getSystemService(context.LOCATION_SERVICE);
         boolean enabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
 // check if enabled and if not send user to the GSP settings
@@ -37,10 +61,14 @@ public class GPS implements LocationListener {
             Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
             context.startActivity(intent);
         }
-        Log.i("ENABLED","TRUE");
+        Log.i("ENABLED", "TRUE");
         //hopefully user will enable GPS here
     }
+
     public Location getGPS() {
+        if(!permitted){
+            return null;
+        }
         enableGPS(); //in case not enabled
         Criteria criteria = new Criteria();
         provider = locationManager.getBestProvider(criteria, true);

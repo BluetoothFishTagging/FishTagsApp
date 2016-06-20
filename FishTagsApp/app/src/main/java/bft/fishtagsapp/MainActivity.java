@@ -1,8 +1,10 @@
 package bft.fishtagsapp;
 
+import android.Manifest;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.FileObserver;
@@ -54,6 +56,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        /* OBTAIN EXTERAL STORAGE READ-WRITE PERMISSIONS */
+        Utils.checkAndRequestRuntimePermissions(this,
+                new String[]{
+                        Manifest.permission.READ_EXTERNAL_STORAGE,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE
+                }, Constants.REQUEST_STORAGE);
+
+        /* BUTTON TO GO TO FORM FOR SUBMITTING TAG DATA */
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        /* BLUETOOTH WATCHER */
+        /* BLUETOOTH WATCHER FOR FILE DIRECTORY*/
         //final String DownloadDir_raw = Environment.getExternalStorageDirectory().getPath() + Constants.DEFAULT_STORE_SUBDIR; //WORKS
         final String DownloadDir = android.os.Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath();//Works
         final String DEFAULT_STORE_SUBDIR = "/FishTagsData";//Check if this works
@@ -70,8 +80,8 @@ public class MainActivity extends AppCompatActivity {
 
         final Handler handler = new Handler();
         observer = new FileObserver(DownloadDir) {
-        //observer = new FileObserver(DownloadDir) {
-        //observer = new FileObserver(DownloadDir) {
+            //observer = new FileObserver(DownloadDir) {
+            //observer = new FileObserver(DownloadDir) {
             @Override
             /*DETECTING BLUETOOTH TRANSFER*/
             public void onEvent(int event, final String fileName) {
@@ -87,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
 
                             //if(new File(fileName).length() > 0) // has content
                             //goToForm(DownloadDir + '/' + fileName);
-							//
+                            //
                             recent = DownloadDir + '/' + fileName;
 
                             //TODO : check is valid tag file
@@ -99,15 +109,14 @@ public class MainActivity extends AppCompatActivity {
         };
         observer.startWatching();
 
-        Intent uploadIntent = new Intent(this,UploadService.class);
-
-        bindService(uploadIntent,uploadConnection,BIND_AUTO_CREATE); // no flags
+        Intent uploadIntent = new Intent(this, UploadService.class);
+        bindService(uploadIntent, uploadConnection, BIND_AUTO_CREATE); // no flags
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if(uploadServiceBound){
+        if (uploadServiceBound) {
             unbindService(uploadConnection);
         }
     }
@@ -155,7 +164,7 @@ public class MainActivity extends AppCompatActivity {
 
                 try {
                     dataObj = new JSONObject(data.getStringExtra("map"));
-                    String timeStamp = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss").format(new Date().getTime());
+                    String timeStamp = Utils.timestamp();
                     String fileName = timeStamp + ".txt";
                     dataObj.put("name", fileName);//txt file extension
                     //server url placeholder
@@ -165,13 +174,30 @@ public class MainActivity extends AppCompatActivity {
                     String tagInfo = dataObj.toString(); //JSON string
                     String personInfo = Storage.read(Constants.PERSONAL_INFO);
 
-                    uploadBinder.enqueue(url,uri,tagInfo,personInfo);
+                    uploadBinder.enqueue(url, uri, tagInfo, personInfo);
 
                     Toast.makeText(getApplicationContext(), "Thank you for submitting a tag!", Toast.LENGTH_SHORT).show();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case Constants.REQUEST_STORAGE:
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Log.i("STORAGE PERMISSIONS", "GRANTED");
+                } else {
+                    Log.i("STORAGE PERMISSIONS", "NOT GRANTED");
+                    //give up on photo
+                }
+                return;
         }
     }
 
@@ -224,7 +250,7 @@ public class MainActivity extends AppCompatActivity {
         startActivityForResult(intent, Constants.SUBMIT_TAG);
     }
 
-    public void signUp(View v){
+    public void signUp(View v) {
         Intent intent = new Intent(this, SignupActivity.class);
         startActivity(intent);
     }

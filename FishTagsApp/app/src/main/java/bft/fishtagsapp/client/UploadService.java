@@ -1,5 +1,6 @@
 package bft.fishtagsapp.client;
 
+import android.Manifest;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -11,6 +12,11 @@ import android.os.AsyncTask;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
+import android.widget.Toast;
+
+import com.permissioneverywhere.PermissionEverywhere;
+import com.permissioneverywhere.PermissionResponse;
+import com.permissioneverywhere.PermissionResultCallback;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -22,6 +28,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedList;
 
+import bft.fishtagsapp.Constants;
+import bft.fishtagsapp.R;
+import bft.fishtagsapp.Utils;
 import bft.fishtagsapp.storage.Storage;
 import bft.fishtagsapp.wifi.WifiDetector;
 
@@ -30,11 +39,11 @@ import bft.fishtagsapp.wifi.WifiDetector;
  */
 public class UploadService extends Service {
 
-    private final WifiDetector networkChecker = new WifiDetector(){
+    private final WifiDetector networkChecker = new WifiDetector() {
         @Override
         public void onReceive(Context context, Intent intent) {
             super.onReceive(context, intent);
-            if(isConnected()){
+            if (isConnected()) {
                 UploadService.this.unregisterReceiver(this);
                 UploadService.this.uploadOne();
             }
@@ -48,7 +57,8 @@ public class UploadService extends Service {
             return UploadService.this;
         }
 
-        public void enqueue(String... params){
+        public void enqueue(String... params) {
+
             uploadQueue.add(params);
             //try to upload
             uploadOne();
@@ -109,14 +119,14 @@ public class UploadService extends Service {
                 client.addFormPart("tagInfo", tagInfo);
                 client.addFormPart("personInfo", personInfo); //form (plain text, JSON, etc) data.
 
-                String timeStamp = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss").format(new Date().getTime());
+                String timeStamp = Utils.timestamp();
                 String photoName = timeStamp + ".jpg";
 
                 client.addFilePart("photo", photoName, byteArray);
                 client.finishMultipart();
                 String response = client.getResponse();
 
-                if(response != null){
+                if (response != null) {
                     //TODO : check if valid response
                     return true;
                 }
@@ -129,19 +139,20 @@ public class UploadService extends Service {
 
         @Override
         protected void onPostExecute(Boolean success) {
+
             //Log.i("RESPONSE", s);
             super.onPostExecute(success);
-            if(success){
+            if (success) {
                 //remove from queue
                 uploadQueue.remove();
                 //handle next one up in queue
                 uploadOne();
-            }else{
+            } else {
                 //failed
-                if(networkChecker.isConnected()){
+                if (networkChecker.isConnected()) {
                     //try again
                     uploadOne();
-                }else{
+                } else {
                     //disconnected - wait for Wifi connection
                     IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
                     registerReceiver(networkChecker, filter);
@@ -153,6 +164,24 @@ public class UploadService extends Service {
 
     @Override
     public void onCreate() {
+
+        /* JUST IN CASE ... */
+        PermissionEverywhere.getPermission(getApplicationContext(),
+                new String[]{
+                        Manifest.permission.READ_EXTERNAL_STORAGE,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE
+                },
+                Constants.REQUEST_STORAGE,
+                "Notification title",
+                "This app needs a write permission",
+                R.mipmap.ic_launcher)
+                .enqueue(new PermissionResultCallback() {
+                    @Override
+                    public void onComplete(PermissionResponse permissionResponse) {
+                        Toast.makeText(UploadService.this, "is Granted " + permissionResponse.isGranted(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+
         String pendingString = Storage.read("pending.txt");
         if (pendingString != null && !pendingString.isEmpty()) {
             try {
@@ -184,33 +213,34 @@ public class UploadService extends Service {
     //SERVICE-RELATED IMPLEMENTATION
 
     @Override
-    public void onDestroy(){
-        Log.i("UPLOADSERVICE","DESTROYED");
-        try{
+    public void onDestroy() {
+        Log.i("UPLOADSERVICE", "DESTROYED");
+        try {
             //try to save queue to pending files
             JSONObject pending = new JSONObject();
 
             pending.put("count", uploadQueue.size());
 
             int i = 0;
-            for(String[] params : uploadQueue){
+            for (String[] params : uploadQueue) {
                 JSONObject one = new JSONObject();
 
-                one.put("url",params[0]);
-                one.put("uri",params[1]);
-                one.put("tagInfo",params[2]);
-                one.put("personInfo",params[3]);
+                one.put("url", params[0]);
+                one.put("uri", params[1]);
+                one.put("tagInfo", params[2]);
+                one.put("personInfo", params[3]);
 
-                pending.put(String.valueOf(i),one.toString());
+                pending.put(String.valueOf(i), one.toString());
                 ++i;
             }
-            Storage.save("pending.txt",pending.toString());
-        }catch(JSONException e){
+            Storage.save("pending.txt", pending.toString());
+        } catch (JSONException e) {
             //well... have to give up here
             e.printStackTrace();
         }
 
     }
+
     /**
      * The service is starting, due to a call to startService()
      */
@@ -235,13 +265,13 @@ public class UploadService extends Service {
     }
 
 
-    private void uploadOne(){
+    private void uploadOne() {
         String[] params = uploadQueue.peek();
-        if(params == null){
-            if(bound == false){
+        if (params == null) {
+            if (bound == false) {
                 stopSelf();
             }
-        }else{
+        } else {
             //has pending upload
             new SendHttpRequestTask().execute(params);
         }
