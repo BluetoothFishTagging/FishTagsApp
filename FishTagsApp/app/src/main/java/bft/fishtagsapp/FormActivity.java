@@ -13,7 +13,6 @@ import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,8 +30,10 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Array;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -51,18 +52,19 @@ public class FormActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_form);
 
-        LinearLayout my_relView = (LinearLayout) findViewById(R.id.tag_submission_form);
+        LinearLayout my_linView = (LinearLayout) findViewById(R.id.tag_submission_form);
 
         Utils.checkAndRequestRuntimePermissions(this,
                 new String[]{
                         Manifest.permission.ACCESS_COARSE_LOCATION,
                         Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.INTERNET
                 },
                 Constants.REQUEST_LOCATION
         );
 
         editTexts = new ArrayList<EditText>();
-        findFields(my_relView, editTexts);
+        findFields(my_linView, editTexts);
         fishPhotoView = (ImageView) findViewById(R.id.FishPhoto);
 
         String fileName = getIntent().getStringExtra("fileName");
@@ -73,9 +75,7 @@ public class FormActivity extends AppCompatActivity {
     }
 
     protected void fillInInfo(String fileName) {
-
         fillInTime();
-
         fillInGPS();
 
         /* Entries from Tag File */
@@ -104,15 +104,13 @@ public class FormActivity extends AppCompatActivity {
         TextView locationText = (TextView) findViewById(R.id.Location);
         locationText.setText(locString);
         Toast.makeText(getApplicationContext(), locString, Toast.LENGTH_LONG).show();
-
     }
 
     protected void fillInInfoFromFile(String fileName) {
-
+        /* Parse the file only if the file exists. Even though one may not exist, however, still fill in time and date, etc. */
         if (fileName != null) {
             Log.i("FILENAME", fileName);
             fillInInfoFromFile(new File(fileName));
-            Toast.makeText(getApplicationContext(), fileName, Toast.LENGTH_LONG).show();
         }
     }
 
@@ -121,7 +119,6 @@ public class FormActivity extends AppCompatActivity {
             ParseFile handles all of the storage stuff so that FormActivity only fills in the UI
          */
 
-        /*Get Entries from File*/
         HashMap<String, String> entries = ParseFile.getEntries(file);
         if (entries == null) {
             return;
@@ -172,6 +169,7 @@ public class FormActivity extends AppCompatActivity {
             if (fishPhotoView.getTag() == null) {
                 Uri imageUri = Uri.parse("android.resource://bft.fishtagsapp/" + R.drawable.placeholder);
                 data.put("photo", imageUri.toString()); //empty string
+
             } else {
                 Uri imageUri = (Uri) fishPhotoView.getTag();
                 data.put("photo", imageUri.toString());
@@ -195,6 +193,7 @@ public class FormActivity extends AppCompatActivity {
     }
 
     public void goToCamera(View view) {
+        Log.i("Camera", "Dispatching intent");
         dispatchTakePictureIntent();
     }
 
@@ -241,13 +240,16 @@ public class FormActivity extends AppCompatActivity {
             }
         }
         if (requestCode == Constants.REQUEST_TAKE_PHOTO) {
+
             if (resultCode == RESULT_OK) {
                 Uri imageUri = data.getData();
+                Log.i("REQUEST PHOTO", imageUri.toString());
                 try {
                     Bitmap bitmap = getThumbnail(imageUri);
                     ImageView myImageView = (ImageView) findViewById(R.id.FishPhoto);
                     myImageView.setImageBitmap(bitmap);
                     myImageView.setTag(imageUri);
+                    myImageView.setVisibility(View.VISIBLE);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -296,8 +298,10 @@ public class FormActivity extends AppCompatActivity {
         BitmapFactory.decodeStream(input, null, onlyBoundsOptions);
         input.close();
 
-        if ((onlyBoundsOptions.outWidth == -1) || (onlyBoundsOptions.outHeight == -1))
+        if ((onlyBoundsOptions.outWidth == -1) || (onlyBoundsOptions.outHeight == -1)) {
+            Log.i("GAH", "WHY");
             return null;
+        }
 
         int originalSize = (onlyBoundsOptions.outHeight > onlyBoundsOptions.outWidth) ? onlyBoundsOptions.outHeight : onlyBoundsOptions.outWidth;
 
@@ -310,6 +314,7 @@ public class FormActivity extends AppCompatActivity {
         input = this.getContentResolver().openInputStream(uri);
         Bitmap bitmap = BitmapFactory.decodeStream(input, null, bitmapOptions);
         input.close();
+        Log.i("HELLO", "BOO");
         return bitmap;
     }
 

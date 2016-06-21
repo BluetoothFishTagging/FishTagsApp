@@ -19,9 +19,9 @@
     </style>
 
     <style name="ButtonTheme" parent="Base.Widget.AppCompat.Button">
-        <item name="android:background">@color/colorPrimary</item>
         <item name="android:textColor">@color/whiteColor</item>
         <item name="android:textStyle">bold</item>
+        <item name="android:background">@drawable/rounded_button</item>
     </style>
 
 
