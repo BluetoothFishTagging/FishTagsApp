@@ -10,8 +10,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -29,15 +27,11 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Array;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 
 import bft.fishtagsapp.gps.GPS;
+import bft.fishtagsapp.gps.MyLocation;
 import bft.fishtagsapp.parsefile.ParseFile;
 import bft.fishtagsapp.signup.SignupActivity;
 
@@ -45,7 +39,6 @@ public class FormActivity extends AppCompatActivity {
 
     private ArrayList<EditText> editTexts;
     private ImageView fishPhotoView;
-    private GPS gps;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,21 +47,11 @@ public class FormActivity extends AppCompatActivity {
 
         LinearLayout my_linView = (LinearLayout) findViewById(R.id.tag_submission_form);
 
-        Utils.checkAndRequestRuntimePermissions(this,
-                new String[]{
-                        Manifest.permission.ACCESS_COARSE_LOCATION,
-                        Manifest.permission.ACCESS_FINE_LOCATION,
-                        Manifest.permission.INTERNET
-                },
-                Constants.REQUEST_LOCATION
-        );
-
         editTexts = new ArrayList<EditText>();
         findFields(my_linView, editTexts);
         fishPhotoView = (ImageView) findViewById(R.id.FishPhoto);
 
         String fileName = getIntent().getStringExtra("fileName");
-        gps = new GPS(this);
 
         /* Auto-fill in data from the latest tag file */
         fillInInfo(fileName);
@@ -91,19 +74,34 @@ public class FormActivity extends AppCompatActivity {
 
     protected void fillInGPS() {
         /*Get Location*/
-        Location location = gps.getGPS();
-        String locString;
-        if (location == null) {
-            locString = "N/A";
-        } else {
-            double latitude = location.getLatitude();
-            double longitude = location.getLongitude();
-            locString = String.format("LAT:%f,LONG:%f", latitude, longitude);
-        }
+        Boolean permission = Utils.checkAndRequestRuntimePermissions(this,
+                new String[]{
+                        Manifest.permission.ACCESS_COARSE_LOCATION,
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.INTERNET
+                },
+                Constants.REQUEST_LOCATION
+        );
 
-        TextView locationText = (TextView) findViewById(R.id.Location);
-        locationText.setText(locString);
-        Toast.makeText(getApplicationContext(), locString, Toast.LENGTH_LONG).show();
+        MyLocation.LocationResult locationResult = new MyLocation.LocationResult() {
+            @Override
+            public void gotLocation(Location location) {
+                String locString;
+                if (location == null) {
+                    locString = "N/A";
+                } else {
+                    double latitude = location.getLatitude();
+                    double longitude = location.getLongitude();
+                    locString = String.format("LAT:%f, LONG:%f", latitude, longitude);
+                }
+
+                TextView locationText = (TextView) findViewById(R.id.Location);
+                locationText.setText(locString);
+            }
+        };
+        MyLocation myLocation = new MyLocation(permission);
+        myLocation.getLocation(this, locationResult, permission);
+
     }
 
     protected void fillInInfoFromFile(String fileName) {
@@ -211,13 +209,19 @@ public class FormActivity extends AppCompatActivity {
 
         if (permitted) {
             Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        /* Ensure that there's a camera activity to handle the intent */
+            /* Ensure that there's a camera activity to handle the intent */
             if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
             /* Create the File where the photo should go */
                 File photoFile = null;
                 try {
-                    photoFile = createFile(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM), "JPEG", ".jpg");
+                    Log.i("Camera", "Creating file");
+                    photoFile = createFile(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "JPEG", ".jpg");
                     photoUri = Uri.fromFile(photoFile);
+                    if (photoUri == null) {
+                        Log.i("Camera", "Failed to create file");
+                    } else {
+                        Log.i("Camera", photoUri.toString());
+                    }
 //                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
 //                        Uri.fromFile(photoFile));
                     startActivityForResult(takePictureIntent, Constants.REQUEST_TAKE_PHOTO);
@@ -243,6 +247,7 @@ public class FormActivity extends AppCompatActivity {
 
             if (resultCode == RESULT_OK) {
                 Uri imageUri = data.getData();
+                // Crashes right here necause there is no imageUri
                 Log.i("REQUEST PHOTO", imageUri.toString());
                 try {
                     Bitmap bitmap = getThumbnail(imageUri);
@@ -284,6 +289,13 @@ public class FormActivity extends AppCompatActivity {
                 }
                 return;
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        /*If the user enables GPS while in FormActivity, when they return to the form, the GPS should attempt to update*/
+        fillInGPS();
     }
 
     final int THUMBNAIL_SIZE = 256;

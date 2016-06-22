@@ -109,6 +109,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         };
+
         observer.startWatching();
 
         Intent uploadIntent = new Intent(this, UploadService.class);
@@ -217,45 +218,6 @@ public class MainActivity extends AppCompatActivity {
                 return;
         }
     }
-
-    //Deprecated by UploadService
-//    public void submitReports() {
-//        //check reports pending upload...
-//        //if(pending != null) ...
-//
-//        /*Indicate main activity that wifi has been connected*/
-//
-//        String fileName = Storage.read("pending.txt");
-//        //TODO : protect against multiple pending files
-//        String fileContent = Storage.read(fileName); //JSON String
-//        if(fileContent != null){
-//            try{
-//                JSONObject content = new JSONObject(fileContent);
-//                submitReport(content);
-//            } catch (JSONException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//
-//    }
-//
-//    public void submitReport(JSONObject tagInfo) {
-//        Log.i("SUBMITTING", "REPORT");
-//        try {
-//            String personInfo = Storage.read(Constants.PERSONAL_INFO);
-//            Uri imageuri = Uri.parse((String) tagInfo.get("photo"));
-//
-//            Log.i("PERSONINFO",personInfo);
-//            Log.i("TAGINFO",tagInfo.toString());
-//            Log.i("IMAGEURI",imageuri.toString());
-//
-//            TagUploader.startActionUpload(this,imageuri.toString(),personInfo, tagInfo.toString());
-//            //uploadService.send(imageuri, tagInfo.toString(), "PARAM2");
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
-//        //TODO : pass other information
-//    }
 
     public void goToForm(View v) {
         goToForm(recent);

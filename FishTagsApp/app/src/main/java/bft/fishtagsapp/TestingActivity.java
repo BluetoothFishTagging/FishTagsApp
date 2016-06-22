@@ -46,7 +46,7 @@ public class TestingActivity extends AppCompatActivity {
         GPSBtn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                Location location = gps.getGPS();
+                Location location = gps.getGPS(false);
                 if(location != null){
                     double latitude = location.getLatitude();
                     double longitude = location.getLongitude();
