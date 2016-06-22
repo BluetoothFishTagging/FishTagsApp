@@ -53,6 +53,7 @@ public class GPS implements LocationListener {
     public void enableGPS() {
         locationManager = (LocationManager) context.getSystemService(context.LOCATION_SERVICE);
         boolean enabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+
         // check if enabled and if not send user to the GSP settings
         // Better solution would be to display a dialog and suggesting to
         // go to the settings

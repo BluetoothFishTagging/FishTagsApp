@@ -85,8 +85,6 @@ public class MainActivity extends AppCompatActivity {
 
         final Handler handler = new Handler();
         observer = new FileObserver(DownloadDir) {
-            //observer = new FileObserver(DownloadDir) {
-            //observer = new FileObserver(DownloadDir) {
             @Override
             /*DETECTING BLUETOOTH TRANSFER*/
             public void onEvent(int event, final String fileName) {
@@ -100,9 +98,8 @@ public class MainActivity extends AppCompatActivity {
                         public void run() {
                             Toast.makeText(getApplicationContext(), fileName, Toast.LENGTH_SHORT).show(); //announce filename
 
-                            //if(new File(fileName).length() > 0) // has content
-                            //goToForm(DownloadDir + '/' + fileName);
-                            //
+                            //remember recent file
+                            //currently, automatically going to form doesn't work
                             recent = DownloadDir + '/' + fileName;
 
                             //TODO : check is valid tag file

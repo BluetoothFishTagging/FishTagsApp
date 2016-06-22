@@ -16,7 +16,6 @@
     <!-- ACCESSING STORAGE -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.INTERNET" />
 
     <!-- Wifi -->
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
@@ -78,7 +77,7 @@
         <!-- Set the Launcher activity to be the start-up activity -->
         <activity
             android:name=".LauncherActivity"
-            android:label="@string/app_name">
+            android:label="Launcher">
 
         </activity>
 
