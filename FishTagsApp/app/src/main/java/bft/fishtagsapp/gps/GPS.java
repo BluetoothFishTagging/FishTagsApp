@@ -13,6 +13,9 @@ import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import bft.fishtagsapp.Constants;
 import bft.fishtagsapp.R;
 
@@ -25,35 +28,16 @@ public class GPS implements LocationListener {
     private Location location;
     private String provider;
     private Context context;
-    private Boolean permitted;
 
-    public GPS(Context context) {
-        permitted = false;
+    public GPS(Context c) {
         Log.i("GPS", "CREATING");
-        this.context = context;
-
-        /*PermissionEverywhere.getPermission(context,
-                new String[]{
-                        Manifest.permission.ACCESS_COARSE_LOCATION,
-                        Manifest.permission.ACCESS_FINE_LOCATION,
-                },
-                Constants.REQUEST_LOCATION,
-                "Requesting Permission",
-                "Obtain GPS Data for Fish Capture",
-                R.mipmap.ic_launcher).enqueue(new PermissionResultCallback() {
-            @Override
-            public void onComplete(PermissionResponse permissionResponse) {
-                permitted = permissionResponse.isGranted();
-            }
-        });*/
-
-
+        context = c;
     }
 
     public void enableGPS() {
         locationManager = (LocationManager) context.getSystemService(context.LOCATION_SERVICE);
         boolean enabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-        // check if enabled and if not send user to the GSP settings
+        // check if enabled and if not send user to the GPS settings
         // Better solution would be to display a dialog and suggesting to
         // go to the settings
         if (!enabled) {
@@ -63,20 +47,21 @@ public class GPS implements LocationListener {
         }
         
         Log.i("ENABLED GPS","TRUE");
-
         //hopefully user will enable GPS here
     }
 
-    public Location getGPS() {
+    public Location getGPS(Boolean permitted) {
         if(!permitted){
             return null;
         }
         enableGPS(); //in case not enabled
         Criteria criteria = new Criteria();
         provider = locationManager.getBestProvider(criteria, true);
+        List<String> providers_all = locationManager.getAllProviders();
+        Log.i("PROVIDERS", providers_all.toString());
         Log.i("PROVIDER : ", provider);
         try {
-            //to be safe
+            // to be safe
             locationManager.requestLocationUpdates(provider, 0, 0, this);
             location = locationManager.getLastKnownLocation(provider);
 
@@ -89,8 +74,8 @@ public class GPS implements LocationListener {
         if (location != null) {
             System.out.println("Provider " + provider + " has been selected.");
             onLocationChanged(location);
-
         }
+
         return location;
     }
 
