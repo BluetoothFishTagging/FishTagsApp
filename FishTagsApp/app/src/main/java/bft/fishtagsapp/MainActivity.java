@@ -105,6 +105,9 @@ public class MainActivity extends AppCompatActivity {
         if(networkPermitted){
             new HttpGetTask().execute(Constants.DATABASE_URL + "query?name=Katya");
         }
+
+        showDialog();
+
         /* BUTTON TO GO TO FORM FOR SUBMITTING TAG DATA */
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -158,19 +161,22 @@ public class MainActivity extends AppCompatActivity {
         Intent uploadIntent = new Intent(this, UploadService.class);
         bindService(uploadIntent, uploadConnection, BIND_AUTO_CREATE); // no flags
     }
-public static class AlertDialog.Builder () {
-        Builder builder = new AlertDialog.Builder(getActivity());
 
-        builder.setMessage(R.string.Please_ensure_your_rfid_reader_is_on)
+    void showDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setMessage("MESSAGE")
                 .setTitle(R.string.rfid_dialog);
 
-        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
+                Toast.makeText(MainActivity.this,"Okay",Toast.LENGTH_LONG).show();
                 // User clicked ok button
             }
         });
-        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+        builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
+                Toast.makeText(MainActivity.this,"Nokay",Toast.LENGTH_LONG).show();
                 // User cancelled the dialog
             }
         });
@@ -295,10 +301,5 @@ public static class AlertDialog.Builder () {
             }
         }
         return "";
-    }public AlertDialog create() {
-        }
-
-    private class Builder {
-        
     }
 }
