@@ -165,7 +165,7 @@ public class MainActivity extends AppCompatActivity {
     void showDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-        builder.setMessage("MESSAGE")
+        builder.setMessage("Please ensure your RFID Reader is turned on in order to begin file transfer.")
                 .setTitle(R.string.rfid_dialog);
 
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
