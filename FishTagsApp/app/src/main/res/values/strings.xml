@@ -41,5 +41,6 @@
         completions."
     </string>
     <string name="title_activity_splash">Splash</string>
+    <string name="rfid_dialog" />
 
 </resources>

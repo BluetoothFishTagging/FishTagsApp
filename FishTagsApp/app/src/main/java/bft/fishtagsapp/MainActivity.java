@@ -118,20 +118,24 @@ public class MainActivity extends AppCompatActivity {
         Intent uploadIntent = new Intent(this, UploadService.class);
         bindService(uploadIntent, uploadConnection, BIND_AUTO_CREATE); // no flags
     }
+public static class AlertDialog.Builder () {
+        Builder builder = new AlertDialog.Builder(getActivity());
 
+        builder.setMessage(R.string.Please_ensure_your_rfid_reader_is_on)
+                .setTitle(R.string.rfid_dialog);
 
-    public void open(View view){
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-        alertDialogBuilder.setMessage("Please ensure your rfid reader is turned on.");
-
-        alertDialogBuilder.setPositiveButton("Okay", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface arg0, int arg1) {
-                Toast.makeText(MainActivity.this, "You have rfid reader ready", Toast.LENGTH_LONG).show();
+        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User clicked ok button
             }
         });
-        AlertDialog alertDialog = alertDialogBuilder.create();
-        alertDialog.show();
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User cancelled the dialog
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     @Override
@@ -251,5 +255,10 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         return "";
+    }public AlertDialog create() {
+        }
+
+    private class Builder {
+        
     }
 }
