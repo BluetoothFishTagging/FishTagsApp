@@ -5,8 +5,12 @@ import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
+import android.net.ConnectivityManager;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.FileObserver;
@@ -24,6 +28,7 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import bft.fishtagsapp.client.HttpClient;
 import bft.fishtagsapp.client.UploadService;
 import bft.fishtagsapp.signup.SignupActivity;
 import bft.fishtagsapp.storage.Storage;
@@ -50,18 +55,56 @@ public class MainActivity extends AppCompatActivity {
     };
 
 
+    private class HttpGetTask extends AsyncTask<String, Void, Boolean> {
+        String response;
+        @Override
+        protected Boolean doInBackground(String... params) {
+            String url = params[0];
+
+            try {
+                HttpClient client = new HttpClient(url);
+                client.connect();
+                response = client.getResponse();
+                Log.i("RSP",response);
+                return true;
+            } catch (Throwable t) {
+                t.printStackTrace();
+            }
+            return false;
+        }
+        @Override
+        protected void onPostExecute(Boolean success) {
+            //Log.i("SUCCESS", success);
+            super.onPostExecute(success);
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         /* OBTAIN EXTERAL STORAGE READ-WRITE PERMISSIONS */
-        Utils.checkAndRequestRuntimePermissions(this,
+        Boolean storagePermitted = Utils.checkAndRequestRuntimePermissions(this,
                 new String[]{
                         Manifest.permission.READ_EXTERNAL_STORAGE,
                         Manifest.permission.WRITE_EXTERNAL_STORAGE
                 }, Constants.REQUEST_STORAGE);
 
+        Log.i("STORAGE PERMS", storagePermitted.toString());
+
+        Boolean networkPermitted = Utils.checkAndRequestRuntimePermissions(this,
+                new String[]{
+                        Manifest.permission.ACCESS_NETWORK_STATE,
+                        Manifest.permission.ACCESS_WIFI_STATE,
+                        Manifest.permission.INTERNET,
+                }, Constants.REQUEST_NETWORK);
+
+        Log.i("NETWORK PERMS", networkPermitted.toString());
+
+        if(networkPermitted){
+            new HttpGetTask().execute(Constants.DATABASE_URL + "query?name=Katya");
+        }
         /* BUTTON TO GO TO FORM FOR SUBMITTING TAG DATA */
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -205,18 +248,18 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
+        Boolean granted = (grantResults.length > 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED);
+        //TODO : check for each permission
+
         switch (requestCode) {
             case Constants.REQUEST_STORAGE:
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Log.i("STORAGE PERMISSIONS", "GRANTED");
-                } else {
-                    Log.i("STORAGE PERMISSIONS", "NOT GRANTED");
-                    //give up on photo
-                }
-                return;
+                Log.i("STORAGE PERMISSIONS", granted.toString());
+                break;
+            case Constants.REQUEST_NETWORK:
+                new HttpGetTask().execute(Constants.DATABASE_URL + "query?name=Momo");
+                break;
         }
+
     }
 
     public void goToForm(View v) {
