@@ -222,8 +222,8 @@ public class FormActivity extends AppCompatActivity {
                     } else {
                         Log.i("Camera", photoUri.toString());
                     }
-//                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
-//                        Uri.fromFile(photoFile));
+                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
+                        Uri.fromFile(photoFile));
                     startActivityForResult(takePictureIntent, Constants.REQUEST_TAKE_PHOTO);
                 } catch (IOException ex) {
                     ex.printStackTrace();
@@ -246,7 +246,8 @@ public class FormActivity extends AppCompatActivity {
         if (requestCode == Constants.REQUEST_TAKE_PHOTO) {
 
             if (resultCode == RESULT_OK) {
-                Uri imageUri = data.getData();
+//                Uri imageUri = data.getData();
+                Uri imageUri = photoUri;
                 // Crashes right here necause there is no imageUri
                 Log.i("REQUEST PHOTO", imageUri.toString());
                 try {
@@ -342,7 +343,8 @@ public class FormActivity extends AppCompatActivity {
         String fileName = extension + "_" + timeStamp + "_";
 
         File file = new File(storageDir + "/" + fileName + dotExtension);
-        file.createNewFile();
+        boolean created = file.createNewFile();
+        Log.i("Creating File", created + "");
 
         return file;
     }

@@ -14,6 +14,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -54,6 +55,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.showOverflowMenu();
+        setSupportActionBar(toolbar); // Important piece of vode that otherwise will not show menus
 
         /* OBTAIN EXTERAL STORAGE READ-WRITE PERMISSIONS */
         Utils.checkAndRequestRuntimePermissions(this,
@@ -119,8 +124,7 @@ public class MainActivity extends AppCompatActivity {
         bindService(uploadIntent, uploadConnection, BIND_AUTO_CREATE); // no flags
     }
 
-
-    public void open(View view){
+    public void open(View view) {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
         alertDialogBuilder.setMessage("Please ensure your rfid reader is turned on.");
 
@@ -145,7 +149,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         /* Inflate the menu; this adds items to the action bar if it is present.*/
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.fish_menu, menu);
         return true;
     }
 
@@ -160,8 +164,16 @@ public class MainActivity extends AppCompatActivity {
         if (id == R.id.action_settings) {
             return true;
         }
-
-        return super.onOptionsItemSelected(item);
+        switch (id) {
+            case R.id.action_test:
+                Toast.makeText(MainActivity.this, "Selected Test", Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.action_settings:
+                Toast.makeText(MainActivity.this, "Selected Settings", Toast.LENGTH_SHORT).show();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     /**
@@ -244,8 +256,8 @@ public class MainActivity extends AppCompatActivity {
         if (info != null && !info.isEmpty()) {
             try {
                 JSONObject data = new JSONObject(info);
-                    String value = data.getString("name");
-                    return value;
+                String value = data.getString("name");
+                return value;
             } catch (JSONException e) {
                 e.printStackTrace();
             }
