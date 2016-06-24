@@ -14,6 +14,8 @@ public final class Constants {
     public static final int REQUEST_CAMERA = 7;
     public static final int REQUEST_STORAGE = 8;
     public static final int REQUEST_LOCATION = 9;
+    public static final int REQUEST_NETWORK = 10;
+    public static final int REQUEST_BLUETOOTH = 11;
 
 
     public static final String PENDING = "pending.txt";

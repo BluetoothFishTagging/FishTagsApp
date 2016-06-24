@@ -2,11 +2,18 @@ package bft.fishtagsapp;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.bluetooth.BluetoothManager;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
+import android.net.ConnectivityManager;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.FileObserver;
@@ -25,6 +32,9 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Set;
+
+import bft.fishtagsapp.client.HttpClient;
 import bft.fishtagsapp.client.UploadService;
 import bft.fishtagsapp.signup.SignupActivity;
 import bft.fishtagsapp.storage.Storage;
@@ -51,6 +61,30 @@ public class MainActivity extends AppCompatActivity {
     };
 
 
+    private class HttpGetTask extends AsyncTask<String, Void, Boolean> {
+        String response;
+        @Override
+        protected Boolean doInBackground(String... params) {
+            String url = params[0];
+
+            try {
+                HttpClient client = new HttpClient(url);
+                client.connect();
+                response = client.getResponse();
+                Log.i("RSP",response);
+                return true;
+            } catch (Throwable t) {
+                t.printStackTrace();
+            }
+            return false;
+        }
+        @Override
+        protected void onPostExecute(Boolean success) {
+            //Log.i("SUCCESS", success);
+            super.onPostExecute(success);
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,11 +95,38 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar); // Important piece of vode that otherwise will not show menus
 
         /* OBTAIN EXTERAL STORAGE READ-WRITE PERMISSIONS */
-        Utils.checkAndRequestRuntimePermissions(this,
+        Boolean storagePermitted = Utils.checkAndRequestRuntimePermissions(this,
                 new String[]{
                         Manifest.permission.READ_EXTERNAL_STORAGE,
                         Manifest.permission.WRITE_EXTERNAL_STORAGE
                 }, Constants.REQUEST_STORAGE);
+
+        Log.i("STORAGE PERMS", storagePermitted.toString());
+
+        /* OBTAIN NETWORK-ACCESS RELATED PERMISSIONS */
+        Boolean networkPermitted = Utils.checkAndRequestRuntimePermissions(this,
+                new String[]{
+                        Manifest.permission.ACCESS_NETWORK_STATE,
+                        Manifest.permission.ACCESS_WIFI_STATE,
+                        Manifest.permission.INTERNET,
+                }, Constants.REQUEST_NETWORK);
+
+        Log.i("NETWORK PERMS", networkPermitted.toString());
+
+        if(networkPermitted){
+            new HttpGetTask().execute(Constants.DATABASE_URL + "query?name=Katya");
+        }
+
+        /* HOPEFULLY, BLUETOOTH FILE TRANSFER DETECTION */
+
+        Boolean bluetoothPermitted = Utils.checkAndRequestRuntimePermissions(this,
+                new String[]{
+                        Manifest.permission.BLUETOOTH,
+                        //Manifest.permission.BLUETOOTH_PRIVILEGED
+                }, Constants.REQUEST_BLUETOOTH);
+        Log.i("BLUETOOTH PERMS", bluetoothPermitted.toString());
+
+        //showDialog();
 
         /* BUTTON TO GO TO FORM FOR SUBMITTING TAG DATA */
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -90,8 +151,6 @@ public class MainActivity extends AppCompatActivity {
 
         final Handler handler = new Handler();
         observer = new FileObserver(DownloadDir) {
-            //observer = new FileObserver(DownloadDir) {
-            //observer = new FileObserver(DownloadDir) {
             @Override
             /*DETECTING BLUETOOTH TRANSFER*/
             public void onEvent(int event, final String fileName) {
@@ -105,9 +164,8 @@ public class MainActivity extends AppCompatActivity {
                         public void run() {
                             Toast.makeText(getApplicationContext(), fileName, Toast.LENGTH_SHORT).show(); //announce filename
 
-                            //if(new File(fileName).length() > 0) // has content
-                            //goToForm(DownloadDir + '/' + fileName);
-                            //
+                            //remember recent file
+                            //currently, automatically going to form doesn't work
                             recent = DownloadDir + '/' + fileName;
 
                             //TODO : check is valid tag file
@@ -118,30 +176,59 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
+//        BroadcastReceiver r = new BroadcastReceiver() {
+//            @Override
+//            public void onReceive(Context context, Intent intent) {
+//                Log.i("BTRECV", intent.getAction());
+//                Set<String> keys = intent.getExtras().keySet();
+//                for(String key : keys){
+//                    Log.i("BTRECV-KEY", key);
+//                }
+//
+//            }
+//        };
+//        IntentFilter filter = new IntentFilter("android.btopp.intent.action.CONFIRM");
+//        registerReceiver(r, filter);
+
+
         observer.startWatching();
 
         Intent uploadIntent = new Intent(this, UploadService.class);
+
+        startService(uploadIntent);
         bindService(uploadIntent, uploadConnection, BIND_AUTO_CREATE); // no flags
     }
 
-    public void open(View view) {
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-        alertDialogBuilder.setMessage("Please ensure your rfid reader is turned on.");
+    void showDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-        alertDialogBuilder.setPositiveButton("Okay", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface arg0, int arg1) {
-                Toast.makeText(MainActivity.this, "You have rfid reader ready", Toast.LENGTH_LONG).show();
+        builder.setMessage("Please ensure your RFID Reader is turned on in order to begin file transfer.")
+                .setTitle(R.string.rfid_dialog);
+
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                Toast.makeText(MainActivity.this,"Okay",Toast.LENGTH_LONG).show();
+                // User clicked ok button
             }
         });
-        AlertDialog alertDialog = alertDialogBuilder.create();
-        alertDialog.show();
+        builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                Toast.makeText(MainActivity.this,"Nokay",Toast.LENGTH_LONG).show();
+                // User cancelled the dialog
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     @Override
     protected void onDestroy() {
+        Log.i("MAINACVITIY","DESTROYED");
+        // --> perhaps handle "save pending" stuff here...
         super.onDestroy();
+
         if (uploadServiceBound) {
+            uploadBinder.alertSave(); //save any pending stuff
             unbindService(uploadConnection);
         }
     }
@@ -220,18 +307,18 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
+        Boolean granted = (grantResults.length > 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED);
+        //TODO : check for each permission
+
         switch (requestCode) {
             case Constants.REQUEST_STORAGE:
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Log.i("STORAGE PERMISSIONS", "GRANTED");
-                } else {
-                    Log.i("STORAGE PERMISSIONS", "NOT GRANTED");
-                    //give up on photo
-                }
-                return;
+                Log.i("STORAGE PERMISSIONS", granted.toString());
+                break;
+            case Constants.REQUEST_NETWORK:
+                new HttpGetTask().execute(Constants.DATABASE_URL + "query?name=Momo");
+                break;
         }
+
     }
 
     public void goToForm(View v) {

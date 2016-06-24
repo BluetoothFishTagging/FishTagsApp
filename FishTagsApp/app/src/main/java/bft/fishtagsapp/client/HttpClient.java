@@ -31,12 +31,10 @@ public class HttpClient {
     public void connect() {
         try {
             con = (HttpURLConnection) new URL(url).openConnection();
-            con.setRequestMethod("POST");
+            con.setRequestMethod("GET");
             con.setDoInput(true);
-            con.setDoOutput(true);
             con.connect();
-            //is = con.getInputStream();
-            os = con.getOutputStream();
+
         } catch (Exception e) {
             e.printStackTrace();
         }

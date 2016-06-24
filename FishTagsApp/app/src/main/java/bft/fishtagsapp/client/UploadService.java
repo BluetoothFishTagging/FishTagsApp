@@ -63,6 +63,9 @@ public class UploadService extends Service {
             //try to upload
             uploadOne();
         }
+        public void alertSave(){
+            savePending();
+        }
     }
 
     private final IBinder mBinder = new UploadBinder();
@@ -164,16 +167,18 @@ public class UploadService extends Service {
 
     @Override
     public void onCreate() {
-
+        Storage.register(this, Constants.APP_DIRECTORY);
         /* JUST IN CASE ... */
-        PermissionEverywhere.getPermission(getApplicationContext(),
+        /* IN FACT, THE PERMISSION IS NOT NECESSARY ANYMORE */
+
+        /*PermissionEverywhere.getPermission(this,
                 new String[]{
                         Manifest.permission.READ_EXTERNAL_STORAGE,
                         Manifest.permission.WRITE_EXTERNAL_STORAGE
                 },
                 Constants.REQUEST_STORAGE,
-                "Notification title",
-                "This app needs a write permission",
+                "FishTags - Upload Service",
+                "This app needs a read permission",
                 R.mipmap.ic_launcher)
                 .enqueue(new PermissionResultCallback() {
                     @Override
@@ -181,12 +186,35 @@ public class UploadService extends Service {
                         Toast.makeText(UploadService.this, "is Granted " + permissionResponse.isGranted(), Toast.LENGTH_SHORT).show();
                     }
                 });
+        */
 
+    }
+    //SERVICE-RELATED IMPLEMENTATION
+
+    @Override
+    public void onDestroy() {
+        Log.i("UPLOADSERVICE", "DESTROYED");
+        savePending();
+    }
+
+    /**
+     * The service is starting, due to a call to startService()
+     */
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        //just in case
+        Storage.register(this,Constants.APP_DIRECTORY);
+
+        Log.i("UPLOADSERVICE","STARTING");
+        //load pending data -- i.e. those that didn't quite get delivered
         String pendingString = Storage.read("pending.txt");
+
         if (pendingString != null && !pendingString.isEmpty()) {
             try {
                 JSONObject pending = new JSONObject(Storage.read("pending.txt"));
                 int count = pending.getInt("count");
+                Log.i("UPLOADSERVICE-COUNT",String.valueOf(count));
+
                 for (int i = 0; i < count; ++i) {
                     //numbering as identifiers
                     JSONObject one = pending.getJSONObject(String.valueOf(i));
@@ -209,18 +237,49 @@ public class UploadService extends Service {
             uploadOne();
         }
         //load from pending...?
+        return START_STICKY;
     }
-    //SERVICE-RELATED IMPLEMENTATION
+
+    /**
+     * A client is binding to the service with bindService()
+     */
+    @Override
+    public IBinder onBind(Intent intent) {
+        Log.i("UPLOADSERVICE","BINDING");
+        bound = true;
+        return mBinder;
+    }
 
     @Override
-    public void onDestroy() {
-        Log.i("UPLOADSERVICE", "DESTROYED");
+    public boolean onUnbind(Intent intent) {
+        Log.i("UPLOADSERVICE","UNBINDING");
+        bound = false;
+        return super.onUnbind(intent);
+    }
+
+
+    private void uploadOne() {
+        Log.i("UPLOADSERVICE","UPLOADING");
+        String[] params = uploadQueue.peek();
+        if (params == null) {
+            if (bound == false) {
+                //not bound && nothing pending
+                stopSelf();
+            }
+        } else {
+            //has pending upload
+            new SendHttpRequestTask().execute(params);
+        }
+    }
+
+    public void savePending(){
         try {
             //try to save queue to pending files
             JSONObject pending = new JSONObject();
+            int count = uploadQueue.size();
+            Log.i("UPLOADSERVICE-COUNT",String.valueOf(count));
 
-            pending.put("count", uploadQueue.size());
-
+            pending.put("count", count);
             int i = 0;
             for (String[] params : uploadQueue) {
                 JSONObject one = new JSONObject();
@@ -230,50 +289,14 @@ public class UploadService extends Service {
                 one.put("tagInfo", params[2]);
                 one.put("personInfo", params[3]);
 
-                pending.put(String.valueOf(i), one.toString());
+                pending.put(String.valueOf(i), one); //put JSON object
                 ++i;
             }
             Storage.save("pending.txt", pending.toString());
+
         } catch (JSONException e) {
             //well... have to give up here
             e.printStackTrace();
-        }
-
-    }
-
-    /**
-     * The service is starting, due to a call to startService()
-     */
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        return START_REDELIVER_INTENT;
-    }
-
-    /**
-     * A client is binding to the service with bindService()
-     */
-    @Override
-    public IBinder onBind(Intent intent) {
-        bound = true;
-        return mBinder;
-    }
-
-    @Override
-    public boolean onUnbind(Intent intent) {
-        bound = false;
-        return super.onUnbind(intent);
-    }
-
-
-    private void uploadOne() {
-        String[] params = uploadQueue.peek();
-        if (params == null) {
-            if (bound == false) {
-                stopSelf();
-            }
-        } else {
-            //has pending upload
-            new SendHttpRequestTask().execute(params);
         }
     }
 }
