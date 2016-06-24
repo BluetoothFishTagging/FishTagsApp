@@ -6,8 +6,10 @@
          TODO: camera unrequired, disable camera features if no camera on device.
         Currently, camera required on device to download app.
     -->
+
     <!-- Camera -->
     <uses-permission android:name="android.permission.CAMERA" />
+
     <uses-feature
         android:name="android.hardware.camera"
         android:required="true" />
@@ -33,17 +35,19 @@
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
 
+    <!-- DETECT BLUETOOTH TRANSFER -->
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+
     <application
         android:name=".FishTagsApplication"
         android:allowBackup="true"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <receiver
             android:name=".wifi.WifiDetector"
@@ -55,18 +59,8 @@
         </receiver>
 
         <activity
-            android:name=".linkage.LinkageActivity"
-            android:label="LinkageActivity"
-            android:parentActivityName=".MainActivity" />
-        <activity android:name=".storage.StorageActivty" />
-        <activity
             android:name=".FormActivity"
             android:label="Tag Submission Form" />
-
-        <activity
-            android:name=".TestingActivity"
-            android:label="@string/title_activity_testing"
-            android:theme="@style/AppTheme.NoActionBar" />
 
         <service android:name=".client.UploadService" />
 
@@ -77,10 +71,7 @@
         <!-- Set the Launcher activity to be the start-up activity -->
         <activity
             android:name=".LauncherActivity"
-            android:label="Launcher">
-
-        </activity>
-
+            android:label="Launcher"></activity>
         <activity
             android:name=".Splash"
             android:label="@string/app_name"
@@ -90,8 +81,11 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
+
+        <activity android:name=".camera.CameraActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
+
     </application>
 
 </manifest>

@@ -32,8 +32,6 @@ public final class Storage {
     //FileStorage
     private static File fileStorage = null;//Main Directory File
 
-    private static String latest; //latest entry
-
     //Preferences to Store Data when SDCard is not present
     private static SharedPreferences prefStorage;
     private static SharedPreferences.Editor editor;
@@ -107,23 +105,26 @@ public final class Storage {
                     Log.i("fileStorageMkdirs", res.toString());
                 }
 
-                /*Make File Name under main Directory*/
-                File savedFile = new File(fileStorage, FileName);
+                writeToFile(FileName,message);
 
-                /*If Saved File exists then check if its size is greater than 0*/
-                if (savedFile.exists()) {
-                    if (savedFile.length() > 0)
-                        appendOrOverrideSavedFile(FileName, message);/*if file present then show alert for appending and overriding*/
-                    else {
-                        /*else save data into file*/
-                        writeToFile(FileName, message);
-                        return true;
-                    }
-                } else {
-                    /*If Saved file doesn't exists then create new file and save file*/
-                    writeToFile(FileName, message);
-                    return true;
-                }
+                /* IGNORE EXISTING FILE */
+//                /*Make File Name under main Directory*/
+//                File savedFile = new File(fileStorage, FileName);
+//
+//                /*If Saved File exists then check if its size is greater than 0*/
+//                if (savedFile.exists()) {
+//                    if (savedFile.length() > 0)
+//                        appendOrOverrideSavedFile(FileName, message);/*if file present then show alert for appending and overriding*/
+//                    else {
+//                        /*else save data into file*/
+//                        writeToFile(FileName, message);
+//                        return true;
+//                    }
+//                } else {
+//                    /*If Saved file doesn't exists then create new file and save file*/
+//                    writeToFile(FileName, message);
+//                    return true;
+//                }
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -300,18 +301,6 @@ public final class Storage {
         return editor.commit();
     }
 
-    public static Boolean saveReport(HashMap<String, String> data) {
-        JSONObject jsonData = new JSONObject(data);
-        writeToFile("reports" + '/' + data.get("name"), jsonData.toString());
-        return true;
-    }
-
-    public static HashMap<String, String> parseReport(File f) {
-        HashMap<String, String> map = new HashMap<>();
-        // TODO: parse report from file
-        return map;
-    }
-
     private static List<File> getListFiles(File parentDir) {
         ArrayList<File> inFiles = new ArrayList<File>();
         File[] files = parentDir.listFiles();
@@ -325,24 +314,6 @@ public final class Storage {
             }
         }
         return inFiles;
-    }
-
-    public static ArrayList<HashMap<String, String>> getReports() {
-        ArrayList<HashMap<String, String>> list = new ArrayList<>();
-
-        for (File file : getListFiles(fileStorage)) {
-            list.add(parseReport(file));
-        }
-
-        return list;
-    }
-
-    public static void removeReports() {
-        //remove all reports
-        String[] children = fileStorage.list();
-        for (int i = 0; i < children.length; i++) {
-            new File(fileStorage, children[i]).delete();
-        }
     }
 
     public static void register(Context context, String name) {
@@ -369,11 +340,4 @@ public final class Storage {
         }
     }
 
-    public static String latest() { //getter
-        return latest;
-    }
-
-    public static void latest(String l) { //setter
-        latest = l;
-    }
 }

@@ -15,10 +15,12 @@ public final class Constants {
     public static final int REQUEST_STORAGE = 8;
     public static final int REQUEST_LOCATION = 9;
     public static final int REQUEST_NETWORK = 10;
+    public static final int REQUEST_BLUETOOTH = 11;
+
 
     public static final String PENDING = "pending.txt";
     public static final String PERSONAL_INFO = "info.txt";
     public static final String ACTION_UPLOAD = "Upload";
     public static final String DEFAULT_STORE_SUBDIR = "/bft.fishtagsapp";
-    public static final String DATABASE_URL = "http://192.168.16.73:8000/";
+    public static final String DATABASE_URL = "https://hitag-database.herokuapp.com/";
 }

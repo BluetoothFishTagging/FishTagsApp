@@ -30,12 +30,14 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import bft.fishtagsapp.camera.CameraActivity;
 import bft.fishtagsapp.gps.GPS;
 import bft.fishtagsapp.gps.MyLocation;
 import bft.fishtagsapp.parsefile.ParseFile;
 import bft.fishtagsapp.signup.SignupActivity;
 
 public class FormActivity extends AppCompatActivity {
+    /* HANDLES FORM INPUT FROM USER */
 
     private ArrayList<EditText> editTexts;
     private ImageView fishPhotoView;
@@ -47,7 +49,7 @@ public class FormActivity extends AppCompatActivity {
 
         LinearLayout my_linView = (LinearLayout) findViewById(R.id.tag_submission_form);
 
-        editTexts = new ArrayList<EditText>();
+        editTexts = new ArrayList<>();
         findFields(my_linView, editTexts);
         fishPhotoView = (ImageView) findViewById(R.id.FishPhoto);
 
@@ -57,6 +59,8 @@ public class FormActivity extends AppCompatActivity {
         fillInInfo(fileName);
     }
 
+
+    /* AUTOFILL SECTION */
     protected void fillInInfo(String fileName) {
         fillInTime();
         fillInGPS();
@@ -138,8 +142,11 @@ public class FormActivity extends AppCompatActivity {
         }
     }
 
+
+    /* SUBMISSION SECTION */
+
     private void findFields(ViewGroup v, ArrayList<EditText> editTexts) {
-        /* Find EditTexts */
+        /* Recursively Find EditTexts in Viewgroups*/
         int n = v.getChildCount();
         for (int i = 0; i < n; ++i) {
             View subView = v.getChildAt(i);
@@ -153,6 +160,7 @@ public class FormActivity extends AppCompatActivity {
     }
 
     protected JSONObject getFormMap() {
+        /* Iterate through form fields */
         try {
             JSONObject data = new JSONObject();
 
@@ -190,47 +198,18 @@ public class FormActivity extends AppCompatActivity {
         startActivityForResult(intent_verify, Constants.REQUEST_VERIFY_SETTINGS);
     }
 
-    public void goToCamera(View view) {
+    /* CAMERA SECTION */
+    public void goToCamera(){
         Log.i("Camera", "Dispatching intent");
-        dispatchTakePictureIntent();
+        Intent intent = new Intent(this, CameraActivity.class);
+        startActivityForResult(intent,Constants.REQUEST_TAKE_PHOTO);
     }
 
-    Uri photoUri;
-
-    private void dispatchTakePictureIntent() {
-        Boolean permitted = Utils.checkAndRequestRuntimePermissions(
-                this,
-                new String[]{
-                        Manifest.permission.CAMERA,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE
-                },
-                Constants.REQUEST_CAMERA
-        );
-
-        if (permitted) {
-            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            /* Ensure that there's a camera activity to handle the intent */
-            if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            /* Create the File where the photo should go */
-                File photoFile = null;
-                try {
-                    Log.i("Camera", "Creating file");
-                    photoFile = createFile(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "JPEG", ".jpg");
-                    photoUri = Uri.fromFile(photoFile);
-                    if (photoUri == null) {
-                        Log.i("Camera", "Failed to create file");
-                    } else {
-                        Log.i("Camera", photoUri.toString());
-                    }
-//                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
-//                        Uri.fromFile(photoFile));
-                    startActivityForResult(takePictureIntent, Constants.REQUEST_TAKE_PHOTO);
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
-            }
-        }
+    public void goToCamera(View view) {
+        goToCamera();
     }
+
+    /* CALLBACK SECTION */
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -244,9 +223,9 @@ public class FormActivity extends AppCompatActivity {
             }
         }
         if (requestCode == Constants.REQUEST_TAKE_PHOTO) {
-
             if (resultCode == RESULT_OK) {
-                Uri imageUri = data.getData();
+
+                Uri imageUri = Uri.parse(data.getStringExtra("photo"));
                 // Crashes right here necause there is no imageUri
                 Log.i("REQUEST PHOTO", imageUri.toString());
                 try {
@@ -266,19 +245,6 @@ public class FormActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
         switch (requestCode) {
-            case Constants.REQUEST_CAMERA:
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                    //try to take photo again
-                    dispatchTakePictureIntent();
-
-                } else {
-                    Log.i("PERMISSIONS", "NOT GRANTED");
-                    //give up on photo
-                }
-                return;
             case Constants.REQUEST_LOCATION:
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -298,7 +264,14 @@ public class FormActivity extends AppCompatActivity {
         fillInGPS();
     }
 
+    /* THUMBNAIL CREATION SECTION */
     final int THUMBNAIL_SIZE = 256;
+
+    private static int getPowerOfTwoForSampleRatio(double ratio) {
+        int k = Integer.highestOneBit((int) Math.floor(ratio));
+        if (k == 0) return 1;
+        else return k;
+    }
 
     public Bitmap getThumbnail(Uri uri) throws FileNotFoundException, IOException {
         InputStream input = this.getContentResolver().openInputStream(uri);
@@ -330,20 +303,5 @@ public class FormActivity extends AppCompatActivity {
         return bitmap;
     }
 
-    private static int getPowerOfTwoForSampleRatio(double ratio) {
-        int k = Integer.highestOneBit((int) Math.floor(ratio));
-        if (k == 0) return 1;
-        else return k;
-    }
 
-    private File createFile(File storageDir, String extension, String dotExtension) throws IOException {
-        /* Create a unique file name */
-        String timeStamp = Utils.timestamp();
-        String fileName = extension + "_" + timeStamp + "_";
-
-        File file = new File(storageDir + "/" + fileName + dotExtension);
-        file.createNewFile();
-
-        return file;
-    }
 }

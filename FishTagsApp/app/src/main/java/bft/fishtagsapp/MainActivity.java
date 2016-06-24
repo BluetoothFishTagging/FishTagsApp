@@ -2,7 +2,10 @@ package bft.fishtagsapp;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.bluetooth.BluetoothManager;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -27,6 +30,8 @@ import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.Set;
 
 import bft.fishtagsapp.client.HttpClient;
 import bft.fishtagsapp.client.UploadService;
@@ -93,6 +98,7 @@ public class MainActivity extends AppCompatActivity {
 
         Log.i("STORAGE PERMS", storagePermitted.toString());
 
+        /* OBTAIN NETWORK-ACCESS RELATED PERMISSIONS */
         Boolean networkPermitted = Utils.checkAndRequestRuntimePermissions(this,
                 new String[]{
                         Manifest.permission.ACCESS_NETWORK_STATE,
@@ -106,7 +112,16 @@ public class MainActivity extends AppCompatActivity {
             new HttpGetTask().execute(Constants.DATABASE_URL + "query?name=Katya");
         }
 
-        showDialog();
+        /* HOPEFULLY, BLUETOOTH FILE TRANSFER DETECTION */
+
+        Boolean bluetoothPermitted = Utils.checkAndRequestRuntimePermissions(this,
+                new String[]{
+                        Manifest.permission.BLUETOOTH,
+                        //Manifest.permission.BLUETOOTH_PRIVILEGED
+                }, Constants.REQUEST_BLUETOOTH);
+        Log.i("BLUETOOTH PERMS", bluetoothPermitted.toString());
+
+        //showDialog();
 
         /* BUTTON TO GO TO FORM FOR SUBMITTING TAG DATA */
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -156,9 +171,26 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
+//        BroadcastReceiver r = new BroadcastReceiver() {
+//            @Override
+//            public void onReceive(Context context, Intent intent) {
+//                Log.i("BTRECV", intent.getAction());
+//                Set<String> keys = intent.getExtras().keySet();
+//                for(String key : keys){
+//                    Log.i("BTRECV-KEY", key);
+//                }
+//
+//            }
+//        };
+//        IntentFilter filter = new IntentFilter("android.btopp.intent.action.CONFIRM");
+//        registerReceiver(r, filter);
+
+
         observer.startWatching();
 
         Intent uploadIntent = new Intent(this, UploadService.class);
+
+        startService(uploadIntent);
         bindService(uploadIntent, uploadConnection, BIND_AUTO_CREATE); // no flags
     }
 
@@ -186,8 +218,12 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
+        Log.i("MAINACVITIY","DESTROYED");
+        // --> perhaps handle "save pending" stuff here...
         super.onDestroy();
+
         if (uploadServiceBound) {
+            uploadBinder.alertSave(); //save any pending stuff
             unbindService(uploadConnection);
         }
     }
