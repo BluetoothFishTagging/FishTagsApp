@@ -1,4 +1,5 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/login_form"
     android:layout_width="match_parent"
@@ -9,6 +10,8 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:useDefaultMargins="true"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".signup.SignupActivity">
 
     <LinearLayout
@@ -20,13 +23,13 @@
 
         <Button
             android:id="@+id/signUpBtn"
+            style="@style/ButtonTheme"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
             android:layout_marginTop="16dp"
             android:layout_weight="1"
-            android:text="@string/action_sign_up"
-            style="@style/ButtonTheme"
-            android:layout_gravity="center_horizontal" />
+            android:text="@string/action_sign_up" />
 
     </LinearLayout>
 </ScrollView>

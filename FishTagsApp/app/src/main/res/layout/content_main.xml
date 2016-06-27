@@ -17,7 +17,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/welcome"
-        android:text="Welcome to HI TAG!"/>
+        android:text="Welcome!"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="To submit a tag, click the Add button at the bottom right."/>
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

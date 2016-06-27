@@ -21,6 +21,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -95,6 +96,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.showOverflowMenu();
+        setSupportActionBar(toolbar); // Important piece of vode that otherwise will not show menus
 
         /* OBTAIN EXTERAL STORAGE READ-WRITE PERMISSIONS */
         Boolean storagePermitted = Utils.checkAndRequestRuntimePermissions(this,
@@ -181,28 +186,6 @@ public class MainActivity extends AppCompatActivity {
         registerReceiver(receiver, filter);
     }
 
-    void showDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
-        builder.setMessage("Please ensure your RFID Reader is turned on in order to begin file transfer.")
-                .setTitle(R.string.rfid_dialog);
-
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                Toast.makeText(MainActivity.this, "Okay", Toast.LENGTH_LONG).show();
-                // User clicked ok button
-            }
-        });
-        builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                Toast.makeText(MainActivity.this, "Nokay", Toast.LENGTH_LONG).show();
-                // User cancelled the dialog
-            }
-        });
-        AlertDialog dialog = builder.create();
-        dialog.show();
-    }
-
     @Override
     protected void onDestroy() {
         Log.i("MAINACVITIY", "DESTROYED");
@@ -218,7 +201,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         /* Inflate the menu; this adds items to the action bar if it is present.*/
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.fish_menu, menu);
         return true;
     }
 
@@ -229,12 +212,19 @@ public class MainActivity extends AppCompatActivity {
         as you specify a parent activity in AndroidManifest.xml. */
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
+        switch (id) {
+            case R.id.action_test:
+                Toast.makeText(MainActivity.this, "Selected Test", Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.action_settings:
+                Intent intent = new Intent(this, SignupActivity.class);
+                intent.putExtra("request", Constants.REQUEST_EDIT_SETTINGS);
+                startActivityForResult(intent, Constants.REQUEST_SIGNUP);
 
-        return super.onOptionsItemSelected(item);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     /**
