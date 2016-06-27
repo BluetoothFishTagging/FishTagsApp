@@ -247,16 +247,15 @@ public class MainActivity extends AppCompatActivity {
         as you specify a parent activity in AndroidManifest.xml. */
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
         switch (id) {
             case R.id.action_test:
                 Toast.makeText(MainActivity.this, "Selected Test", Toast.LENGTH_SHORT).show();
                 return true;
             case R.id.action_settings:
-                Toast.makeText(MainActivity.this, "Selected Settings", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(this, SignupActivity.class);
+                intent.putExtra("request", Constants.REQUEST_EDIT_SETTINGS);
+                startActivityForResult(intent, Constants.REQUEST_SIGNUP);
+
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

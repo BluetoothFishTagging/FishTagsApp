@@ -52,6 +52,7 @@ public class SignupActivity extends AppCompatActivity {
             }
 
             if (request == Constants.REQUEST_EDIT_SETTINGS) {
+                Log.i("SIGNUP", "Edit settings");
                 View b = findViewById(R.id.modifyInfo);
                 b.setVisibility(View.VISIBLE);
             } else {
