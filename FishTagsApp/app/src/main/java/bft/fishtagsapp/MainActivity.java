@@ -31,6 +31,11 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 
 import bft.fishtagsapp.client.HttpClient;
@@ -62,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
 
     private class HttpGetTask extends AsyncTask<String, Void, Boolean> {
         String response;
+
         @Override
         protected Boolean doInBackground(String... params) {
             String url = params[0];
@@ -70,13 +76,14 @@ public class MainActivity extends AppCompatActivity {
                 HttpClient client = new HttpClient(url);
                 client.connect();
                 response = client.getResponse();
-                Log.i("RSP",response);
+                Log.i("RSP", response);
                 return true;
             } catch (Throwable t) {
                 t.printStackTrace();
             }
             return false;
         }
+
         @Override
         protected void onPostExecute(Boolean success) {
             //Log.i("SUCCESS", success);
@@ -97,6 +104,13 @@ public class MainActivity extends AppCompatActivity {
                 }, Constants.REQUEST_STORAGE);
 
         Log.i("STORAGE PERMS", storagePermitted.toString());
+        if (storagePermitted) {
+            if (Storage.read(Constants.BLUETOOTH_DIR) == null) {
+                searchBluetooth();
+            }
+
+            addWatcher();
+        }
 
         /* OBTAIN NETWORK-ACCESS RELATED PERMISSIONS */
         Boolean networkPermitted = Utils.checkAndRequestRuntimePermissions(this,
@@ -108,17 +122,17 @@ public class MainActivity extends AppCompatActivity {
 
         Log.i("NETWORK PERMS", networkPermitted.toString());
 
-        if(networkPermitted){
+        if (networkPermitted) {
             new HttpGetTask().execute(Constants.DATABASE_URL + "query?name=Katya");
         }
-
-        /* HOPEFULLY, BLUETOOTH FILE TRANSFER DETECTION */
 
         Boolean bluetoothPermitted = Utils.checkAndRequestRuntimePermissions(this,
                 new String[]{
                         Manifest.permission.BLUETOOTH,
-                        //Manifest.permission.BLUETOOTH_PRIVILEGED
-                }, Constants.REQUEST_BLUETOOTH);
+                        Manifest.permission.BLUETOOTH_PRIVILEGED,
+                        Manifest.permission.BLUETOOTH_ADMIN,
+                }, Constants.REQUEST_NETWORK);
+
         Log.i("BLUETOOTH PERMS", bluetoothPermitted.toString());
 
         //showDialog();
@@ -134,64 +148,37 @@ public class MainActivity extends AppCompatActivity {
 
         /* Create welcome message for returning user */
         String name = getName();
-        if (name != "") {
+
+        if (name.equals("")) {
             TextView welcome = (TextView) findViewById(R.id.welcome);
             welcome.setText(String.format("Welcome, %s!", name));
         }
-        /* BLUETOOTH WATCHER FOR FILE DIRECTORY*/
-        //final String DownloadDir_raw = Environment.getExternalStorageDirectory().getPath() + Constants.DEFAULT_STORE_SUBDIR; //WORKS
-        final String DownloadDir = android.os.Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath();//Works
-        final String DEFAULT_STORE_SUBDIR = "/bft.fishtagsapp";//Check if this works
-        //String BluetoothDir = getExternalFilesDir(Environment.DIRECTORY_).getPath() + "/bluetooth"; DOESN'T WORK
-
-        final Handler handler = new Handler();
-        observer = new FileObserver(DownloadDir) {
-            @Override
-            /*DETECTING BLUETOOTH TRANSFER*/
-            public void onEvent(int event, final String fileName) {
-                Log.i("EVENT", String.valueOf(event));
-                if (event == CLOSE_WRITE) {
-                    /*when transfer (write operation) is complete...*/
-                    Log.i("fileName", fileName);
-                    Log.i("EVENT", String.valueOf(event));
-                    handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(getApplicationContext(), fileName, Toast.LENGTH_SHORT).show(); //announce filename
-
-                            //remember recent file
-                            //currently, automatically going to form doesn't work
-                            recent = DownloadDir + '/' + fileName;
-
-                            //TODO : check is valid tag file
-                            //goToForm(recent);
-                        }
-                    });
-                }
-            }
-        };
-
-//        BroadcastReceiver r = new BroadcastReceiver() {
-//            @Override
-//            public void onReceive(Context context, Intent intent) {
-//                Log.i("BTRECV", intent.getAction());
-//                Set<String> keys = intent.getExtras().keySet();
-//                for(String key : keys){
-//                    Log.i("BTRECV-KEY", key);
-//                }
-//
-//            }
-//        };
-//        IntentFilter filter = new IntentFilter("android.btopp.intent.action.CONFIRM");
-//        registerReceiver(r, filter);
-
-
-        observer.startWatching();
 
         Intent uploadIntent = new Intent(this, UploadService.class);
 
         startService(uploadIntent);
         bindService(uploadIntent, uploadConnection, BIND_AUTO_CREATE); // no flags
+
+        BroadcastReceiver receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                Log.i("DWRECV", "COMPLETE");
+                Log.i("DWACT", intent.getAction());
+                Bundle data = intent.getExtras();
+                for (String key : data.keySet()) {
+                    Log.i("DW_KEY", key);
+                }
+            }
+        };
+
+        IntentFilter filter = new IntentFilter();
+
+        filter.addAction("android.bluetooth.device.action.ACL_CONNECTED");
+        //filter.addAction("android.btopp.intent.action.INCOMING_FILE_NOTIFICATION");
+        //filter.addAction("android.intent.action.DOWNLOAD_COMPLETE");
+        //filter.addAction("android.btopp.intent.action.BT_OPP_TRANSFER_DONE");
+
+        registerReceiver(receiver, filter);
     }
 
     void showDialog() {
@@ -202,13 +189,13 @@ public class MainActivity extends AppCompatActivity {
 
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                Toast.makeText(MainActivity.this,"Okay",Toast.LENGTH_LONG).show();
+                Toast.makeText(MainActivity.this, "Okay", Toast.LENGTH_LONG).show();
                 // User clicked ok button
             }
         });
         builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                Toast.makeText(MainActivity.this,"Nokay",Toast.LENGTH_LONG).show();
+                Toast.makeText(MainActivity.this, "Nokay", Toast.LENGTH_LONG).show();
                 // User cancelled the dialog
             }
         });
@@ -218,7 +205,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        Log.i("MAINACVITIY","DESTROYED");
+        Log.i("MAINACVITIY", "DESTROYED");
         // --> perhaps handle "save pending" stuff here...
         super.onDestroy();
 
@@ -291,6 +278,64 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public List<File> folderSearchBT(File src, String folder)
+            throws FileNotFoundException {
+
+        List<File> result = new ArrayList<File>();
+
+        File[] filesAndDirs = src.listFiles();
+        List<File> filesDirs = Arrays.asList(filesAndDirs);
+
+        for (File file : filesDirs) {
+            result.add(file); // always add, even if directory
+            if (!file.isFile()) {
+                List<File> deeperList = folderSearchBT(file, folder);
+                result.addAll(deeperList);
+            }
+        }
+        return result;
+    }
+
+    public String searchForBluetoothFolder() {
+
+        String splitchar = "/";
+        File root = Environment.getExternalStorageDirectory();
+        List<File> btFolder = null;
+        String bt = "bluetooth";
+        try {
+            btFolder = folderSearchBT(root, bt);
+        } catch (FileNotFoundException e) {
+            Log.e("FILE: ", e.getMessage());
+        }
+
+        for (int i = 0; i < btFolder.size(); i++) {
+
+            String g = btFolder.get(i).toString();
+
+            String[] subf = g.split(splitchar);
+
+            String s = subf[subf.length - 1].toUpperCase();
+
+            boolean equals = s.equalsIgnoreCase(bt);
+
+            if (equals)
+                return g;
+        }
+        return null; // not found
+    }
+
+    public void searchBluetooth() {
+        String folder = searchForBluetoothFolder();
+
+        if (folder == null) {
+            //fallback to downloads
+            folder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath();
+        }
+
+        Log.i("BTDIR", folder);
+        Storage.save(Constants.BLUETOOTH_DIR, folder);
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
@@ -299,10 +344,13 @@ public class MainActivity extends AppCompatActivity {
 
         switch (requestCode) {
             case Constants.REQUEST_STORAGE:
-                Log.i("STORAGE PERMISSIONS", granted.toString());
+                if (Storage.read(Constants.BLUETOOTH_DIR) == null) {
+                    searchBluetooth();
+                }
+                addWatcher();
                 break;
             case Constants.REQUEST_NETWORK:
-                new HttpGetTask().execute(Constants.DATABASE_URL + "query?name=Momo");
+                new HttpGetTask().execute(Constants.DATABASE_URL + "query?name=" + getName());
                 break;
         }
 
@@ -330,12 +378,49 @@ public class MainActivity extends AppCompatActivity {
         if (info != null && !info.isEmpty()) {
             try {
                 JSONObject data = new JSONObject(info);
-                    String value = data.getString("name");
-                    return value;
+                String value = data.getString("name");
+                return value;
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
         return "";
+    }
+
+
+    void addWatcher(){
+        /* BLUETOOTH WATCHER FOR FILE DIRECTORY*/
+        //final String DownloadDir_raw = Environment.getExternalStorageDirectory().getPath() + Constants.DEFAULT_STORE_SUBDIR; //WORKS
+        final String bluetoothDir = Storage.read(Constants.BLUETOOTH_DIR);
+        Log.i("WATCHING",bluetoothDir);
+
+        final Handler handler = new Handler();
+        observer = new FileObserver(bluetoothDir) {
+            @Override
+            /*DETECTING BLUETOOTH TRANSFER*/
+            public void onEvent(int event, final String fileName) {
+                Log.i("EVENT", String.valueOf(event));
+                if (event == CLOSE_WRITE) {
+                    /*when transfer (write operation) is complete...*/
+                    Log.i("fileName", fileName);
+                    Log.i("EVENT", String.valueOf(event));
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getApplicationContext(), fileName, Toast.LENGTH_SHORT).show(); //announce filename
+
+                            //remember recent file
+                            //currently, automatically going to form doesn't work
+                            recent = bluetoothDir + '/' + fileName;
+
+                            //TODO : check is valid tag file
+                            //goToForm(recent);
+                        }
+                    });
+                }
+            }
+        };
+
+        observer.startWatching();
     }
 }
