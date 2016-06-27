@@ -1,6 +1,8 @@
 package bft.fishtagsapp;
 
 import android.Manifest;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -113,7 +115,33 @@ public class FormActivity extends AppCompatActivity {
         if (fileName != null) {
             Log.i("FILENAME", fileName);
             fillInInfoFromFile(new File(fileName));
+        }else{
+            showDialog();
         }
+    }
+
+    void showDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setMessage("Please use RFID reader to transfer file before submitting a tag form.")
+                .setTitle(R.string.rfid_dialog);
+
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User clicked ok button
+                Toast.makeText(FormActivity.this,"Okay",Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(FormActivity.this, MainActivity.class);
+                startActivity(intent);
+            }
+        });
+        builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User cancelled the dialog
+                Toast.makeText(FormActivity.this,"Nokay",Toast.LENGTH_LONG).show();
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     protected void fillInInfoFromFile(File file) {

@@ -199,27 +199,6 @@ public class MainActivity extends AppCompatActivity {
         bindService(uploadIntent, uploadConnection, BIND_AUTO_CREATE); // no flags
     }
 
-    void showDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
-        builder.setMessage("Please ensure your RFID Reader is turned on in order to begin file transfer.")
-                .setTitle(R.string.rfid_dialog);
-
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                Toast.makeText(MainActivity.this,"Okay",Toast.LENGTH_LONG).show();
-                // User clicked ok button
-            }
-        });
-        builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                Toast.makeText(MainActivity.this,"Nokay",Toast.LENGTH_LONG).show();
-                // User cancelled the dialog
-            }
-        });
-        AlertDialog dialog = builder.create();
-        dialog.show();
-    }
 
     @Override
     protected void onDestroy() {
