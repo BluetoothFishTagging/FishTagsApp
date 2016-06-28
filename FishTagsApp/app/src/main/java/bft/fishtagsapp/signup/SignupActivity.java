@@ -36,6 +36,7 @@ public class SignupActivity extends AppCompatActivity {
         editTexts = new ArrayList<EditText>();
         findFields(mLoginFormView, editTexts);
 
+
         /* Decide which buttons to display depending on request*/
 
         int request = getIntent().getIntExtra("request", 0);
