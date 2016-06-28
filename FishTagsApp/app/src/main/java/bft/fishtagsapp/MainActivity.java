@@ -1,18 +1,10 @@
 package bft.fishtagsapp;
 
 import android.Manifest;
-import android.app.AlertDialog;
-import android.bluetooth.BluetoothManager;
-import android.content.BroadcastReceiver;
 import android.content.ComponentName;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
-import android.net.ConnectivityManager;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -20,6 +12,11 @@ import android.os.FileObserver;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -31,13 +28,13 @@ import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 
 import bft.fishtagsapp.client.HttpClient;
 import bft.fishtagsapp.client.UploadService;
@@ -65,33 +62,6 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-
-    private class HttpGetTask extends AsyncTask<String, Void, Boolean> {
-        String response;
-
-        @Override
-        protected Boolean doInBackground(String... params) {
-            String url = params[0];
-
-            try {
-                HttpClient client = new HttpClient(url);
-                client.connect();
-                response = client.getResponse();
-                Log.i("RSP", response);
-                return true;
-            } catch (Throwable t) {
-                t.printStackTrace();
-            }
-            return false;
-        }
-
-        @Override
-        protected void onPostExecute(Boolean success) {
-            //Log.i("SUCCESS", success);
-            super.onPostExecute(success);
-        }
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,6 +70,13 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.showOverflowMenu();
         setSupportActionBar(toolbar); // Important piece of vode that otherwise will not show menus
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
+        setupViewPager(viewPager);
+
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+        tabLayout.setupWithViewPager(viewPager);
 
         /* OBTAIN EXTERAL STORAGE READ-WRITE PERMISSIONS */
         Boolean storagePermitted = Utils.checkAndRequestRuntimePermissions(this,
@@ -128,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
         Log.i("NETWORK PERMS", networkPermitted.toString());
 
         if (networkPermitted) {
-            new HttpGetTask().execute(Constants.DATABASE_URL + "query?name=Katya");
+//            new HttpGetTask().execute(Constants.DATABASE_URL + "query?name=jamie");
         }
 
         Boolean bluetoothPermitted = Utils.checkAndRequestRuntimePermissions(this,
@@ -151,39 +128,62 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        /* Create welcome message for returning user */
-        String name = getName();
-
-        if (name.equals("")) {
-            TextView welcome = (TextView) findViewById(R.id.welcome);
-            welcome.setText(String.format("Welcome, %s!", name));
-        }
+        setName();
 
         Intent uploadIntent = new Intent(this, UploadService.class);
 
         startService(uploadIntent);
         bindService(uploadIntent, uploadConnection, BIND_AUTO_CREATE); // no flags
 
-        BroadcastReceiver receiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                Log.i("DWRECV", "COMPLETE");
-                Log.i("DWACT", intent.getAction());
-                Bundle data = intent.getExtras();
-                for (String key : data.keySet()) {
-                    Log.i("DW_KEY", key);
-                }
+    }
+
+    private void setName() {
+        /* Create welcome message for returning user */
+        String name = getName();
+
+        if (!name.equals("")) {
+            TextView welcome = (TextView) findViewById(R.id.userName);
+            if (welcome != null) {
+                welcome.setText(String.format("Hi, %s!", name));
             }
-        };
+        }
+    }
 
-        IntentFilter filter = new IntentFilter();
+    private void setupViewPager(ViewPager viewPager) {
+        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
+        adapter.addFragment(new HomeFragment(), "HOME");
+        adapter.addFragment(new MyCatchesFragment(), "My Catches");
+        adapter.addFragment(new ScoreboardFragment(), "Scoreboard");
+        viewPager.setAdapter(adapter);
+    }
 
-        filter.addAction("android.bluetooth.device.action.ACL_CONNECTED");
-        //filter.addAction("android.btopp.intent.action.INCOMING_FILE_NOTIFICATION");
-        //filter.addAction("android.intent.action.DOWNLOAD_COMPLETE");
-        //filter.addAction("android.btopp.intent.action.BT_OPP_TRANSFER_DONE");
+    class ViewPagerAdapter extends FragmentPagerAdapter {
+        private final List<Fragment> mFragmentList = new ArrayList<>();
+        private final List<String> mFragmentTitleList = new ArrayList<>();
 
-        registerReceiver(receiver, filter);
+        public ViewPagerAdapter(FragmentManager manager) {
+            super(manager);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return mFragmentList.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            return mFragmentList.size();
+        }
+
+        public void addFragment(Fragment fragment, String title) {
+            mFragmentList.add(fragment);
+            mFragmentTitleList.add(title);
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return mFragmentTitleList.get(position);
+        }
     }
 
     @Override
@@ -213,9 +213,6 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         switch (id) {
-            case R.id.action_test:
-                Toast.makeText(MainActivity.this, "Selected Test", Toast.LENGTH_SHORT).show();
-                return true;
             case R.id.action_settings:
                 Intent intent = new Intent(this, SignupActivity.class);
                 intent.putExtra("request", Constants.REQUEST_EDIT_SETTINGS);
@@ -340,10 +337,18 @@ public class MainActivity extends AppCompatActivity {
                 addWatcher();
                 break;
             case Constants.REQUEST_NETWORK:
-                new HttpGetTask().execute(Constants.DATABASE_URL + "query?name=" + getName());
+                //new HttpGetTask().execute(Constants.DATABASE_URL + "query?name=" + getName());
                 break;
         }
 
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        /*If the user changes their name, the app should update to reflect this*/
+        setName();
     }
 
     public void goToForm(View v) {
@@ -362,13 +367,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public String getName() {
-        Log.i("INFO", "YO");
-
         String info = Storage.read("info.txt");
         if (info != null && !info.isEmpty()) {
             try {
                 JSONObject data = new JSONObject(info);
                 String value = data.getString("name");
+                Log.i("INFO", value);
                 return value;
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -378,11 +382,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    void addWatcher(){
+    void addWatcher() {
         /* BLUETOOTH WATCHER FOR FILE DIRECTORY*/
         //final String DownloadDir_raw = Environment.getExternalStorageDirectory().getPath() + Constants.DEFAULT_STORE_SUBDIR; //WORKS
         final String bluetoothDir = Storage.read(Constants.BLUETOOTH_DIR);
-        Log.i("WATCHING",bluetoothDir);
+        Log.i("WATCHING", bluetoothDir);
 
         final Handler handler = new Handler();
         observer = new FileObserver(bluetoothDir) {

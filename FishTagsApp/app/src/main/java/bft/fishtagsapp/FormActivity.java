@@ -129,15 +129,13 @@ public class FormActivity extends AppCompatActivity {
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 // User clicked ok button
-                Toast.makeText(FormActivity.this,"Okay",Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(FormActivity.this, MainActivity.class);
                 startActivity(intent);
             }
         });
-        builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton("Dismiss", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 // User cancelled the dialog
-                Toast.makeText(FormActivity.this,"Nokay",Toast.LENGTH_LONG).show();
             }
         });
         AlertDialog dialog = builder.create();

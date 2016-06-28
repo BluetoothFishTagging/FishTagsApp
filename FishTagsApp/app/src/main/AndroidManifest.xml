@@ -1,13 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="bft.fishtagsapp">
-
-    <!--
-         TODO: camera unrequired, disable camera features if no camera on device.
-        Currently, camera required on device to download app.
-    -->
-
-
     <!-- Camera -->
     <uses-permission android:name="android.permission.CAMERA" />
 
@@ -37,17 +30,17 @@
     <uses-permission android:name="android.permission.READ_CONTACTS" />
 
     <!-- TEST BLUETOOTH RECV -->
-    <uses-permission android:name="android.permission.BLUETOOTH"/>
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
-    <uses-permission android:name="android.permission.BLUETOOTH_PRIVILEGED"/>
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.BLUETOOTH_PRIVILEGED" />
 
     <application
         android:name=".FishTagsApplication"
         android:allowBackup="true"
         android:label="@string/app_name"
+        android:logo="@mipmap/ic_fish"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
-        android:logo="@mipmap/ic_fish">
+        android:theme="@style/AppTheme">
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"

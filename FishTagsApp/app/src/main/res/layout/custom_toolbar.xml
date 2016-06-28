@@ -18,7 +18,7 @@
         <ImageView
             android:id="@+id/toolbar_logo"
             android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
+            android:layout_height="match_parent"
             android:layout_marginBottom="4dp"
             android:layout_marginRight="@dimen/row_horz_margin"
             android:layout_marginTop="4dp"
@@ -30,7 +30,7 @@
             android:id="@+id/toolbar_title"
             android:orientation="horizontal"
             android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
+            android:layout_height="match_parent"
             android:layout_marginRight="?attr/actionBarSize"
 
             android:gravity="center_vertical"
@@ -43,29 +43,14 @@
             android:layout_toEndOf="@+id/toolbar_logo"
             android:textStyle="bold" />
 
-        <!-- This is a custom left side button -->
-        <!--
-        <ImageButton
-            android:id="@+id/btn_settings"
-            android:layout_width="?attr/actionBarSize"
-            android:layout_height="?attr/actionBarSize"
-            android:layout_marginRight="?attr/actionBarSize"
-            android:layout_gravity="start|center_vertical"
-            android:visibility="invisible"
-            android:src="@drawable/ic_settings_white_24dp"
-            style="@style/Widget.AppCompat.ActionButton" />
-            -->
-
-        <!-- This is a custom right side button -->
-        <!--
-        <ImageButton
-            android:id="@+id/btn_search"
-            android:layout_width="?attr/actionBarSize"
-            android:layout_height="?attr/actionBarSize"
-            android:layout_gravity="end"
-            android:src="@drawable/ic_magnify_white_24dp"
-            style="@style/Widget.AppCompat.ActionButton" />
-            -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/userName"
+            android:textColor="@color/whiteColor"
+            android:text="Hi!"
+            android:gravity="center_vertical"
+            android:layout_toEndOf="@+id/toolbar_title" />
 
     </RelativeLayout>
 </android.support.v7.widget.Toolbar>
