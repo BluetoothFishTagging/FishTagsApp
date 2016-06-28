@@ -86,11 +86,11 @@ public class MainActivity extends AppCompatActivity {
                 }, Constants.REQUEST_STORAGE);
 
         Log.i("STORAGE PERMS", storagePermitted.toString());
+
         if (storagePermitted) {
             if (Storage.read(Constants.BLUETOOTH_DIR) == null) {
                 searchBluetooth();
             }
-
             addWatcher();
         }
 
@@ -382,7 +382,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    void addWatcher() {
+    public void addWatcher() {
         /* BLUETOOTH WATCHER FOR FILE DIRECTORY*/
         //final String DownloadDir_raw = Environment.getExternalStorageDirectory().getPath() + Constants.DEFAULT_STORE_SUBDIR; //WORKS
         final String bluetoothDir = Storage.read(Constants.BLUETOOTH_DIR);
@@ -397,7 +397,6 @@ public class MainActivity extends AppCompatActivity {
                 if (event == CLOSE_WRITE) {
                     /*when transfer (write operation) is complete...*/
                     Log.i("fileName", fileName);
-                    Log.i("EVENT", String.valueOf(event));
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
