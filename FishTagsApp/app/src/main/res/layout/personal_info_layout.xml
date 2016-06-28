@@ -21,7 +21,7 @@
         android:layout_height="match_parent"
         android:id="@+id/modifyInfo"
         android:text="Update your information:"
-        android:visibility="invisible" />
+        android:visibility="gone" />
 
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
