@@ -1,4 +1,4 @@
- package bft.fishtagsapp.signup;
+package bft.fishtagsapp.signup;
 
 import android.content.Intent;
 import android.content.res.Resources;
@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ScrollView;
-import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -129,9 +128,6 @@ public class SignupActivity extends AppCompatActivity {
                 String value = e.getText().toString();
                 data.put(textId, value);
             }
-
-            //for debugging
-            Toast.makeText(getApplicationContext(), data.toString(), Toast.LENGTH_LONG).show();
 
             //delete previous data (failsafe)
             Storage.delete(Constants.PERSONAL_INFO);

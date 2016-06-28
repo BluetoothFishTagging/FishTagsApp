@@ -5,10 +5,9 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 
 import java.io.File;
@@ -76,17 +75,17 @@ public class CameraActivity extends Activity {
         if (requestCode == Constants.REQUEST_TAKE_PHOTO) {
 
             if (resultCode == RESULT_OK) {
-                Uri imageUri = data.getData();
+                //Uri imageUri = data.getData();
 
                 Intent intent_result = new Intent();
-                intent_result.putExtra("photo", imageUri.toString());
+                intent_result.putExtra("photo", photoUri.toString());
                 setResult(RESULT_OK, intent_result);
                 finish();
             }
         }
     }
 
-    public void takePicture(){
+    public void takePicture() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             /* Ensure that there's a camera activity to handle the intent */
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
@@ -96,14 +95,17 @@ public class CameraActivity extends Activity {
                 Log.i("Camera", "Creating file");
                 photoFile = createFile(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "JPEG", ".jpg");
                 photoUri = Uri.fromFile(photoFile);
+
                 if (photoUri == null) {
                     Log.i("Camera", "Failed to create file");
                 } else {
                     Log.i("Camera", photoUri.toString());
                 }
-//                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
-//                        Uri.fromFile(photoFile));
+
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
+
                 startActivityForResult(takePictureIntent, Constants.REQUEST_TAKE_PHOTO);
+
             } catch (IOException ex) {
                 ex.printStackTrace();
             }

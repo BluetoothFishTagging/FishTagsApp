@@ -10,8 +10,6 @@ import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -20,7 +18,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -33,7 +30,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import bft.fishtagsapp.camera.CameraActivity;
-import bft.fishtagsapp.gps.GPS;
 import bft.fishtagsapp.gps.MyLocation;
 import bft.fishtagsapp.parsefile.ParseFile;
 import bft.fishtagsapp.signup.SignupActivity;
@@ -206,8 +202,7 @@ public class FormActivity extends AppCompatActivity {
                 Uri imageUri = (Uri) fishPhotoView.getTag();
                 data.put("photo", imageUri.toString());
             }
-            //for debugging
-            Toast.makeText(getApplicationContext(), data.toString(), Toast.LENGTH_LONG).show();
+
             return data;
 
         } catch (JSONException e) {

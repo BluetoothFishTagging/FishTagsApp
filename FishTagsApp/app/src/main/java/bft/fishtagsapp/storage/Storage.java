@@ -4,12 +4,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Environment;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
-import android.widget.Toast;
-
-import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileReader;
@@ -17,7 +13,6 @@ import java.io.FileWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -105,7 +100,7 @@ public final class Storage {
                     Log.i("fileStorageMkdirs", res.toString());
                 }
 
-                writeToFile(FileName,message);
+                writeToFile(FileName, message);
 
                 /* IGNORE EXISTING FILE */
 //                /*Make File Name under main Directory*/
@@ -156,8 +151,8 @@ public final class Storage {
                 public void onClick(DialogInterface dialogInterface, int i) {
                     /*If Override is selected then textfile data is overrided*/
                     writeToFile(FileName, message);
-                    Toast.makeText(context, "File Override Successful!",
-                            Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(context, "File Override Successful!",
+//                            Toast.LENGTH_SHORT).show();
                 }
             });
             builder.setNegativeButton("APPEND", new DialogInterface.OnClickListener() {
@@ -165,8 +160,8 @@ public final class Storage {
                 public void onClick(DialogInterface dialogInterface, int i) {
                     /*If Append is selected then textfile data is appended with new data*/
                     writeToFile(FileName, savedMessage + "\n\n" + message);
-                    Toast.makeText(context, "File Appended Successfully!",
-                            Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(context, "File Appended Successfully!",
+//                            Toast.LENGTH_SHORT).show();
                 }
             });
             builder.setNeutralButton("CANCEL", new DialogInterface.OnClickListener() {
