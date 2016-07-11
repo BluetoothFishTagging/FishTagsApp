@@ -9,7 +9,7 @@
         android:layout_height="wrap_content">
 
         <EditText
-            android:id="@+id/CountryID"
+            android:id="@+id/NationalID"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/prompt_tagId"

@@ -26,7 +26,7 @@
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:useDefaultMargins="true"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        tools:context="bft.fishtagsapp.FormActivity">
+        tools:context=".form.FormActivity">
 
         <include layout="@layout/content_signup" />
 

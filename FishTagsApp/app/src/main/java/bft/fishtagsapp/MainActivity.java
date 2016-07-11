@@ -35,6 +35,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import bft.fishtagsapp.client.UploadService;
+import bft.fishtagsapp.form.FormActivity;
 import bft.fishtagsapp.signup.SignupActivity;
 import bft.fishtagsapp.storage.Storage;
 
@@ -66,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.showOverflowMenu();
-        setSupportActionBar(toolbar); // Important piece of vode that otherwise will not show menus
+        setSupportActionBar(toolbar); // Important piece of code that otherwise will not show menus
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);

@@ -63,7 +63,7 @@
         </receiver>
 
         <activity
-            android:name=".FormActivity"
+            android:name=".form.FormActivity"
             android:label="Tag Submission Form" />
 
         <service android:name=".client.UploadService" />

@@ -1,4 +1,4 @@
-package bft.fishtagsapp;
+package bft.fishtagsapp.form;
 
 import android.Manifest;
 import android.app.AlertDialog;
@@ -10,13 +10,21 @@ import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TabHost;
 import android.widget.TextView;
 
 import org.json.JSONException;
@@ -28,7 +36,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
+import bft.fishtagsapp.Constants;
+import bft.fishtagsapp.MainActivity;
+import bft.fishtagsapp.R;
+import bft.fishtagsapp.Utils;
 import bft.fishtagsapp.camera.CameraActivity;
 import bft.fishtagsapp.gps.MyLocation;
 import bft.fishtagsapp.parsefile.ParseFile;
@@ -45,16 +58,70 @@ public class FormActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_form);
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.showOverflowMenu();
+        setSupportActionBar(toolbar); // Important piece of code that otherwise will not show menus
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
+        setupViewPager(viewPager);
+
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+        tabLayout.setupWithViewPager(viewPager);
+
         LinearLayout my_linView = (LinearLayout) findViewById(R.id.tag_submission_form);
 
         editTexts = new ArrayList<>();
-        findFields(my_linView, editTexts);
-        fishPhotoView = (ImageView) findViewById(R.id.FishPhoto);
+        //findFields(my_linView, editTexts);
+        //fishPhotoView = (ImageView) findViewById(R.id.FishPhoto);
 
         String fileName = getIntent().getStringExtra("fileName");
 
         /* Auto-fill in data from the latest tag file */
-        fillInInfo(fileName);
+        //fillInInfo(fileName);
+    }
+
+    private void setupViewPager(ViewPager viewPager) {
+        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
+        adapter.addFragment(new TagIDFragment(), "Tag ID");
+        adapter.addFragment(new SpeciesFragment(), "Species");
+        adapter.addFragment(new ForkLengthFragment(), "Fork Length");
+        viewPager.setAdapter(adapter);
+    }
+
+
+    class ViewPagerAdapter extends FragmentPagerAdapter {
+        private final List<Fragment> mFragmentList = new ArrayList<>();
+        private final List<String> mFragmentTitleList = new ArrayList<>();
+
+        public ViewPagerAdapter(FragmentManager manager) {
+            super(manager);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return mFragmentList.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            return mFragmentList.size();
+        }
+
+        public void addFragment(Fragment fragment, String title) {
+            mFragmentList.add(fragment);
+            mFragmentTitleList.add(title);
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return mFragmentTitleList.get(position);
+        }
+    }
+
+    public void submitID(View v){
+        TabHost host = (TabHost) v.findViewById(android.R.id.tabhost);
+        host.setCurrentTab(2);
     }
 
 
@@ -111,7 +178,7 @@ public class FormActivity extends AppCompatActivity {
         if (fileName != null) {
             Log.i("FILENAME", fileName);
             fillInInfoFromFile(new File(fileName));
-        }else{
+        } else {
             showDialog();
         }
     }
@@ -220,10 +287,10 @@ public class FormActivity extends AppCompatActivity {
     }
 
     /* CAMERA SECTION */
-    public void goToCamera(){
+    public void goToCamera() {
         Log.i("Camera", "Dispatching intent");
         Intent intent = new Intent(this, CameraActivity.class);
-        startActivityForResult(intent,Constants.REQUEST_TAKE_PHOTO);
+        startActivityForResult(intent, Constants.REQUEST_TAKE_PHOTO);
     }
 
     public void goToCamera(View view) {
@@ -269,7 +336,7 @@ public class FormActivity extends AppCompatActivity {
             case Constants.REQUEST_LOCATION:
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    fillInGPS();
+                    //fillInGPS();
                 } else {
                     Log.i("PERMISSIONS", "NOT GRANTED");
                     //what to do here?
@@ -282,7 +349,7 @@ public class FormActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         /*If the user enables GPS while in FormActivity, when they return to the form, the GPS should attempt to update*/
-        fillInGPS();
+        //fillInGPS();
     }
 
     /* THUMBNAIL CREATION SECTION */
