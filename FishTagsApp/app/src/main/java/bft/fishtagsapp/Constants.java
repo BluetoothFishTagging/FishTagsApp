@@ -24,4 +24,9 @@ public final class Constants {
     public static final String BLUETOOTH_DIR = "bluetoothDir";
     public static final String DEFAULT_STORE_SUBDIR = "/bft.fishtagsapp";
     public static final String DATABASE_URL = "https://hitag-database.herokuapp.com/";
+
+    public static final int TAG_ID = 1;
+    public static final int SPECIES = 2;
+    public static final int PHOTO = 3;
+    public static final int FORK_LENGTH = 4;
 }

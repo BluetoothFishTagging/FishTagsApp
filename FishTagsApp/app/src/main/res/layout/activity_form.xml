@@ -1,34 +1,99 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/form"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/form"
     android:fitsSystemWindows="true"
     tools:context=".form.FormActivity">
 
-    <android.support.design.widget.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/AppTheme">
-
-        <include layout="@layout/custom_toolbar" />
-
-        <android.support.design.widget.TabLayout
-            android:id="@+id/tabs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:tabGravity="fill"
-            app:tabMode="fixed" />
-
-
-    </android.support.design.widget.AppBarLayout>
-
-    <android.support.v4.view.ViewPager
-        android:id="@+id/viewpager"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        android:orientation="vertical">
+
+        <android.support.design.widget.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/AppTheme">
+
+            <include layout="@layout/custom_toolbar_form" />
+
+        </android.support.design.widget.AppBarLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="1">
+
+            <ProgressBar
+                android:id="@+id/id_bar"
+                style="@style/FormProgressBar.Highlighted"
+                android:layout_weight="0.05" />
+
+            <ImageView
+                android:id="@+id/tag_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="0.2"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_action_tag_on" />
+
+            <ProgressBar
+                android:id="@+id/id_species"
+                style="@style/FormProgressBar"
+                android:layout_weight="0.05"/>
+
+            <ImageView
+                android:id="@+id/fish_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="44dp"
+                android:layout_gravity="center"
+                android:layout_weight="0.2"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_action_fish" />
+
+            <ProgressBar
+                android:id="@+id/id_photo"
+                style="@style/FormProgressBar"
+                android:layout_weight="0.05"/>
+
+            <ImageView
+                android:id="@+id/camera_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="43dp"
+                android:layout_gravity="center"
+                android:layout_weight="0.2"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_action_camera" />
+
+
+            <ProgressBar
+                android:id="@+id/id_length"
+                style="@style/FormProgressBar"
+                android:layout_weight="0.05"/>
+
+
+            <ImageView
+                android:id="@+id/ruler_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_weight="0.2"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_action_ruler" />
+
+        </LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/fragment_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        </FrameLayout>
+
+    </LinearLayout>
 
 </android.support.design.widget.CoordinatorLayout>

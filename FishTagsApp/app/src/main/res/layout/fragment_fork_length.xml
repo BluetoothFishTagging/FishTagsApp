@@ -15,9 +15,10 @@
             android:hint="@string/prompt_forkLength"
             android:imeActionLabel="@string/action_sign_up_short"
             android:imeOptions="actionUnspecified"
-            android:inputType="textNoSuggestions"
+            android:inputType="number"
             android:maxLines="1"
-            android:singleLine="true" />
+            android:singleLine="true"
+            />
 
     </android.support.design.widget.TextInputLayout>
 
@@ -28,8 +29,8 @@
         android:layout_width="140dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
-        android:onClick="goToCamera"
-        android:text="Take Photo"
+        android:onClick="submitForkLength"
+        android:text="Submit"
         android:textSize="30dp"
         android:layout_gravity="center_horizontal" />
 
