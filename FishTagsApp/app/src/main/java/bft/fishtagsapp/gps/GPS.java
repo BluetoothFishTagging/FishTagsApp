@@ -1,7 +1,5 @@
 package bft.fishtagsapp.gps;
 
-import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Criteria;
@@ -11,13 +9,8 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
-import android.widget.Toast;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import bft.fishtagsapp.Constants;
-import bft.fishtagsapp.R;
 
 /**
  * Created by jamiecho on 3/9/16.
@@ -45,13 +38,13 @@ public class GPS implements LocationListener {
             Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
             context.startActivity(intent);
         }
-        
-        Log.i("ENABLED GPS","TRUE");
+
+        Log.i("ENABLED GPS", "TRUE");
         //hopefully user will enable GPS here
     }
 
     public Location getGPS(Boolean permitted) {
-        if(!permitted){
+        if (!permitted) {
             return null;
         }
         enableGPS(); //in case not enabled
@@ -91,13 +84,11 @@ public class GPS implements LocationListener {
 
     @Override
     public void onProviderEnabled(String provider) {
-        Toast.makeText(context, "Enabled new provider " + provider,
-                Toast.LENGTH_SHORT).show();
+
     }
 
     @Override
     public void onProviderDisabled(String provider) {
-        Toast.makeText(context, "Disabled provider " + provider,
-                Toast.LENGTH_SHORT).show();
+
     }
 }

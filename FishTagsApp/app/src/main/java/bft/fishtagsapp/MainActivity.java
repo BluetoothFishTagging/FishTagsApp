@@ -5,7 +5,6 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.FileObserver;
@@ -28,7 +27,6 @@ import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -36,8 +34,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import bft.fishtagsapp.client.HttpClient;
 import bft.fishtagsapp.client.UploadService;
+import bft.fishtagsapp.form.FormActivity;
 import bft.fishtagsapp.signup.SignupActivity;
 import bft.fishtagsapp.storage.Storage;
 
@@ -69,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.showOverflowMenu();
-        setSupportActionBar(toolbar); // Important piece of vode that otherwise will not show menus
+        setSupportActionBar(toolbar); // Important piece of code that otherwise will not show menus
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
@@ -134,7 +132,6 @@ public class MainActivity extends AppCompatActivity {
 
         startService(uploadIntent);
         bindService(uploadIntent, uploadConnection, BIND_AUTO_CREATE); // no flags
-
     }
 
     private void setName() {
@@ -156,6 +153,7 @@ public class MainActivity extends AppCompatActivity {
         adapter.addFragment(new ScoreboardFragment(), "Scoreboard");
         viewPager.setAdapter(adapter);
     }
+
 
     class ViewPagerAdapter extends FragmentPagerAdapter {
         private final List<Fragment> mFragmentList = new ArrayList<>();
@@ -400,8 +398,6 @@ public class MainActivity extends AppCompatActivity {
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(getApplicationContext(), fileName, Toast.LENGTH_SHORT).show(); //announce filename
-
                             //remember recent file
                             //currently, automatically going to form doesn't work
                             recent = bluetoothDir + '/' + fileName;

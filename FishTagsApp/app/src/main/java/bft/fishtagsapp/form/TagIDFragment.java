@@ -1,15 +1,22 @@
-package bft.fishtagsapp;
+package bft.fishtagsapp.form;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class MyCatchesFragment extends android.support.v4.app.Fragment{
+import bft.fishtagsapp.R;
 
-    public MyCatchesFragment() {
+/**
+ * Created by ksoltan on 6/27/2016.
+ */
+public class TagIDFragment extends android.support.v4.app.Fragment {
+    View view;
+
+    public TagIDFragment() {
         // Required empty public constructor
     }
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -20,10 +27,7 @@ public class MyCatchesFragment extends android.support.v4.app.Fragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_my_catches, container, false);
-//        mapView = (MapView) v.findViewById(R.id.map);
-//        mapView.onCreate(savedInstanceState);
-//        mapView.getMapAsync(this);
-        return v;
+        view = inflater.inflate(R.layout.fragment_tag_id, container, false);
+        return view;
     }
 }

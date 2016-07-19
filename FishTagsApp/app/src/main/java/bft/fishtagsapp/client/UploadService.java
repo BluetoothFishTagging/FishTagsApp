@@ -1,10 +1,8 @@
 package bft.fishtagsapp.client;
 
-import android.Manifest;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.Uri;
@@ -12,11 +10,6 @@ import android.os.AsyncTask;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
-import android.widget.Toast;
-
-import com.permissioneverywhere.PermissionEverywhere;
-import com.permissioneverywhere.PermissionResponse;
-import com.permissioneverywhere.PermissionResultCallback;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -24,12 +17,9 @@ import org.json.JSONObject;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.LinkedList;
 
 import bft.fishtagsapp.Constants;
-import bft.fishtagsapp.R;
 import bft.fishtagsapp.Utils;
 import bft.fishtagsapp.storage.Storage;
 import bft.fishtagsapp.wifi.WifiDetector;
@@ -63,7 +53,8 @@ public class UploadService extends Service {
             //try to upload
             uploadOne();
         }
-        public void alertSave(){
+
+        public void alertSave() {
             savePending();
         }
     }
@@ -203,9 +194,9 @@ public class UploadService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         //just in case
-        Storage.register(this,Constants.APP_DIRECTORY);
+        Storage.register(this, Constants.APP_DIRECTORY);
 
-        Log.i("UPLOADSERVICE","STARTING");
+        Log.i("UPLOADSERVICE", "STARTING");
         //load pending data -- i.e. those that didn't quite get delivered
         String pendingString = Storage.read("pending.txt");
 
@@ -213,7 +204,7 @@ public class UploadService extends Service {
             try {
                 JSONObject pending = new JSONObject(Storage.read("pending.txt"));
                 int count = pending.getInt("count");
-                Log.i("UPLOADSERVICE-COUNT",String.valueOf(count));
+                Log.i("UPLOADSERVICE-COUNT", String.valueOf(count));
 
                 for (int i = 0; i < count; ++i) {
                     //numbering as identifiers
@@ -245,21 +236,21 @@ public class UploadService extends Service {
      */
     @Override
     public IBinder onBind(Intent intent) {
-        Log.i("UPLOADSERVICE","BINDING");
+        Log.i("UPLOADSERVICE", "BINDING");
         bound = true;
         return mBinder;
     }
 
     @Override
     public boolean onUnbind(Intent intent) {
-        Log.i("UPLOADSERVICE","UNBINDING");
+        Log.i("UPLOADSERVICE", "UNBINDING");
         bound = false;
         return super.onUnbind(intent);
     }
 
 
     private void uploadOne() {
-        Log.i("UPLOADSERVICE","UPLOADING");
+        Log.i("UPLOADSERVICE", "UPLOADING");
         String[] params = uploadQueue.peek();
         if (params == null) {
             if (bound == false) {
@@ -272,12 +263,12 @@ public class UploadService extends Service {
         }
     }
 
-    public void savePending(){
+    public void savePending() {
         try {
             //try to save queue to pending files
             JSONObject pending = new JSONObject();
             int count = uploadQueue.size();
-            Log.i("UPLOADSERVICE-COUNT",String.valueOf(count));
+            Log.i("UPLOADSERVICE-COUNT", String.valueOf(count));
 
             pending.put("count", count);
             int i = 0;

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <!--Drop down menu of different species that fisheries are interested in tagging -->
+    <Spinner
+        android:id="@+id/Species"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:drawable/btn_dropdown"
+        android:spinnerMode="dropdown" />
+
+    <Button
+        style="@style/ButtonTheme"
+        android:id="@+id/SubmitSpecies"
+        android:layout_width="140dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:onClick="submitSpecies"
+        android:text="Next"
+        android:textSize="30dp"
+        android:layout_gravity="center_horizontal" />
+
+
+</LinearLayout>

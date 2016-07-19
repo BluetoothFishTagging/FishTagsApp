@@ -26,6 +26,7 @@
     <string name="prompt_zip">Zipcode</string>
     <string name="prompt_phone">Phone Number</string>
     <string name="prompt_tagId">Tag ID</string>
+    <string name="prompt_forkLength">Fork Length</string>
     <string name="prompt_time">Time</string>
     <string name="prompt_location">Location</string>
     <string name="prompt_gearUsed">Gear Used</string>

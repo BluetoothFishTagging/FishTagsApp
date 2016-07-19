@@ -6,7 +6,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -48,7 +47,7 @@ public class HomeFragment extends android.support.v4.app.Fragment {
         @Override
         protected void onProgressUpdate(Void... values) {
             super.onProgressUpdate(values);
-            updateView();
+            //updateView();
         }
 
         @Override
@@ -69,7 +68,7 @@ public class HomeFragment extends android.support.v4.app.Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_home, container, false);
-        new HttpGetTask().execute(Constants.DATABASE_URL + "query?name=jamie");
+        //new HttpGetTask().execute(Constants.DATABASE_URL + "query?name=jamie");
         return view;
     }
 
@@ -90,18 +89,18 @@ public class HomeFragment extends android.support.v4.app.Fragment {
         return "";
     }
 
-    public void updateView() {
-        if (view != null) {
-            TextView text = (TextView) view.findViewById(R.id.numCatches);
-            if (text != null) {
-                String r = getLocCatches(response);
-                Log.i("String", r);
-                text.setText(r);
-            }else{
-                Log.i("Text", "is null");
-            }
-        } else {
-            Log.i("HomeFragment", "null view");
-        }
-    }
+//    public void updateView() {
+//        if (view != null) {
+//            TextView text = (TextView) view.findViewById(R.id.numCatches);
+//            if (text != null) {
+//                String r = getLocCatches(response);
+//                Log.i("String", r);
+//                text.setText(r);
+//            }else{
+//                Log.i("Text", "is null");
+//            }
+//        } else {
+//            Log.i("HomeFragment", "null view");
+//        }
+//    }
 }
