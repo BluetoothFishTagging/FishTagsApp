@@ -9,6 +9,7 @@ import android.location.Location;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -16,11 +17,15 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -72,6 +77,7 @@ public class FormActivity extends AppCompatActivity {
         imageUri = Uri.parse("android.resource://bft.fishtagsapp/" + R.drawable.placeholder);
         data = new HashMap<>();
         String fileName = getIntent().getStringExtra("fileName");
+
         /* Auto-fill in data from the latest tag file */
         getGPS();
         getTime();
@@ -97,9 +103,16 @@ public class FormActivity extends AppCompatActivity {
      */
 
     public void submitSpecies(View v) {
-        Spinner spinner = (Spinner) findViewById(R.id.Species);
-        data.put("Species", spinner.getSelectedItem().toString());
-        switchTo(Constants.PHOTO);
+        RadioGroup rg = (RadioGroup) findViewById(R.id.rb_group);
+        RadioButton rb = (RadioButton) findViewById(rg.getCheckedRadioButtonId());
+        if (rb == null) {
+            Toast t = Toast.makeText(getApplicationContext(), "Please select species", Toast.LENGTH_SHORT);
+            t.show();
+        } else {
+            data.put("Species", rb.getText().toString());
+            Log.i("MAP", data.toString());
+            switchTo(Constants.PHOTO);
+        }
     }
 
     /**
@@ -134,7 +147,7 @@ public class FormActivity extends AppCompatActivity {
                     tag.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_tag_highlighted));
                 }
                 //Update progressbar
-                ProgressBar species = (ProgressBar)findViewById(R.id.id_species);
+                ProgressBar species = (ProgressBar) findViewById(R.id.id_species);
                 species.setProgress(1);
                 break;
             case Constants.FORK_LENGTH:
@@ -153,7 +166,7 @@ public class FormActivity extends AppCompatActivity {
                 } else {
                     ruler.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_ruler_on));
                 }
-                ProgressBar length = (ProgressBar)findViewById(R.id.id_length);
+                ProgressBar length = (ProgressBar) findViewById(R.id.id_length);
                 length.setProgress(1);
 
                 break;
@@ -171,7 +184,7 @@ public class FormActivity extends AppCompatActivity {
                 } else {
                     camera1.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_camera_on));
                 }
-                ProgressBar photo = (ProgressBar)findViewById(R.id.id_photo);
+                ProgressBar photo = (ProgressBar) findViewById(R.id.id_photo);
                 photo.setProgress(1);
                 goToCamera();
                 return;
@@ -185,6 +198,7 @@ public class FormActivity extends AppCompatActivity {
         transaction.commit();
 
     }
+
 
     /* AUTOFILL SECTION */
     protected void fillInInfo(String fileName) {

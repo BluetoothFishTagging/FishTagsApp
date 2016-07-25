@@ -5,17 +5,14 @@
     android:orientation="vertical">
 
     <!--<android.support.design.widget.TextInputLayout-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content">-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content">-->
 
     <!--</android.support.design.widget.TextInputLayout>-->
 
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:text="Tag ID Number"
-        android:textSize="35dp" />
+        style="@style/FormTitle"
+        android:text="Tag ID Number" />
 
     <EditText
         android:id="@+id/NationalID"

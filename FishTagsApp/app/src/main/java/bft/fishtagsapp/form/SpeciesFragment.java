@@ -30,10 +30,6 @@ public class SpeciesFragment extends android.support.v4.app.Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_species, container, false);
-        Spinner dropdown = (Spinner) view.findViewById(R.id.Species);
-        String[] items = new String[]{"SELECT SPECIES","Atlantic Bluefin", "Striped Marlin", "Yellowfin Tuna"};
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, items);
-        dropdown.setAdapter(adapter);
         return view;
     }
 }

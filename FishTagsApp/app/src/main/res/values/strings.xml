@@ -35,7 +35,7 @@
     <string name="action_autofill">Autofill</string>
     <string name="action_sign_up">Save</string>
     <string name="action_sign_up_short">Save</string>
-    <string name="action_submit_tag">Submit Tag Report</string>
+    <string name="action_submit_tag">Submit Tag</string>
     <string name="error_invalid_email">This email address is invalid</string>
     <string name="error_invalid_password">This password is too short</string>
     <string name="error_incorrect_password">This password is incorrect</string>

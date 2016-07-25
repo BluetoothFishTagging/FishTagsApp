@@ -4,34 +4,60 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <android.support.design.widget.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+    <TextView
+        style="@style/FormTitle"
+        android:text="Fork Length" />
 
-        <EditText
-            android:id="@+id/ForkLength"
-            android:layout_width="match_parent"
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:weightSum="1">
+
+    <EditText
+        android:id="@+id/ForkLength"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:imeActionLabel="@string/action_sign_up_short"
+        android:imeOptions="actionUnspecified"
+        android:inputType="number"
+        android:maxLines="1"
+        android:singleLine="true"
+        android:layout_weight="0.9"/>
+
+    <RadioGroup
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:id="@+id/rg_units"
+        android:layout_weight="0.1">
+
+        <RadioButton
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="@string/prompt_forkLength"
-            android:imeActionLabel="@string/action_sign_up_short"
-            android:imeOptions="actionUnspecified"
-            android:inputType="number"
-            android:maxLines="1"
-            android:singleLine="true"
-            />
+            android:text="in"
+            android:id="@+id/rb_in"
+            android:checked="true"/>
 
-    </android.support.design.widget.TextInputLayout>
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="cm"
+            android:id="@+id/rb_cm"/>
+    </RadioGroup>
+
+</LinearLayout>
 
 
     <Button
-        style="@style/ButtonTheme"
         android:id="@+id/SubmitLength"
+        style="@style/ButtonTheme"
         android:layout_width="140dp"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
         android:layout_marginTop="15dp"
         android:onClick="submitForkLength"
         android:text="Submit"
-        android:textSize="30dp"
-        android:layout_gravity="center_horizontal" />
+        android:textSize="30dp" />
 
 </LinearLayout>

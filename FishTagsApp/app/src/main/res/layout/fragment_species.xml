@@ -4,20 +4,11 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <!--<TextView-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_gravity="center"-->
-        <!--android:text="SELECT SPECIES"-->
-        <!--android:textSize="40dp" />-->
+    <TextView
+        style="@style/FormTitle"
+        android:text="Select Species" />
 
-    <!--Drop down menu of different species that fisheries are interested in tagging -->
-    <Spinner
-        android:id="@+id/Species"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:drawable/btn_dropdown"
-        android:spinnerMode="dropdown" />
+    <include layout="@layout/species_checkboxes" />
 
     <Button
         android:id="@+id/SubmitSpecies"
