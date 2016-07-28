@@ -1,63 +1,89 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
     <TextView
+        android:id="@+id/textView2"
         style="@style/FormTitle"
         android:text="Fork Length" />
 
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:weightSum="1">
-
-    <EditText
-        android:id="@+id/ForkLength"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:imeActionLabel="@string/action_sign_up_short"
-        android:imeOptions="actionUnspecified"
-        android:inputType="number"
-        android:maxLines="1"
-        android:singleLine="true"
-        android:layout_weight="0.9"/>
-
-    <RadioGroup
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:id="@+id/rg_units"
-        android:layout_weight="0.1">
-
-        <RadioButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="in"
-            android:id="@+id/rb_in"
-            android:checked="true"/>
-
-        <RadioButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="cm"
-            android:id="@+id/rb_cm"/>
-    </RadioGroup>
-
-</LinearLayout>
-
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/textView2"
+        android:scaleType="fitCenter"
+        android:src="@drawable/fish_length" />
 
     <Button
         android:id="@+id/SubmitLength"
         style="@style/ButtonTheme"
         android:layout_width="140dp"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="15dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_gravity="right"
         android:onClick="submitForkLength"
         android:text="Submit"
         android:textSize="30dp" />
 
-</LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/SubmitLength"
+        android:layout_below="@+id/imageView"
+        android:orientation="horizontal"
+        android:weightSum="1">
+
+        <EditText
+            android:id="@+id/ForkLength"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/imageView"
+            android:layout_centerHorizontal="true"
+            android:layout_weight="0.95"
+            android:imeActionLabel="@string/action_sign_up_short"
+            android:imeOptions="actionUnspecified"
+            android:inputType="number"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:textSize="30dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="cm"
+            android:textSize="30dp"/>
+
+        <!--<RadioGroup-->
+            <!--android:id="@+id/rg_units"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_gravity="center_vertical"-->
+            <!--android:layout_weight="0.05"-->
+            <!--android:orientation="vertical">-->
+
+            <!--&lt;!&ndash;<RadioButton&ndash;&gt;-->
+                <!--&lt;!&ndash;android:id="@+id/rb_in"&ndash;&gt;-->
+                <!--&lt;!&ndash;style="@style/CheckboxStyle"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:layout_alignBottom="@+id/ForkLength"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:layout_toStartOf="@+id/SubmitLength"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:checked="true"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:text="in"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:textSize="20dp" />&ndash;&gt;-->
+
+            <!--<RadioButton-->
+                <!--android:id="@+id/rb_cm"-->
+                <!--style="@style/CheckboxStyle"-->
+                <!--android:layout_alignStart="@+id/rb_in"-->
+                <!--android:layout_below="@+id/rb_in"-->
+                <!--android:text="cm"-->
+                <!--android:textSize="20dp" />-->
+        <!--</RadioGroup>-->
+
+    </LinearLayout>
+
+</RelativeLayout>

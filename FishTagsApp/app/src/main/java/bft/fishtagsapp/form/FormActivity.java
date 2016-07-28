@@ -9,7 +9,6 @@ import android.location.Location;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -17,13 +16,11 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,7 +39,6 @@ import bft.fishtagsapp.Utils;
 import bft.fishtagsapp.camera.CameraActivity;
 import bft.fishtagsapp.gps.MyLocation;
 import bft.fishtagsapp.parsefile.ParseFile;
-import bft.fishtagsapp.signup.SignupActivity;
 
 public class FormActivity extends AppCompatActivity {
     /* HANDLES FORM INPUT FROM USER */
@@ -235,7 +231,7 @@ public class FormActivity extends AppCompatActivity {
                 } else {
                     double latitude = location.getLatitude();
                     double longitude = location.getLongitude();
-                    locString = String.format("LAT:%f, LONG:%f", latitude, longitude);
+                    locString = String.format("LAT:%fish_tagged, LONG:%fish_tagged", latitude, longitude);
                 }
                 if (data == null) {
                     data = new HashMap<>();

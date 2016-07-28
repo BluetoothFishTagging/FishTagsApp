@@ -1,23 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/rb_group"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:orientation="vertical">
+    android:layout_height="fill_parent">
 
-    <RadioButton
-        android:id="@+id/rb_atlantic_bluefin"
-        style="@style/CheckboxStyle"
-        android:text="Atlantic Bluefin" />
+    <RadioGroup
+        android:id="@+id/rb_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true">
 
-    <RadioButton
-        android:id="@+id/rb_striped_marlin"
-        style="@style/CheckboxStyle"
-        android:text="Striped Marlin" />
+        <RadioButton
+            android:id="@+id/rb_atlantic_bluefin"
+            style="@style/CheckboxStyle"
+            android:text="Atlantic Bluefin" />
 
-    <RadioButton
-        android:id="@+id/rb_yellowfin_tuna"
-        style="@style/CheckboxStyle"
-        android:text="Yellowfin Tuna" />
-</RadioGroup>
+        <RadioButton
+            android:id="@+id/rb_striped_marlin"
+            style="@style/CheckboxStyle"
+            android:text="Striped Marlin" />
+
+        <RadioButton
+            android:id="@+id/rb_yellowfin_tuna"
+            style="@style/CheckboxStyle"
+            android:text="Yellowfin Tuna" />
+    </RadioGroup>
+</RelativeLayout>
+
