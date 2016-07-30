@@ -23,5 +23,5 @@ public final class Constants {
     public static final String ACTION_UPLOAD = "Upload";
     public static final String BLUETOOTH_DIR = "bluetoothDir";
     public static final String DEFAULT_STORE_SUBDIR = "/bft.fishtagsapp";
-    public static final String DATABASE_URL = "https://hitag-database.herokuapp.com/";
+    public static final String DATABASE_URL = "https://hitag-database.herokuapp.com/upload";
 }
