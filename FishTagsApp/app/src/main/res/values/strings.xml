@@ -1,6 +1,7 @@
 <resources>
-    <string name="app_name">FishTagsApp</string>
+    <string name="app_name">HI TAG</string>
     <string name="action_settings">Settings</string>
+    <string name="action_help">Help</string>
     <string name="title_activity_parse_data">ParseDataActivity</string>
     <string name="title_activity_parse_file">ParseFileActivity</string>
     <string name="title_activity_camera">Camera</string>
@@ -10,5 +11,41 @@
     <string name="saveMessage">Save Message to SD Card</string>
     <string name="readMessage">Read Message From SD Card</string>
     <string name="deleteMessage">Delete Message From SD Card</string>
+    <string name="title_activity_form">FormActivity</string>
+    <string name="title_activity_testing">TestingActivity</string>
+    <string name="title_activity_signup">Sign up</string>
+
+    <!-- Strings related to login -->
+    <string name="prompt_name">Name</string>
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="prompt_address_1">Street Address</string>
+    <string name="prompt_address_2">Address Line 2</string>
+    <string name="prompt_city">City</string>
+    <string name="prompt_state">State</string>
+    <string name="prompt_zip">Zipcode</string>
+    <string name="prompt_phone">Phone Number</string>
+    <string name="prompt_tagId">Tag ID</string>
+    <string name="prompt_forkLength">Fork Length</string>
+    <string name="prompt_time">Time</string>
+    <string name="prompt_location">Location</string>
+    <string name="prompt_gearUsed">Gear Used</string>
+    <string name="prompt_comments">Comments</string>
+
+    <string name="action_autofill">Autofill</string>
+    <string name="action_sign_up">Save</string>
+    <string name="action_sign_up_short">Save</string>
+    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email
+        completions."
+    </string>
+    <string name="title_activity_splash">Splash</string>
+    <string name="rfid_dialog" />
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/NationalID"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/prompt_tagId"
+            android:imeActionLabel="@string/action_sign_up_short"
+            android:imeOptions="actionUnspecified"
+            android:inputType="textNoSuggestions"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:textSize="20dp" />
+
+    </android.support.design.widget.TextInputLayout>
+
+
+    <Button
+        style="@style/ButtonTheme"
+        android:id="@+id/SubmitID"
+        android:layout_width="140dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:onClick="submitID"
+        android:text="Next"
+        android:textSize="30dp"
+        android:layout_gravity="center_horizontal" />
+
+
+</LinearLayout>

@@ -1,20 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="bft.fishtagsapp">
+    <!-- Camera -->
+    <uses-permission android:name="android.permission.CAMERA" />
 
-
-    <!-- TODO: camera unrequired, disable camera features if no camera on device.
-        Currently, camera required on device to download app.
-    -->
-	<!-- Camera -->
-    <uses-permission android:name="android.permission.CAMERA"/>
-    <uses-feature android:name="android.hardware.camera" android:required="true"/>
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
 
     <!-- ACCESSING STORAGE -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.INTERNET" />
 
     <!-- Wifi -->
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
@@ -27,38 +24,37 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
+    <!-- To auto-complete the email text field in the login form with the user's emails -->
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.READ_PROFILE" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+
+    <!-- TEST BLUETOOTH RECV -->
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.BLUETOOTH_PRIVILEGED" />
+
     <application
+        android:name=".FishTagsApplication"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:icon="@mipmap/ic_fish"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyDZzqShpXm9Bc4UrfgF_O-kZDqwm0ljKJE"/>
+        <uses-library android:name="com.google.android.maps" />
+
+
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".ParseFile.ParseFileActivity"
-            android:label="@string/title_activity_parse_file"
-            android:parentActivityName=".MainActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="bft.fishtagsapp.MainActivity" />
-        </activity>
-        <activity
-            android:name=".Camera.Camera"
-            android:label="@string/title_activity_camera"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <receiver
-            android:name=".Wifi.WifiDetector"
+            android:name=".wifi.WifiDetector"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
@@ -67,10 +63,35 @@
         </receiver>
 
         <activity
-            android:name=".Linkage.LinkageActivity"
-            android:label="LinkageActivity"
-            android:parentActivityName=".MainActivity"></activity>
-        <activity android:name=".Storage.StorageActivty"></activity>
+            android:name=".form.FormActivity"
+            android:label="Tag Submission Form" />
+
+        <service android:name=".client.UploadService" />
+
+        <activity
+            android:name=".signup.SignupActivity"
+            android:label="@string/title_activity_signup" />
+
+        <!-- Set the Launcher activity to be the start-up activity -->
+        <activity
+            android:name=".LauncherActivity"
+            android:label="Launcher" />
+
+        <activity
+            android:name=".Splash"
+            android:label="@string/app_name"
+            android:theme="@style/SplashTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                "
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".camera.CameraActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+
     </application>
 
 </manifest>

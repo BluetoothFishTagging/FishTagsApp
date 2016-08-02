@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/my_scroll_view"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@color/highlighted_text_material_dark"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:useDefaultMargins="true"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".form.FormActivity"
+    tools:showIn="@layout/activity_form">
+
+
+    <RelativeLayout
+        android:id="@+id/my_rel_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/formTitle"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:background="@color/seaColor"
+            android:clickable="false"
+            android:text="Fish Tag Submission"
+            android:textAlignment="center"
+            android:textColor="@color/whiteColor"
+            android:textSize="30dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/Name0"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/formTitle"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="15dp"
+            android:text="Name"
+            android:textSize="24dp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/Name"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/Name0"
+            android:layout_below="@+id/formTitle"
+            android:layout_marginStart="60dp"
+            android:layout_toRightOf="@+id/Name0"
+            android:cursorVisible="false"
+            android:text="Han Solo"
+            android:textAlignment="center"
+            android:textSize="20dp" />
+
+        <TextView
+            android:id="@+id/CountryID0"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/Name0"
+            android:layout_below="@+id/Name0"
+            android:layout_marginTop="15dp"
+            android:text="CountryID"
+            android:textSize="24dp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/CountryID"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/CountryID0"
+            android:layout_alignStart="@+id/Name"
+            android:layout_below="@+id/Name"
+            android:text="" />
+
+        <TextView
+            android:id="@+id/NationalID0"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/CountryID0"
+            android:layout_below="@+id/CountryID0"
+            android:layout_marginTop="15dp"
+            android:text="Tag ID"
+            android:textSize="24dp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/NationalID"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/NationalID0"
+            android:layout_alignStart="@+id/CountryID"
+            android:layout_below="@+id/CountryID"
+            android:text="" />
+
+        <TextView
+            android:id="@+id/Time0"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/NationalID0"
+            android:layout_below="@+id/NationalID0"
+            android:layout_marginTop="15dp"
+            android:text="Time"
+            android:textSize="24dp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/Time"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/Time0"
+            android:layout_alignStart="@+id/NationalID"
+            android:layout_below="@+id/NationalID" />
+
+        <TextView
+            android:id="@+id/Location0"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/Time0"
+            android:layout_below="@+id/Time0"
+            android:layout_marginTop="15dp"
+            android:text="Location"
+            android:textSize="24dp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/Location"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/Location0"
+            android:layout_alignStart="@+id/Time"
+            android:layout_below="@+id/Time"
+
+            android:textSize="16dp" />
+
+
+        <TextView
+            android:id="@+id/Notes0"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/Location0"
+            android:layout_below="@+id/Location0"
+            android:layout_marginTop="15dp"
+            android:text="Notes"
+            android:textSize="24dp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/Notes"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/Notes0"
+            android:layout_alignStart="@+id/Location"
+            android:layout_below="@+id/Location"
+            android:hint="gear used, fish hooked removed (y/n), comments"
+            android:textSize="12dp" />
+
+        <TextView
+            android:id="@+id/FishPhoto0"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/Notes0"
+            android:layout_below="@+id/Notes0"
+            android:layout_marginTop="15dp"
+            android:text="Photo"
+            android:textSize="24dp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/FishPhoto"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_alignEnd="@+id/Notes"
+            android:layout_alignTop="@+id/PhotoButton"
+            android:src="@drawable/placeholder" />
+
+        <Button
+            android:id="@+id/PhotoButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/Notes"
+            android:layout_centerHorizontal="true"
+            android:layout_marginRight="15dp"
+            android:background="@color/seaColor"
+            android:onClick="goToCamera"
+            android:text="Take Photo"
+            android:textColor="@color/whiteColor"
+            android:textSize="20dp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/SubmitForm"
+            android:layout_width="140dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/FishPhoto"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="15dp"
+            android:background="@color/seaColor"
+            android:onClick="submitForm"
+            android:text="Next"
+            android:textColor="@color/whiteColor"
+            android:textSize="30dp"
+            android:textStyle="bold" />
+
+    </RelativeLayout>
+</ScrollView>
