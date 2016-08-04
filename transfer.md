@@ -33,6 +33,8 @@ Unfortunately, bluetooth file transfer seems to be handled by the android OS.
 
 ### Install a FileObserver
 
+Our last resort was to install a FileObserver in the bluetooth download directory.
+
 [Android File Observer](https://developer.android.com/reference/android/os/FileObserver.html) observes a path and handles each events that are detected by the OS.
 
 #### Searching for the directory	
