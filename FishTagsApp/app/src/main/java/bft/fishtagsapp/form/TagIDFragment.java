@@ -1,10 +1,13 @@
 package bft.fishtagsapp.form;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.renderscript.ScriptGroup;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
 import java.io.File;
@@ -43,8 +46,12 @@ public class TagIDFragment extends android.support.v4.app.Fragment {
         }
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_tag_id, container, false);
+        // If you want to display the keyboard automatically, it messes up the layout so I have for now suppressed it.
+//        InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+//        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
         EditText e = (EditText) view.findViewById(R.id.NationalID);
         e.requestFocus();
+
         fillInInfoFromFile(filename);
         return view;
     }
