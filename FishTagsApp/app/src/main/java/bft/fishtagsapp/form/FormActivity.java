@@ -21,13 +21,11 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -38,7 +36,6 @@ import bft.fishtagsapp.R;
 import bft.fishtagsapp.Utils;
 import bft.fishtagsapp.camera.CameraActivity;
 import bft.fishtagsapp.gps.MyLocation;
-import bft.fishtagsapp.parsefile.ParseFile;
 
 public class FormActivity extends AppCompatActivity {
     /* HANDLES FORM INPUT FROM USER */
@@ -48,6 +45,7 @@ public class FormActivity extends AppCompatActivity {
     private Uri imageUri;
     private HashMap<String, String> data;
     private TagIDFragment tagIDFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,7 +74,7 @@ public class FormActivity extends AppCompatActivity {
 
         String fileName = getIntent().getStringExtra("fileName");
 
-        if(fileName == null){
+        if (fileName == null) {
             showDialog();
         }
         /* Auto-fill in data from the latest tag file */
