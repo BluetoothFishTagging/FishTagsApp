@@ -71,7 +71,9 @@ public class FormActivity extends AppCompatActivity {
         }
 
         imageUri = Uri.parse("android.resource://bft.fishtagsapp/" + R.drawable.placeholder);
+
         data = new HashMap<>();
+
         String fileName = getIntent().getStringExtra("fileName");
 
         if(fileName == null){
@@ -91,7 +93,7 @@ public class FormActivity extends AppCompatActivity {
     public void submitID(View v) {
         // Add data to hashmap before switching to fragment
         EditText id = (EditText) findViewById(R.id.NationalID);
-        data.put("Tag ID", id.getText().toString());
+        data.put("NationalID", id.getText().toString());
         switchTo(Constants.SPECIES);
     }
 
@@ -227,7 +229,7 @@ public class FormActivity extends AppCompatActivity {
                 } else {
                     double latitude = location.getLatitude();
                     double longitude = location.getLongitude();
-                    locString = String.format("LAT:%fish_tagged, LONG:%fish_tagged", latitude, longitude);
+                    locString = String.format("LAT:%f, LONG:%f", latitude, longitude);
                 }
                 if (data == null) {
                     data = new HashMap<>();
