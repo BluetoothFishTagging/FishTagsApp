@@ -194,7 +194,7 @@ public class FormActivity extends AppCompatActivity {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_container, newFragment);
         transaction.addToBackStack(null);
-        transaction.commit();
+        transaction.commitAllowingStateLoss();
 
     }
 
@@ -330,7 +330,7 @@ public class FormActivity extends AppCompatActivity {
             case Constants.REQUEST_LOCATION:
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    //fillInGPS();
+                    //what?
                 } else {
                     Log.i("PERMISSIONS", "NOT GRANTED");
                     //what to do here?
