@@ -110,6 +110,16 @@ public class UploadService extends Service {
 
                 HttpClient client = new HttpClient(url);
                 client.connectMultipart();
+
+                client.addFormPart("username","");
+                client.addFormPart("passcode","");
+                client.addFormPart("location","");
+                client.addFormPart("time","");
+                client.addFormPart("comments","");
+                client.addFormPart("countryID","");
+                client.addFormPart("nationalID","");
+                client.addFormPart("tag_comments","");
+
                 client.addFormPart("tagInfo", tagInfo);
                 client.addFormPart("personInfo", personInfo); //form (plain text, JSON, etc) data.
 
