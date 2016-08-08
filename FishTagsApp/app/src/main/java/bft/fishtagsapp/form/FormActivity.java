@@ -47,7 +47,7 @@ public class FormActivity extends AppCompatActivity {
     private ArrayList<EditText> editTexts;
     private Uri imageUri;
     private HashMap<String, String> data;
-
+    private TagIDFragment tagIDFragment;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,20 +64,23 @@ public class FormActivity extends AppCompatActivity {
             if (savedInstanceState != null) {
                 return;
             }
-            TagIDFragment firstFragment = new TagIDFragment();
-            firstFragment.setArguments(getIntent().getExtras());
+            tagIDFragment = new TagIDFragment();
+            tagIDFragment.setArguments(getIntent().getExtras());
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.fragment_container, firstFragment).commit();
+                    .add(R.id.fragment_container, tagIDFragment).commit();
         }
 
         imageUri = Uri.parse("android.resource://bft.fishtagsapp/" + R.drawable.placeholder);
         data = new HashMap<>();
         String fileName = getIntent().getStringExtra("fileName");
 
+        if(fileName == null){
+            showDialog();
+        }
         /* Auto-fill in data from the latest tag file */
         getGPS();
         getTime();
-        fillInInfoFromFile(fileName);
+        //fillInInfoFromFile(fileName);
     }
 
     /**
@@ -197,13 +200,6 @@ public class FormActivity extends AppCompatActivity {
 
 
     /* AUTOFILL SECTION */
-    protected void fillInInfo(String fileName) {
-        //fillInTime();
-        //fillInGPS();
-
-        /* Entries from Tag File */
-        fillInInfoFromFile(fileName);
-    }
 
     protected void getTime() {
         /*Get Time*/
@@ -244,16 +240,6 @@ public class FormActivity extends AppCompatActivity {
         myLocation.getLocation(this, locationResult, permission);
     }
 
-    protected void fillInInfoFromFile(String fileName) {
-        /* Parse the file only if the file exists. Even though one may not exist, however, still fill in time and date, etc. */
-        if (fileName != null) {
-            Log.i("FILENAME", fileName);
-            fillInInfoFromFile(new File(fileName));
-        } else {
-            showDialog();
-        }
-    }
-
     void showDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
@@ -274,32 +260,6 @@ public class FormActivity extends AppCompatActivity {
         });
         AlertDialog dialog = builder.create();
         dialog.show();
-    }
-
-    protected void fillInInfoFromFile(File file) {
-        /* Call Parse File to return all of the entries in the file.
-            ParseFile handles all of the storage stuff so that FormActivity only fills in the UI
-         */
-
-        HashMap<String, String> entries = ParseFile.getEntries(file);
-        if (entries == null) {
-            return;
-        }
-        Log.i("ENTRIES", entries.toString());
-
-        for (String key : entries.keySet()) {
-            /* If key exists in textview, fill in corresponding text.
-             It is assumed that all of IDs of the TextViews correspond
-             to the keys of the entries. */
-            try {
-                int textID = getResources().getIdentifier(key,
-                        "id", getPackageName());
-                TextView text = (TextView) findViewById(textID);
-                text.setText(entries.get(key));
-            } catch (Exception e) {
-                // Do error handling if the id is not found
-            }
-        }
     }
 
 
