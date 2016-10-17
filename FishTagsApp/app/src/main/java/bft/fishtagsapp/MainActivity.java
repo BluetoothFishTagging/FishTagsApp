@@ -22,7 +22,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONException;
@@ -68,7 +67,6 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.showOverflowMenu();
         setSupportActionBar(toolbar); // Important piece of code that otherwise will not show menus
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
         setupViewPager(viewPager);
@@ -126,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        setName();
+        Utils.setName(findViewById(R.id.main_view));
 
         Intent uploadIntent = new Intent(this, UploadService.class);
 
@@ -134,18 +132,7 @@ public class MainActivity extends AppCompatActivity {
         bindService(uploadIntent, uploadConnection, BIND_AUTO_CREATE); // no flags
     }
 
-    private void setName() {
-        /* Create welcome message for returning user */
-        String name = getName();
-
-        if (!name.equals("")) {
-            TextView welcome = (TextView) findViewById(R.id.userName);
-            if (welcome != null) {
-                welcome.setText(String.format("Hi, %s!", name));
-            }
-        }
-    }
-
+    /* SET UP FRAGMENTS AS SLIDING TABS */
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(new HomeFragment(), "HOME");
@@ -215,8 +202,8 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(this, SignupActivity.class);
                 intent.putExtra("request", Constants.REQUEST_EDIT_SETTINGS);
                 startActivityForResult(intent, Constants.REQUEST_SIGNUP);
-
                 return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -263,6 +250,49 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        Boolean granted = (grantResults.length > 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED);
+        //TODO : check for each permission
+
+        switch (requestCode) {
+            case Constants.REQUEST_STORAGE:
+                if (Storage.read(Constants.BLUETOOTH_DIR) == null) {
+                    searchBluetooth();
+                }
+                addWatcher();
+                break;
+            case Constants.REQUEST_NETWORK:
+                //new HttpGetTask().execute(Constants.DATABASE_URL + "query?name=" + getName());
+                break;
+        }
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        /*If the user changes their name, the app should update to reflect this*/
+        Utils.setName(findViewById(R.id.main_view));
+    }
+
+    public void goToForm(View v) {
+        goToForm(recent);
+    }
+
+    public void goToForm(String fileName) {
+        Intent intent = new Intent(this, FormActivity.class);
+        intent.putExtra("fileName", fileName);
+        startActivityForResult(intent, Constants.SUBMIT_TAG);
+    }
+
+    public void signUp(View v) {
+        Intent intent = new Intent(this, SignupActivity.class);
+        startActivity(intent);
+    }
+
+    /* BLUETOOTH SET UP */
     public List<File> folderSearchBT(File src, String folder)
             throws FileNotFoundException {
 
@@ -319,64 +349,6 @@ public class MainActivity extends AppCompatActivity {
 
         Log.i("BTDIR", folder);
         Storage.save(Constants.BLUETOOTH_DIR, folder);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
-        Boolean granted = (grantResults.length > 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED);
-        //TODO : check for each permission
-
-        switch (requestCode) {
-            case Constants.REQUEST_STORAGE:
-                if (Storage.read(Constants.BLUETOOTH_DIR) == null) {
-                    searchBluetooth();
-                }
-                addWatcher();
-                break;
-            case Constants.REQUEST_NETWORK:
-                //new HttpGetTask().execute(Constants.DATABASE_URL + "query?name=" + getName());
-                break;
-        }
-
-    }
-
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        /*If the user changes their name, the app should update to reflect this*/
-        setName();
-    }
-
-    public void goToForm(View v) {
-        goToForm(recent);
-    }
-
-    public void goToForm(String fileName) {
-        Intent intent = new Intent(this, FormActivity.class);
-        intent.putExtra("fileName", fileName);
-        startActivityForResult(intent, Constants.SUBMIT_TAG);
-    }
-
-    public void signUp(View v) {
-        Intent intent = new Intent(this, SignupActivity.class);
-        startActivity(intent);
-    }
-
-    public String getName() {
-        String info = Storage.read("info.txt");
-        if (info != null && !info.isEmpty()) {
-            try {
-                JSONObject data = new JSONObject(info);
-                String value = data.getString("name");
-                Log.i("INFO", value);
-                return value;
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-        return "";
     }
 
 

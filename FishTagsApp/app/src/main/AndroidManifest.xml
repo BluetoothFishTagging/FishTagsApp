@@ -64,7 +64,8 @@
 
         <activity
             android:name=".form.FormActivity"
-            android:label="Tag Submission Form" />
+            android:label="Tag Submission Form"
+            android:screenOrientation="portrait"/>
 
         <service android:name=".client.UploadService" />
 

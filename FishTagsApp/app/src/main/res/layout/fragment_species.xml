@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        style="@style/FormTitle"
+        android:text="Select Species"
+        android:id="@+id/textView" />
+
+    <include layout="@layout/species_checkboxes"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_below="@+id/textView"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:id="@+id/SubmitSpecies"
+        style="@style/ButtonTheme"
+        android:layout_width="140dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:onClick="submitSpecies"
+        android:text="Next"
+        android:textSize="30dp"
+        android:layout_marginBottom="15dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true" />
+
+
+</RelativeLayout>

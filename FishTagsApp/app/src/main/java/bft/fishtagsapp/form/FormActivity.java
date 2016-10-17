@@ -5,38 +5,30 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TabHost;
-import android.widget.TextView;
+import android.widget.ProgressBar;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.Map;
 
 import bft.fishtagsapp.Constants;
 import bft.fishtagsapp.MainActivity;
@@ -44,104 +36,178 @@ import bft.fishtagsapp.R;
 import bft.fishtagsapp.Utils;
 import bft.fishtagsapp.camera.CameraActivity;
 import bft.fishtagsapp.gps.MyLocation;
-import bft.fishtagsapp.parsefile.ParseFile;
-import bft.fishtagsapp.signup.SignupActivity;
 
 public class FormActivity extends AppCompatActivity {
     /* HANDLES FORM INPUT FROM USER */
 
+    // predefining all of the EditTexts because there is one in each fragment.
     private ArrayList<EditText> editTexts;
-    private ImageView fishPhotoView;
+    private Uri imageUri;
+    private HashMap<String, String> data;
+    private TagIDFragment tagIDFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_form);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_form);
         toolbar.showOverflowMenu();
         setSupportActionBar(toolbar); // Important piece of code that otherwise will not show menus
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true); // shop back button at the top
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
-        setupViewPager(viewPager);
+        // Set the first fragment to be displayed in FrameLayout
+        if (findViewById(R.id.fragment_container) != null) {
+            if (savedInstanceState != null) {
+                return;
+            }
+            tagIDFragment = new TagIDFragment();
+            tagIDFragment.setArguments(getIntent().getExtras());
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.fragment_container, tagIDFragment).commit();
+        }
 
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
-        tabLayout.setupWithViewPager(viewPager);
+        imageUri = Uri.parse("android.resource://bft.fishtagsapp/" + R.drawable.placeholder);
 
-        LinearLayout my_linView = (LinearLayout) findViewById(R.id.tag_submission_form);
-
-        editTexts = new ArrayList<>();
-        //findFields(my_linView, editTexts);
-        //fishPhotoView = (ImageView) findViewById(R.id.FishPhoto);
+        data = new HashMap<>();
 
         String fileName = getIntent().getStringExtra("fileName");
 
+        if (fileName == null) {
+            showDialog();
+        }
         /* Auto-fill in data from the latest tag file */
-        //fillInInfo(fileName);
+        getGPS();
+        getTime();
+        //fillInInfoFromFile(fileName);
     }
 
-    private void setupViewPager(ViewPager viewPager) {
-        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new TagIDFragment(), "Tag ID");
-        adapter.addFragment(new SpeciesFragment(), "Species");
-        adapter.addFragment(new ForkLengthFragment(), "Fork Length");
-        viewPager.setAdapter(adapter);
+    /**
+     * Switch fragment from Tag ID to Species
+     *
+     * @param v
+     */
+    public void submitID(View v) {
+        // Add data to hashmap before switching to fragment
+        EditText id = (EditText) findViewById(R.id.NationalID);
+        data.put("NationalID", id.getText().toString());
+        switchTo(Constants.SPECIES);
     }
 
+    /**
+     * Switch fragment from Species to Camera
+     *
+     * @param v
+     */
 
-    class ViewPagerAdapter extends FragmentPagerAdapter {
-        private final List<Fragment> mFragmentList = new ArrayList<>();
-        private final List<String> mFragmentTitleList = new ArrayList<>();
-
-        public ViewPagerAdapter(FragmentManager manager) {
-            super(manager);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            return mFragmentList.get(position);
-        }
-
-        @Override
-        public int getCount() {
-            return mFragmentList.size();
-        }
-
-        public void addFragment(Fragment fragment, String title) {
-            mFragmentList.add(fragment);
-            mFragmentTitleList.add(title);
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return mFragmentTitleList.get(position);
+    public void submitSpecies(View v) {
+        RadioGroup rg = (RadioGroup) findViewById(R.id.rb_group);
+        RadioButton rb = (RadioButton) findViewById(rg.getCheckedRadioButtonId());
+        if (rb == null) {
+            Toast t = Toast.makeText(getApplicationContext(), "Please select species", Toast.LENGTH_SHORT);
+            t.show();
+        } else {
+            data.put("Species", rb.getText().toString());
+            Log.i("MAP", data.toString());
+            switchTo(Constants.PHOTO);
         }
     }
 
-    public void submitID(View v){
-        TabHost host = (TabHost) v.findViewById(android.R.id.tabhost);
-        host.setCurrentTab(2);
+    /**
+     * Submit form
+     *
+     * @param v
+     */
+    public void submitForkLength(View v) {
+        EditText id = (EditText) findViewById(R.id.ForkLength);
+        data.put("Fork Length", id.getText().toString());
+        submitForm();
+    }
+
+    private void switchTo(int fragment) {
+        Fragment newFragment;
+
+        switch (fragment) {
+            case Constants.SPECIES:
+                newFragment = new SpeciesFragment();
+                //Highlight the fishy
+                ImageView fishy = (ImageView) findViewById(R.id.fish_icon);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    fishy.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_fish_on, getApplicationContext().getTheme()));
+                } else {
+                    fishy.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_fish_on));
+                }
+                // Dehighlight the tag
+                ImageView tag = (ImageView) findViewById(R.id.tag_icon);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    tag.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_tag_highlighted, getApplicationContext().getTheme()));
+                } else {
+                    tag.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_tag_highlighted));
+                }
+                //Update progressbar
+                ProgressBar species = (ProgressBar) findViewById(R.id.id_species);
+                species.setProgress(1);
+                break;
+            case Constants.FORK_LENGTH:
+                newFragment = new ForkLengthFragment();
+                // Dehighlight camera
+                ImageView camera = (ImageView) findViewById(R.id.camera_icon);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    camera.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_camera_highlighted, getApplicationContext().getTheme()));
+                } else {
+                    camera.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_camera_highlighted));
+                }
+                // Highlight the ruler
+                ImageView ruler = (ImageView) findViewById(R.id.ruler_icon);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    ruler.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_ruler_on, getApplicationContext().getTheme()));
+                } else {
+                    ruler.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_ruler_on));
+                }
+                ProgressBar length = (ProgressBar) findViewById(R.id.id_length);
+                length.setProgress(1);
+
+                break;
+            case Constants.PHOTO:
+                // Dehilight the fishy
+                ImageView fish = (ImageView) findViewById(R.id.fish_icon);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    fish.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_fish_highlighted, getApplicationContext().getTheme()));
+                } else {
+                    fish.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_fish_highlighted));
+                }
+                ImageView camera1 = (ImageView) findViewById(R.id.camera_icon);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    camera1.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_camera_on, getApplicationContext().getTheme()));
+                } else {
+                    camera1.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_camera_on));
+                }
+                ProgressBar photo = (ProgressBar) findViewById(R.id.id_photo);
+                photo.setProgress(1);
+                goToCamera();
+                return;
+            default:
+                return;
+        }
+
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragment_container, newFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+
     }
 
 
     /* AUTOFILL SECTION */
-    protected void fillInInfo(String fileName) {
-        fillInTime();
-        fillInGPS();
 
-        /* Entries from Tag File */
-        fillInInfoFromFile(fileName);
-    }
-
-    protected void fillInTime() {
+    protected void getTime() {
         /*Get Time*/
         String timestamp = Utils.timestamp();
-        TextView timeText = (TextView) findViewById(R.id.Time);
-        timeText.setText(timestamp);
+        data.put("Time", timestamp);
     }
 
-    protected void fillInGPS() {
+    protected void getGPS() {
         /*Get Location*/
         Boolean permission = Utils.checkAndRequestRuntimePermissions(this,
                 new String[]{
@@ -163,24 +229,15 @@ public class FormActivity extends AppCompatActivity {
                     double longitude = location.getLongitude();
                     locString = String.format("LAT:%f, LONG:%f", latitude, longitude);
                 }
-
-                TextView locationText = (TextView) findViewById(R.id.Location);
-                locationText.setText(locString);
+                if (data == null) {
+                    data = new HashMap<>();
+                }
+                data.put("Location", locString);
+                Log.i("MAP", data.toString());
             }
         };
         MyLocation myLocation = new MyLocation(permission);
         myLocation.getLocation(this, locationResult, permission);
-
-    }
-
-    protected void fillInInfoFromFile(String fileName) {
-        /* Parse the file only if the file exists. Even though one may not exist, however, still fill in time and date, etc. */
-        if (fileName != null) {
-            Log.i("FILENAME", fileName);
-            fillInInfoFromFile(new File(fileName));
-        } else {
-            showDialog();
-        }
     }
 
     void showDialog() {
@@ -205,72 +262,20 @@ public class FormActivity extends AppCompatActivity {
         dialog.show();
     }
 
-    protected void fillInInfoFromFile(File file) {
-        /* Call Parse File to return all of the entries in the file.
-            ParseFile handles all of the storage stuff so that FormActivity only fills in the UI
-         */
-
-        HashMap<String, String> entries = ParseFile.getEntries(file);
-        if (entries == null) {
-            return;
-        }
-        Log.i("ENTRIES", entries.toString());
-
-        for (String key : entries.keySet()) {
-            /* If key exists in textview, fill in corresponding text.
-             It is assumed that all of IDs of the TextViews correspond
-             to the keys of the entries. */
-            try {
-                int textID = getResources().getIdentifier(key,
-                        "id", getPackageName());
-                TextView text = (TextView) findViewById(textID);
-                text.setText(entries.get(key));
-            } catch (Exception e) {
-                // Do error handling if the id is not found
-            }
-        }
-    }
-
 
     /* SUBMISSION SECTION */
-
-    private void findFields(ViewGroup v, ArrayList<EditText> editTexts) {
-        /* Recursively Find EditTexts in Viewgroups*/
-        int n = v.getChildCount();
-        for (int i = 0; i < n; ++i) {
-            View subView = v.getChildAt(i);
-            if (subView instanceof ViewGroup) {
-                //recursively search for editTexts
-                findFields((ViewGroup) subView, editTexts);
-            } else if (subView instanceof EditText) {
-                editTexts.add((EditText) subView);
-            }
-        }
-    }
 
     protected JSONObject getFormMap() {
         /* Iterate through form fields */
         try {
-            JSONObject data = new JSONObject();
-
-            for (EditText e : editTexts) {
-                String textId = e.getResources().getResourceEntryName(e.getId());
-                String value = ((EditText) e).getText().toString();
-                Log.i(textId, value);
-                data.put(textId, value);
-
+            JSONObject dataObj = new JSONObject();
+            for (Map.Entry<String, String> entry : data.entrySet()) {
+                dataObj.put(entry.getKey(), entry.getValue());
             }
 
-            if (fishPhotoView.getTag() == null) {
-                Uri imageUri = Uri.parse("android.resource://bft.fishtagsapp/" + R.drawable.placeholder);
-                data.put("photo", imageUri.toString()); //empty string
-
-            } else {
-                Uri imageUri = (Uri) fishPhotoView.getTag();
-                data.put("photo", imageUri.toString());
-            }
-
-            return data;
+            // imageUri is defined as the placeholder. If there was an image, should be overwritten in the result of the camera activity
+            dataObj.put("photo", imageUri.toString());
+            return dataObj;
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -278,12 +283,13 @@ public class FormActivity extends AppCompatActivity {
         }
     }
 
-    public void submitForm(View view) {
+    public void submitForm() {
         Log.i("FORM", "SUBMITTING");
         /* First verify the personal info */
-        Intent intent_verify = new Intent(this, SignupActivity.class);
-        intent_verify.putExtra("request", Constants.REQUEST_VERIFY_SETTINGS);
-        startActivityForResult(intent_verify, Constants.REQUEST_VERIFY_SETTINGS);
+        Intent intent_result = new Intent();
+        intent_result.putExtra("map", getFormMap().toString());
+        setResult(RESULT_OK, intent_result);
+        finish();
     }
 
     /* CAMERA SECTION */
@@ -291,10 +297,6 @@ public class FormActivity extends AppCompatActivity {
         Log.i("Camera", "Dispatching intent");
         Intent intent = new Intent(this, CameraActivity.class);
         startActivityForResult(intent, Constants.REQUEST_TAKE_PHOTO);
-    }
-
-    public void goToCamera(View view) {
-        goToCamera();
     }
 
     /* CALLBACK SECTION */
@@ -312,19 +314,11 @@ public class FormActivity extends AppCompatActivity {
         }
         if (requestCode == Constants.REQUEST_TAKE_PHOTO) {
             if (resultCode == RESULT_OK) {
-
-                Uri imageUri = Uri.parse(data.getStringExtra("photo"));
+                imageUri = Uri.parse(data.getStringExtra("photo"));
                 // Crashes right here necause there is no imageUri
                 Log.i("REQUEST PHOTO", imageUri.toString());
-                try {
-                    Bitmap bitmap = getThumbnail(imageUri);
-                    ImageView myImageView = (ImageView) findViewById(R.id.FishPhoto);
-                    myImageView.setImageBitmap(bitmap);
-                    myImageView.setTag(imageUri);
-                    myImageView.setVisibility(View.VISIBLE);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                // Launch Fork Length fragment
+                switchTo(Constants.FORK_LENGTH);
             }
         }
     }
@@ -349,45 +343,24 @@ public class FormActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         /*If the user enables GPS while in FormActivity, when they return to the form, the GPS should attempt to update*/
-        //fillInGPS();
+        getGPS();
     }
 
-    /* THUMBNAIL CREATION SECTION */
-    final int THUMBNAIL_SIZE = 256;
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        /* Handle action bar item clicks here. The action bar will
+        automatically handle clicks on the Home/Up button, so long
+        as you specify a parent activity in AndroidManifest.xml. */
+        int id = item.getItemId();
 
-    private static int getPowerOfTwoForSampleRatio(double ratio) {
-        int k = Integer.highestOneBit((int) Math.floor(ratio));
-        if (k == 0) return 1;
-        else return k;
-    }
+        switch (id) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
 
-    public Bitmap getThumbnail(Uri uri) throws FileNotFoundException, IOException {
-        InputStream input = this.getContentResolver().openInputStream(uri);
-
-        BitmapFactory.Options onlyBoundsOptions = new BitmapFactory.Options();
-        onlyBoundsOptions.inJustDecodeBounds = true;
-        onlyBoundsOptions.inDither = true;//optional
-        onlyBoundsOptions.inPreferredConfig = Bitmap.Config.ARGB_8888;//optional
-        BitmapFactory.decodeStream(input, null, onlyBoundsOptions);
-        input.close();
-
-        if ((onlyBoundsOptions.outWidth == -1) || (onlyBoundsOptions.outHeight == -1)) {
-            Log.i("GAH", "WHY");
-            return null;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-
-        int originalSize = (onlyBoundsOptions.outHeight > onlyBoundsOptions.outWidth) ? onlyBoundsOptions.outHeight : onlyBoundsOptions.outWidth;
-
-        double ratio = (originalSize > THUMBNAIL_SIZE) ? (originalSize / THUMBNAIL_SIZE) : 1.0;
-
-        BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
-        bitmapOptions.inSampleSize = getPowerOfTwoForSampleRatio(ratio);
-        bitmapOptions.inDither = true;//optional
-        bitmapOptions.inPreferredConfig = Bitmap.Config.ARGB_8888;//optional
-        input = this.getContentResolver().openInputStream(uri);
-        Bitmap bitmap = BitmapFactory.decodeStream(input, null, bitmapOptions);
-        input.close();
-        Log.i("HELLO", "BOO");
-        return bitmap;
     }
+
 }
