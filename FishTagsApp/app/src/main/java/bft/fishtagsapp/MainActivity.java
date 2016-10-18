@@ -234,11 +234,20 @@ public class MainActivity extends AppCompatActivity {
                     String fileName = timeStamp + ".txt";
                     dataObj.put("name", fileName);//txt file extension
                     //server url placeholder
+
+                    // TODO : reformat data for compatibility with new db
+                    // All fields should be parsed
+
                     String url = Constants.DATABASE_URL;
                     String uri = (String) dataObj.get("photo");
 
                     String tagInfo = dataObj.toString(); //JSON string
                     String personInfo = Storage.read(Constants.PERSONAL_INFO);
+
+                    Log.i("URL", url);
+                    Log.i("URI", uri);
+                    Log.i("TAG_INFO", tagInfo);
+                    Log.i("PERSON_INFO", personInfo);
 
                     uploadBinder.enqueue(url, uri, tagInfo, personInfo);
 

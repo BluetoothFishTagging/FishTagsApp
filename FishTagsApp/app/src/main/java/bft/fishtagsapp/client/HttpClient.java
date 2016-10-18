@@ -1,5 +1,6 @@
 package bft.fishtagsapp.client;
 
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -79,16 +80,20 @@ public class HttpClient {
 
 
     public String getResponse() throws Exception {
-        is = con.getInputStream();
-        byte[] b1 = new byte[1024];
-        StringBuffer buffer = new StringBuffer();
 
-        while (is.read(b1) != -1)
-            buffer.append(new String(b1));
+        try{
+            StringBuffer buffer = new StringBuffer();
+            is = con.getInputStream();
+            byte[] b1 = new byte[1024];
+            while (is.read(b1) != -1)
+                buffer.append(new String(b1));
+            con.disconnect();
+            return buffer.toString();
+        }catch(FileNotFoundException e){
+            return "SERVER DOWN";
+        }
 
-        con.disconnect();
 
-        return buffer.toString();
     }
 
     private void writeParamData(String paramName, String value) throws Exception {

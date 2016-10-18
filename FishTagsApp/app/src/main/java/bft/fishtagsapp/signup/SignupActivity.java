@@ -1,7 +1,11 @@
 package bft.fishtagsapp.signup;
 
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Resources;
+import android.net.ConnectivityManager;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -19,6 +23,8 @@ import java.util.ArrayList;
 
 import bft.fishtagsapp.Constants;
 import bft.fishtagsapp.R;
+import bft.fishtagsapp.Utils;
+import bft.fishtagsapp.client.HttpClient;
 import bft.fishtagsapp.storage.Storage;
 
 public class SignupActivity extends AppCompatActivity {
@@ -129,11 +135,27 @@ public class SignupActivity extends AppCompatActivity {
                 data.put(textId, value);
             }
 
+
             //delete previous data (failsafe)
             Storage.delete(Constants.PERSONAL_INFO);
 
             //save new data
             Storage.save(Constants.PERSONAL_INFO, data.toString());
+
+            String username = data.getString("username");
+            String passcode = data.getString("passcode");
+            String passcode_confirm = data.getString("passcode_confirm");
+            String name = data.getString("name");
+            String email = data.getString("email");
+            String phone = data.getString("phone");
+            String address = data.getString("address_1") + '\t' + data.getString("address_2");
+            String city = data.getString("city");
+            String state = data.getString("state");
+            String zipcode = data.getString("zipcode");
+
+            String[] params = new String[]{"https://hitags.herokuapp.com/signup", username, passcode, passcode_confirm, name, email, phone, address, city, state, zipcode};
+
+            new SimpleSignupTask().execute(params);
 
             Intent intent_result = new Intent();
             setResult(RESULT_OK, intent_result);
@@ -146,5 +168,55 @@ public class SignupActivity extends AppCompatActivity {
             setResult(RESULT_CANCELED, intent_result);
             finish();
         }
+    }
+
+    private class SimpleSignupTask extends AsyncTask<String, Void, Boolean> {
+        @Override
+        protected Boolean doInBackground(String... params) {
+            String url = params[0];
+
+            try {
+
+                HttpClient client = new HttpClient(url);
+                client.connectMultipart();
+
+                client.addFormPart("username",params[1]);
+                client.addFormPart("passcode",params[2]);
+                client.addFormPart("passcode_confirm",params[3]);
+                client.addFormPart("name",params[4]);
+                client.addFormPart("email",params[5]);
+                client.addFormPart("phone",params[6]);
+                client.addFormPart("address",params[7]);
+                client.addFormPart("city",params[8]);
+                client.addFormPart("state",params[9]);
+                client.addFormPart("zipcode",params[10]);
+
+                client.finishMultipart();
+
+                String response = client.getResponse();
+
+                if (response != null) {
+                    //TODO : check if valid response
+                    Log.i("RESPONSE",response);
+                    return true; // success!
+                }
+            } catch (Throwable t) {
+                t.printStackTrace();
+            }
+            return false; // somehow failed
+        }
+
+        @Override
+        protected void onPostExecute(Boolean success) {
+            super.onPostExecute(success);
+            // TODO : Write Success/Failure Handlers
+            if (success) {
+                //finish();
+                // happiness
+            } else {
+                // sadness
+            }
+        }
+
     }
 }

@@ -48,7 +48,11 @@ public class UploadService extends Service {
         }
 
         public void enqueue(String... params) {
-
+            if(params != null){
+                Log.i("PARA-MS", params.toString());
+            }else{
+                Log.i("PARAMS","NULL");
+            }
             uploadQueue.add(params);
             //try to upload
             uploadOne();
@@ -131,6 +135,7 @@ public class UploadService extends Service {
                 String response = client.getResponse();
 
                 if (response != null) {
+                    Log.i("RESPONSE",response);
                     //TODO : check if valid response
                     return true;
                 }
@@ -261,13 +266,23 @@ public class UploadService extends Service {
 
     private void uploadOne() {
         Log.i("UPLOADSERVICE", "UPLOADING");
+        Log.i("BOUND?",bound?"TRUE":"FALSE");
         String[] params = uploadQueue.peek();
+
         if (params == null) {
             if (bound == false) {
                 //not bound && nothing pending
                 stopSelf();
             }
         } else {
+            StringBuilder sb = new StringBuilder();
+            for(String s : params){
+                sb.append(s);
+                sb.append('\t');
+
+            }
+            Log.i("PARAMS", sb.toString());
+
             //has pending upload
             new SendHttpRequestTask().execute(params);
         }
